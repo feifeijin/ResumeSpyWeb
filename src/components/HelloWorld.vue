@@ -6,24 +6,24 @@ defineProps<{
 }>()
 
 // Axios API client setup
-const apiClient = axios.create({
-  baseURL: 'http://localhost:5293', // Adjust to your .NET Core API URL
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-// State to hold fetched data
-const data = ref(null)
+// const apiClient = axios.create({
+//   baseURL: 'http://localhost:5293', // Adjust to your .NET Core API URL
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// })
+// // State to hold fetched data
+// const data = ref(null)
 
-// Fetch data from API on component mount
-onMounted(async () => {
-  try {
-    const response = await apiClient.get('/weatherforecast') // Adjust endpoint as needed
-    data.value = response.data
-  } catch (error) {
-    console.error('Error fetching data:', error)
-  }
-})
+// // Fetch data from API on component mount
+// onMounted(async () => {
+//   try {
+//     const response = await apiClient.get('/weatherforecast') // Adjust endpoint as needed
+//     data.value = response.data
+//   } catch (error) {
+//     console.error('Error fetching data:', error)
+//   }
+// })
 </script>
 
 <template>
