@@ -1,26 +1,21 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 import AppBar from './components/app/AppBar.vue'
+import ResumeGuide from './components/ResumeGuide.vue'
+import WhatWeOffer from './components/WhatWeOffer.vue'
+import ResumeTemplates from './components/ResumeTemplates.vue'
+import KnowledgeBase from './components/KnowledgeBase.vue'
+import AppFooter from './components/app/AppFooter.vue'
 </script>
 
 <template>
   <v-app>
     <app-bar />
+    <v-main>
+      <resume-guide />
+      <what-we-offer />
+      <resume-templates />
+      <knowledge-base />
+    </v-main>
+    <app-footer />
   </v-app>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/editor">editor</RouterLink>
-      </nav>
-    </div>
-  </header> -->
-
-  <!-- <RouterView /> -->
 </template>
