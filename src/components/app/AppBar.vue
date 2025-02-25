@@ -2,11 +2,9 @@
   <!-- 抽屉菜单 (在移动端显示) -->
   <v-navigation-drawer v-model="drawer" app temporary>
     <v-list>
-      <v-list-item v-for="item in menu" :key="item.name" :href="`#${item.link}`">
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-          {{ item.name }}
-        </v-list-item-icon>
+      <v-list-item v-for="item in menu" :key="item.name" :href="item.link" :target="item.target">
+        <v-icon>{{ item.icon }}</v-icon>
+        {{ item.name }}
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -27,7 +25,8 @@
           v-for="item in menu"
           :key="item.name"
           class="text-body-1 blue-grey-darken-4"
-          :href="`#${item.link}`"
+          :href="item.link"
+          :target="item.target"
           variant="text"
         >
           <v-icon>{{ item.icon }}</v-icon>
@@ -50,9 +49,14 @@ import { ref } from 'vue'
 
 const drawer = ref(false)
 const menu = [
-  { name: 'Create', link: 'create', icon: 'mdi-note-plus' },
-  { name: 'GitHub', link: 'github', icon: 'mdi-github' },
-  { name: 'MySpy', link: 'myspy', icon: 'mdi-account' },
+  { name: 'Create', link: '#create', icon: 'mdi-note-plus', target: '_self' },
+  {
+    name: 'GitHub',
+    link: 'https://github.com/feifeijin/ResumeSpyWeb',
+    icon: 'mdi-github',
+    target: '_blank',
+  },
+  { name: 'MySpy', link: '#myspy', icon: 'mdi-account', target: '_self' },
 ]
 </script>
 
