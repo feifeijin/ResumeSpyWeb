@@ -108,7 +108,7 @@ interface Resume {
 }
 
 const resumes = ref<Resume[]>([
-  { title: 'Resume 1111111111111', lastModifyTime: '2025-02-26', preview: true },
+  { title: 'Resume 1', lastModifyTime: '2025-02-26', preview: true },
   { title: 'Resume 2', lastModifyTime: '2025-02-25', preview: true },
   { title: 'Resume 3', lastModifyTime: '2025-02-24', preview: true },
 ])
