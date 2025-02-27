@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { registerMarkdownEditor } from './plugins/v-md-editor'
 import { registerPlugins } from '@/plugins'
-
 import App from './App.vue'
 import router from './router'
 
