@@ -29,13 +29,20 @@
             <v-text-field
               v-if="resume.isEditing"
               v-model="resume.title"
+              class="editable-title"
               single-line
               dense
+              hide-details
               autofocus
               @blur="resume.isEditing = false"
               @keydown.enter="resume.isEditing = false"
             />
-            <span v-else @click="resume.isEditing = true" class="editable-title text-truncate">
+            <span
+              v-else
+              @click="resume.isEditing = true"
+              class="editable-title text-truncate ma-4"
+              style="max-width: 80%"
+            >
               {{ resume.title }}
             </span>
             <v-spacer></v-spacer>
@@ -113,7 +120,7 @@ const createNew = () => {
 }
 
 const onRename = (resume: Resume) => {
-  console.log(`Renaming resume:`, resume.title)
+  resume.isEditing = true
   const index = resumes.value.indexOf(resume)
   menu.value[index] = false
 }
