@@ -2,7 +2,7 @@
   <!-- 抽屉菜单 (在移动端显示) -->
   <v-navigation-drawer v-model="drawer" app temporary>
     <v-list>
-      <v-list-item v-for="item in menu" :key="item.name" :href="item.link" :target="item.target">
+      <v-list-item v-for="item in menu" :key="item.name" @click="onClick(item)">
         <v-icon>{{ item.icon }}</v-icon>
         {{ item.name }}
       </v-list-item>
@@ -12,7 +12,10 @@
   <!-- 顶部应用栏 -->
   <v-app-bar app>
     <template #title>
-      <div class="d-inline-flex align-center text-h4 font-weight-bold my-5 text-primary">
+      <div
+        @click="router.push('/')"
+        class="cursor-pointer d-inline-flex align-center text-h4 font-weight-bold my-5 text-primary"
+      >
         <v-icon icon="$vuetify" start />
         ResumeSpy
       </div>
@@ -25,9 +28,8 @@
           v-for="item in menu"
           :key="item.name"
           class="text-body-1 blue-grey-darken-4"
-          :href="item.link"
-          :target="item.target"
           variant="text"
+          @click="onClick(item)"
         >
           <v-icon>{{ item.icon }}</v-icon>
           {{ item.name }}
@@ -46,18 +48,27 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const drawer = ref(false)
 const menu = [
-  { name: 'Create', link: '#create', icon: 'mdi-note-plus', target: '_self' },
+  { name: 'Create', link: '/create', icon: 'mdi-note-plus' },
   {
     name: 'GitHub',
     link: 'https://github.com/feifeijin/ResumeSpyWeb',
     icon: 'mdi-github',
-    target: '_blank',
   },
-  { name: 'MySpy', link: '#myspy', icon: 'mdi-account', target: '_self' },
+  { name: 'MySpy', link: '/myspy', icon: 'mdi-account' },
 ]
+
+const onClick = (item: { name: string; link: string }) => {
+  if (item.name === 'GitHub') {
+    window.open(item.link, '_blank') // 打开外部链接
+  } else {
+    router.push(item.link) // 进行 Vue Router 路由跳转
+  }
+}
 </script>
 
 <style scoped>

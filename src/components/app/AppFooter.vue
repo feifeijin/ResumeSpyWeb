@@ -1,5 +1,9 @@
 <template>
-  <v-footer class="bg-green-lighten-5 d-flex justify-space-between align-center px-sm-12">
+  <v-footer
+    :absolute="true"
+    :app="true"
+    class="bg-green-lighten-5 d-flex justify-space-between align-center px-sm-12"
+  >
     <div class="text-body-1 text-left">
       <span class="d-xs-inline-block ml-sm-12">ResumeSpy</span>
       &copy; {{ new Date().getFullYear() }}

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import EditorView from '../views/EditorView.vue'
+import MySpyView from '../views/MySpyView.vue'
+import CreateView from '../views/CreateView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,17 +12,17 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/myspy',
+      name: 'myspy',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: AboutView,
+      component: MySpyView,
     },
     {
-      path: '/editor',
-      name: 'editor',
-      component: EditorView,
+      path: '/create',
+      name: 'create',
+      component: CreateView,
     },
   ],
 })
