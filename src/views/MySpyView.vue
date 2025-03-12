@@ -97,20 +97,37 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import { Resume } from '@/models/Resume.type'
 const router = useRouter()
 
-interface Resume {
-  title: string
-  lastModifyTime: string
-  preview: boolean
-  isEditing?: boolean
-}
-
 const resumes = ref<Resume[]>([
-  { title: 'Resume 1', lastModifyTime: '2025-02-26', preview: true },
-  { title: 'Resume 2', lastModifyTime: '2025-02-25', preview: true },
-  { title: 'Resume 3', lastModifyTime: '2025-02-24', preview: true },
+  new Resume(
+    '1',
+    'Resume 1',
+    3,
+    '@/assets/discover_bg.png',
+    new Date().toDateString(),
+    new Date().toDateString(),
+    true,
+  ),
+  new Resume(
+    '2',
+    'Resume 2',
+    2,
+    '@/assets/discover_bg.png',
+    new Date().toDateString(),
+    new Date().toDateString(),
+    true,
+  ),
+  new Resume(
+    '3',
+    'Resume 3',
+    1,
+    '@/assets/discover_bg.png',
+    new Date().toDateString(),
+    new Date().toDateString(),
+    true,
+  ),
 ])
 
 const menu = ref(resumes.value.map(() => false)) // 用于控制每个菜单的显示和隐藏
@@ -130,7 +147,18 @@ const onClone = (resume: Resume) => {
   const index = resumes.value.indexOf(resume)
   menu.value[index] = false
   if (index > -1) {
-    resumes.value.unshift({ ...resume, title: `${resume.title} Copy` }) // Add to the first element
+    //resumes.value.unshift({ ...resume, title: `${resume.title} Copy` }) // Add to the first element
+    resumes.value.unshift(
+      new Resume(
+        '-1',
+        `${resume.title} Copy`,
+        0,
+        '@/assets/discover_bg.png',
+        new Date().toDateString(),
+        new Date().toDateString(),
+        true,
+      ),
+    ) // Add to the first element
     menu.value.unshift(false) // Add corresponding menu state to the first element
   }
 }
