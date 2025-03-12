@@ -5,7 +5,7 @@ import { API_BASE_URL } from './api'
 // Fetch resume details by resume ID
 export const fetchResumeDetailsByResumeId = async (resumeId: string): Promise<ResumeDetail[]> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/resume-details?resumeId=${resumeId}`)
+    const response = await axios.get(`${API_BASE_URL}/resumeDetail?resumeId=${resumeId}`)
     return response.data.map(
       (item: ResumeDetail) =>
         new ResumeDetail(
@@ -28,7 +28,7 @@ export const fetchResumeDetailsByResumeId = async (resumeId: string): Promise<Re
 // Create a new resume detail
 export const createResumeDetail = async (resumeDetail: ResumeDetail): Promise<ResumeDetail> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/resume-details`, resumeDetail)
+    const response = await axios.post(`${API_BASE_URL}/resumeDetail`, resumeDetail)
     return new ResumeDetail(
       response.data.id,
       response.data.resumeId,
@@ -49,7 +49,7 @@ export const createResumeDetail = async (resumeDetail: ResumeDetail): Promise<Re
 export const updateResumeDetail = async (resumeDetail: ResumeDetail): Promise<ResumeDetail> => {
   try {
     const response = await axios.put(
-      `${API_BASE_URL}/resume-details/${resumeDetail.id}`,
+      `${API_BASE_URL}/resumeDetail/${resumeDetail.id}`,
       resumeDetail,
     )
     return new ResumeDetail(
@@ -69,14 +69,17 @@ export const updateResumeDetail = async (resumeDetail: ResumeDetail): Promise<Re
 }
 
 // Update only the name of an existing resume detail
-export const updateResumeDetailName = async (
-  id: string,
-  newName: string,
-): Promise<ResumeDetail> => {
+export const updateResumeDetailName = async (id: string, name: string): Promise<ResumeDetail> => {
   try {
-    const response = await axios.patch(`${API_BASE_URL}/resume-details/${id}/name`, {
-      name: newName,
-    })
+    const response = await axios.patch(
+      `${API_BASE_URL}/resumeDetail/${id}/name`,
+      JSON.stringify(name),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
     return new ResumeDetail(
       response.data.id,
       response.data.resumeId,
@@ -96,12 +99,18 @@ export const updateResumeDetailName = async (
 // Update only the content of an existing resume detail
 export const updateResumeDetailContent = async (
   id: string,
-  newContent: string,
+  content: string,
 ): Promise<ResumeDetail> => {
   try {
-    const response = await axios.patch(`${API_BASE_URL}/resume-details/${id}/content`, {
-      content: newContent,
-    })
+    const response = await axios.patch(
+      `${API_BASE_URL}/resumeDetail/${id}/content`,
+      JSON.stringify(content),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
     return new ResumeDetail(
       response.data.id,
       response.data.resumeId,
@@ -124,9 +133,9 @@ export const createResumeDetailFromExisting = async (
   language: string,
 ): Promise<ResumeDetail> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/resume-details/copy`, {
-      existingResumeDetailId,
-      language,
+    const response = await axios.post(`${API_BASE_URL}/resumeDetail/copy`, {
+      ExistingResumeDetailId: existingResumeDetailId,
+      Language: language,
     })
     return new ResumeDetail(
       response.data.id,
@@ -147,7 +156,7 @@ export const createResumeDetailFromExisting = async (
 // Delete a resume detail
 export const deleteResumeDetail = async (id: string): Promise<void> => {
   try {
-    await axios.delete(`${API_BASE_URL}/resume-details/${id}`)
+    await axios.delete(`${API_BASE_URL}/resumeDetail/${id}`)
   } catch (error) {
     console.error('Failed to delete resume detail:', error)
     throw error

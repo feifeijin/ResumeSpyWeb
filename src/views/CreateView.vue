@@ -4,8 +4,23 @@
     <v-row align-items="center" class="mb-4">
       <v-col cols="auto">
         <v-tabs v-model="activeTab" background-color="primary" dark>
-          <v-tab v-for="(tab, index) in tabs" :key="tab" class="d-flex align-center">
-            {{ tab }}
+          <v-tab
+            v-for="(tab, index) in tabs"
+            :key="tab"
+            class="d-flex align-center"
+            @dblclick="editTabName(index)"
+          >
+            <span v-if="!isEditingTab(index)">{{ tab }}</span>
+            <v-text-field
+              v-else
+              v-model="tabs[index]"
+              @blur="saveTabName(index)"
+              @keydown.enter="saveTabName(index)"
+              dense
+              single-line
+              hide-details
+              style="width: 200px"
+            ></v-text-field>
             <v-icon
               v-if="index > 0"
               size="small"
@@ -68,7 +83,9 @@
       <v-col>
         <v-tabs-window v-model="activeTab">
           <v-tabs-window-item v-for="(tab, index) in tabs" :key="tab">
-            <v-md-editor v-model="editors[index]" height="800px">{{ tab }}</v-md-editor>
+            <v-md-editor v-model="editors[index]" @save="onSave(index)" height="800px">{{
+              tab
+            }}</v-md-editor>
           </v-tabs-window-item>
         </v-tabs-window>
       </v-col>
@@ -108,63 +125,20 @@
 
 <script setup lang="ts">
 import CountryFlag from 'vue-country-flag-next'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ResumeDetail } from '@/models/resume-detail.type'
-import { Language } from '@/models/enums/language'
-const dialog = ref('')
-const resumeDetails = ref<ResumeDetail[]>([
-  new ResumeDetail(
-    '1',
-    '1',
-    'Default',
-    Language.English,
-    '# 履歴書\n\n**キン　ウンヒ**  \n**靳　　雲飛**\n\n- **生年月日** 1990 年 4 月 7 日（満 34 歳） **性別** 男性\n- **電話番号** 070-8826-0407 　　　　 **メールアドレス** <feifeijinjp@gmail.com>\n- **住所** 〒 162-0806 東京都新宿区榎町 73-15-701\n\n## 学歴\n\n- **2008 年 9 月~2012 年 7 月** 昆明理工大学 管理学部　情報管理と情報システム学士 卒業\n\n## 職務経歴\n\n- **2013 年 1 月** 　　雲南 SYNDA 网络技術有限公司（中国）入社\n- **2014 年 4 月** 　　雲南 SYNDA 网络技術有限公司（中国）退職\n- **2014 年 5 月** 　　 9Ji Network（中国）入社\n- **2016 年 2 月** 　　 9Ji Network（中国）退職\n- **2016 年 4 月** 　　深圳 Authine 网络技術有限公司（中国）入社\n- **2019 年 9 月** 　　深圳 Authine 网络技術有限公司（中国）退職\n- **2020 年 1 月** 　　 Infosys Technologies（China）Co., Ltd.（中国）入社\n- **2022 年 9 月** 　　 Infosys Technologies（China）Co., Ltd.（中国）退職\n- **2023 年 4 月** 　　 SNS ソフトウェア株式会社（日本）入社\n- **2024 年 11 月** 　 SNS ソフトウェア株式会社（日本）退職\n\n## 語学力\n\n- **英語** 　　　ビジネス会話（TOEIC 875 点, 2024 年）\n- **日本語**　　 ビジネス会話 (JLPT N1, 2022 年)\n- **北京語**　　 ネイティブ',
-    true,
-    new Date().toDateString(),
-    new Date().toDateString(),
-  ),
-  new ResumeDetail(
-    '2',
-    '1',
-    'Tab 1',
-    Language.Japanese,
-    'Content for Tab 1',
-    false,
-    new Date().toDateString(),
-    new Date().toDateString(),
-  ),
-  new ResumeDetail(
-    '3',
-    '1',
-    'Tab 2',
-    Language.Chinese,
-    'Content for Tab 2',
-    false,
-    new Date().toDateString(),
-    new Date().toDateString(),
-  ),
-  new ResumeDetail(
-    '4',
-    '1',
-    'Tab 3',
-    Language.English,
-    'Content for Tab 3',
-    false,
-    new Date().toDateString(),
-    new Date().toDateString(),
-  ),
-  new ResumeDetail(
-    '5',
-    '1',
-    'Tab 4',
-    Language.Japanese,
-    'Content for Tab 4',
-    false,
-    new Date().toDateString(),
-    new Date().toDateString(),
-  ),
-])
+import {
+  fetchResumeDetailsByResumeId,
+  createResumeDetailFromExisting,
+  deleteResumeDetail,
+  createResumeDetail,
+  updateResumeDetailContent,
+  updateResumeDetailName,
+} from '@/api/resume-detail-api'
 
+const dialog = ref('')
+
+const resumeDetails = ref<ResumeDetail[]>([])
 const tabs = ref(resumeDetails.value.map((detail) => detail.name))
 const activeTab = ref(0)
 const editors = ref(resumeDetails.value.map((detail) => detail.content)) // Initialize an array with empty strings for each tab
@@ -180,17 +154,57 @@ const isDeleteDialogActive = ref(false)
 const tabIndexToDelete = ref(-1)
 const isSyncDialogActive = ref(false)
 const isLoading = ref(false)
+const editingTabIndex = ref<number | null>(null)
 
-const onAdd = () => {
-  console.log('Add button clicked')
-  console.log('Selected value:', dialog.value)
-  // Add your logic here
-  if (dialog.value) {
-    tabs.value.push(dialog.value)
-    editors.value.push(dialog.value) // Add corresponding editor content
+const loadResumeDetails = async (resumeId: string) => {
+  try {
+    resumeDetails.value = await fetchResumeDetailsByResumeId(resumeId)
+    tabs.value = resumeDetails.value.map((detail) => detail.name)
+    editors.value = resumeDetails.value.map((detail) => detail.content)
+  } catch (error) {
+    console.error('Failed to load resume details:', error)
   }
-  dialog.value = ''
-  isDialogActive.value = false
+}
+
+onMounted(() => {
+  const resumeId = '1' // Replace with the actual resume ID
+  loadResumeDetails(resumeId)
+})
+
+const onAdd = async () => {
+  try {
+    const existingResumeDetailId = resumeDetails.value[activeTab.value].id
+    const newDetail = await createResumeDetailFromExisting(existingResumeDetailId, dialog.value)
+    resumeDetails.value.push(newDetail)
+    tabs.value.push(newDetail.name)
+    editors.value.push(newDetail.content)
+    dialog.value = ''
+    isDialogActive.value = false
+  } catch (error) {
+    console.error('Failed to add new resume detail:', error)
+  }
+}
+
+const onSave = async (index: number) => {
+  try {
+    const content = editors.value[index]
+    const detail = resumeDetails.value[index]
+    if (detail.id) {
+      // Update existing resume detail
+      await updateResumeDetailContent(detail.id, content)
+      detail.content = content
+    } else {
+      // Create new resume detail
+      const newDetail = await createResumeDetail({
+        ...detail,
+        content,
+      })
+      resumeDetails.value[index] = newDetail
+    }
+    console.log('Save successful for tab:', tabs.value[index])
+  } catch (error) {
+    console.error('Failed to save resume detail:', error)
+  }
 }
 
 const openDeleteDialog = (index: number) => {
@@ -198,22 +212,28 @@ const openDeleteDialog = (index: number) => {
   isDeleteDialogActive.value = true
 }
 
-const deleteTab = () => {
+const deleteTab = async () => {
   if (tabIndexToDelete.value > -1) {
-    const wasActiveTab = activeTab.value === tabIndexToDelete.value
-    tabs.value.splice(tabIndexToDelete.value, 1)
-    editors.value.splice(tabIndexToDelete.value, 1)
-    if (tabs.value.length > 0) {
-      if (wasActiveTab) {
-        activeTab.value = 0
-      } else if (activeTab.value > tabIndexToDelete.value) {
-        activeTab.value -= 1
+    try {
+      const detailId = resumeDetails.value[tabIndexToDelete.value].id
+      await deleteResumeDetail(detailId)
+      const wasActiveTab = activeTab.value === tabIndexToDelete.value
+      tabs.value.splice(tabIndexToDelete.value, 1)
+      editors.value.splice(tabIndexToDelete.value, 1)
+      if (tabs.value.length > 0) {
+        if (wasActiveTab) {
+          activeTab.value = 0
+        } else if (activeTab.value > tabIndexToDelete.value) {
+          activeTab.value -= 1
+        }
+      } else {
+        activeTab.value = -1
       }
-    } else {
-      activeTab.value = -1
+      isDeleteDialogActive.value = false
+      tabIndexToDelete.value = -1
+    } catch (error) {
+      console.error('Failed to delete resume detail:', error)
     }
-    isDeleteDialogActive.value = false
-    tabIndexToDelete.value = -1
   }
 }
 
@@ -232,6 +252,29 @@ const syncTab = async () => {
     console.error('Sync failed:', error)
   } finally {
     isLoading.value = false
+  }
+}
+
+const editTabName = (index: number) => {
+  editingTabIndex.value = index
+}
+
+const isEditingTab = (index: number) => {
+  return editingTabIndex.value === index
+}
+
+const saveTabName = async (index: number) => {
+  try {
+    const newName = tabs.value[index]
+    const detail = resumeDetails.value[index]
+    if (detail.id && newName !== detail.name) {
+      await updateResumeDetailName(detail.id, newName)
+      detail.name = newName
+      console.log('Tab name updated successfully:', newName)
+    }
+    editingTabIndex.value = null
+  } catch (error) {
+    console.error('Failed to update tab name:', error)
   }
 }
 </script>
