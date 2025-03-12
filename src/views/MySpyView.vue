@@ -97,7 +97,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Resume } from '@/models/Resume.type'
+import { Resume } from '@/models/resume.type'
 const router = useRouter()
 
 const resumes = ref<Resume[]>([

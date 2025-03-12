@@ -1,4 +1,4 @@
-import { Language } from './enums/Language.enum'
+import { Language } from './enums/language'
 
 export class ResumeDetail {
   id: string

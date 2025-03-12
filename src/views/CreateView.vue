@@ -109,8 +109,8 @@
 <script setup lang="ts">
 import CountryFlag from 'vue-country-flag-next'
 import { ref } from 'vue'
-import { ResumeDetail } from '@/models/ResumeDetail.type'
-import { Language } from '@/models/enums/Language.enum'
+import { ResumeDetail } from '@/models/resume-detail.type'
+import { Language } from '@/models/enums/language'
 const dialog = ref('')
 const resumeDetails = ref<ResumeDetail[]>([
   new ResumeDetail(
