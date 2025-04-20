@@ -4,21 +4,17 @@
     <v-row align-items="center" class="mb-4">
       <v-col cols="auto">
         <v-tabs v-model="activeTab" background-color="primary" dark>
-          <v-tab
-            v-for="(tab, index) in tabs"
-            :key="tab"
-            class="d-flex align-center"
-            @dblclick="editTabName(index)"
-          >
-            <span v-if="!isEditingTab(index)">{{ tab }}</span>
+          <v-tab v-for="(tab, index) in tabs" :key="tab" class="d-flex align-center">
+            <span @dblclick="editTabName(index)" v-if="!isEditingTab(index)">{{ tab }}</span>
             <v-text-field
               v-else
               v-model="tabs[index]"
               @blur="saveTabName(index)"
               @keydown.enter="saveTabName(index)"
-              dense
               single-line
+              dense
               hide-details
+              autofocus
               style="width: 200px"
             ></v-text-field>
             <v-icon
@@ -125,6 +121,7 @@
 
 <script setup lang="ts">
 import CountryFlag from 'vue-country-flag-next'
+import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { ResumeDetail } from '@/models/resume-detail.type'
 import {
@@ -144,9 +141,9 @@ const activeTab = ref(0)
 const editors = ref(resumeDetails.value.map((detail) => detail.content)) // Initialize an array with empty strings for each tab
 
 const countries = ref([
-  { flag: 'us', label: 'English', value: 'English' },
-  { flag: 'jp', label: 'Japanese', value: 'Japanese' },
-  { flag: 'cn', label: 'Chinese', value: 'Chinese' },
+  { flag: 'us', label: 'English', value: 'EN' },
+  { flag: 'jp', label: 'Japanese', value: 'JA' },
+  { flag: 'cn', label: 'Chinese', value: 'ZH' },
 ])
 
 const isDialogActive = ref(false)
@@ -167,7 +164,9 @@ const loadResumeDetails = async (resumeId: string) => {
 }
 
 onMounted(() => {
-  const resumeId = '1' // Replace with the actual resume ID
+  const router = useRoute()
+  const resumeId = router.query.resumeId as string
+  console.log('Resume ID:', resumeId)
   loadResumeDetails(resumeId)
 })
 

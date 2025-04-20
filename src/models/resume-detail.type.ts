@@ -29,15 +29,4 @@ export class ResumeDetail {
     this.createTime = createTime
     this.lastModifyTime = lastModifyTime
   }
-
-  // Method to update the content and last modify time
-  updateContent(newContent: string) {
-    this.content = newContent
-    this.lastModifyTime = new Date().toISOString()
-  }
-
-  // Method to toggle the default status
-  toggleDefault() {
-    this.isDefault = !this.isDefault
-  }
 }

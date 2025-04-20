@@ -34,14 +34,14 @@
               dense
               hide-details
               autofocus
-              @blur="resume.isEditing = false"
-              @keydown.enter="resume.isEditing = false"
+              @blur="onRename(resume)"
+              @keydown.enter="onRename(resume)"
             />
             <span
               v-else
-              @click="resume.isEditing = true"
+              @dblclick="resume.isEditing = true"
               class="editable-title text-truncate ma-4"
-              style="max-width: 80%"
+              style="max-width: 65%"
             >
               {{ resume.title }}
             </span>
@@ -62,7 +62,7 @@
 
                 <!-- 菜单内容 -->
                 <v-list>
-                  <v-list-item @click="onRename(resume)">
+                  <v-list-item @click="resume.isEditing = true">
                     <v-list-item-title>Rename</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="onClone(resume)">
@@ -81,10 +81,9 @@
           <v-card-text>
             <v-sheet class="d-flex align-center justify-center">
               <img
-                v-if="resume.preview"
-                src="@/assets/discover_bg.png"
-                @click="createNew"
-                style="max-width: 115%"
+                :src="resume.resumeImgPath"
+                @click="openEditPage(resume.id)"
+                style="max-width: 115%; cursor: pointer"
               />
             </v-sheet>
           </v-card-text>
@@ -95,84 +94,81 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Resume } from '@/models/resume.type'
+import { fetchResumes, cloneResume, updateResumeName, deleteResume } from '@/api/resume-api'
+
 const router = useRouter()
 
-const resumes = ref<Resume[]>([
-  new Resume(
-    '1',
-    'Resume 1',
-    3,
-    '@/assets/discover_bg.png',
-    new Date().toDateString(),
-    new Date().toDateString(),
-    true,
-  ),
-  new Resume(
-    '2',
-    'Resume 2',
-    2,
-    '@/assets/discover_bg.png',
-    new Date().toDateString(),
-    new Date().toDateString(),
-    true,
-  ),
-  new Resume(
-    '3',
-    'Resume 3',
-    1,
-    '@/assets/discover_bg.png',
-    new Date().toDateString(),
-    new Date().toDateString(),
-    true,
-  ),
-])
+const resumes = ref<Resume[]>([])
+const menu = ref<boolean[]>([])
 
-const menu = ref(resumes.value.map(() => false)) // 用于控制每个菜单的显示和隐藏
+const loadResumes = async () => {
+  try {
+    resumes.value = await fetchResumes()
+    menu.value = resumes.value.map(() => false)
+  } catch (error) {
+    console.error('Failed to load resumes:', error)
+  }
+}
 
+onMounted(() => {
+  loadResumes()
+})
+
+const openEditPage = (id: string) => {
+  router.push({ name: 'create', query: { resumeId: id } })
+}
 const createNew = () => {
   router.push('/create') // 进行 Vue Router 路由跳转
 }
 
-const onRename = (resume: Resume) => {
-  resume.isEditing = true
-  const index = resumes.value.indexOf(resume)
-  menu.value[index] = false
-}
-
-const onClone = (resume: Resume) => {
-  console.log(`Clone resume:`, resume)
-  const index = resumes.value.indexOf(resume)
-  menu.value[index] = false
-  if (index > -1) {
-    //resumes.value.unshift({ ...resume, title: `${resume.title} Copy` }) // Add to the first element
-    resumes.value.unshift(
-      new Resume(
-        '-1',
-        `${resume.title} Copy`,
-        0,
-        '@/assets/discover_bg.png',
-        new Date().toDateString(),
-        new Date().toDateString(),
-        true,
-      ),
-    ) // Add to the first element
-    menu.value.unshift(false) // Add corresponding menu state to the first element
+const onRename = async (resume: Resume) => {
+  try {
+    if (resume.id && resume.title !== '') {
+      await updateResumeName(resume.id, resume.title)
+      resume.isEditing = false
+      console.log('Resume renamed successfully:', resume.title)
+    }
+  } catch (error) {
+    console.error('Failed to rename resume:', error)
   }
 }
 
-const onDelete = (resume: Resume) => {
-  console.log(`Deleting resume:`, resume)
-  const index = resumes.value.indexOf(resume)
-  if (index > -1) {
-    resumes.value.splice(index, 1) // 删除指定的简历
-    menu.value.splice(index, 1) // 删除对应的菜单状态
+const onClone = async (resume: Resume) => {
+  try {
+    const index = resumes.value.indexOf(resume)
+    menu.value[index] = false
+
+    const newResume = await cloneResume(resume.id)
+    resumes.value.unshift(newResume)
+    menu.value.unshift(false)
+    console.log('Resume cloned successfully:', newResume.title)
+  } catch (error) {
+    console.error('Failed to clone resume:', error)
+  }
+}
+
+const onDelete = async (resume: Resume) => {
+  try {
+    if (resume.id) {
+      await deleteResume(resume.id)
+      const index = resumes.value.indexOf(resume)
+      if (index > -1) {
+        resumes.value.splice(index, 1)
+        menu.value.splice(index, 1)
+      }
+      console.log('Resume deleted successfully:', resume.title)
+    }
+  } catch (error) {
+    console.error('Failed to delete resume:', error)
   }
 }
 </script>
 
 <style scoped>
-/* 你可以在这里添加样式 */
+.editable-title {
+  cursor: pointer;
+}
 </style>
