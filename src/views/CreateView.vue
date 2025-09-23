@@ -124,14 +124,9 @@ import CountryFlag from 'vue-country-flag-next'
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { ResumeDetail } from '@/models/resume-detail.type'
-import {
-  fetchResumeDetailsByResumeId,
-  createResumeDetailFromExisting,
-  deleteResumeDetail,
-  createResumeDetail,
-  updateResumeDetailContent,
-  updateResumeDetailName,
-} from '@/api/resume-detail-api'
+import ResumeDetailService from '@/api/resume-detail-api'
+
+const resumeDetailService = new ResumeDetailService()
 
 const dialog = ref('')
 
@@ -155,7 +150,7 @@ const editingTabIndex = ref<number | null>(null)
 
 const loadResumeDetails = async (resumeId: string) => {
   try {
-    resumeDetails.value = await fetchResumeDetailsByResumeId(resumeId)
+    resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
     tabs.value = resumeDetails.value.map((detail) => detail.name)
     editors.value = resumeDetails.value.map((detail) => detail.content)
   } catch (error) {
@@ -173,7 +168,10 @@ onMounted(() => {
 const onAdd = async () => {
   try {
     const existingResumeDetailId = resumeDetails.value[activeTab.value].id
-    const newDetail = await createResumeDetailFromExisting(existingResumeDetailId, dialog.value)
+    const newDetail = await resumeDetailService.createResumeDetailFromExisting(
+      existingResumeDetailId,
+      dialog.value,
+    )
     resumeDetails.value.push(newDetail)
     tabs.value.push(newDetail.name)
     editors.value.push(newDetail.content)
@@ -190,11 +188,11 @@ const onSave = async (index: number) => {
     const detail = resumeDetails.value[index]
     if (detail.id) {
       // Update existing resume detail
-      await updateResumeDetailContent(detail.id, content)
+      await resumeDetailService.updateResumeDetailContent(detail.id, content)
       detail.content = content
     } else {
       // Create new resume detail
-      const newDetail = await createResumeDetail({
+      const newDetail = await resumeDetailService.createResumeDetail({
         ...detail,
         content,
       })
@@ -215,7 +213,7 @@ const deleteTab = async () => {
   if (tabIndexToDelete.value > -1) {
     try {
       const detailId = resumeDetails.value[tabIndexToDelete.value].id
-      await deleteResumeDetail(detailId)
+      await resumeDetailService.deleteResumeDetail(detailId)
       const wasActiveTab = activeTab.value === tabIndexToDelete.value
       tabs.value.splice(tabIndexToDelete.value, 1)
       editors.value.splice(tabIndexToDelete.value, 1)
@@ -267,7 +265,7 @@ const saveTabName = async (index: number) => {
     const newName = tabs.value[index]
     const detail = resumeDetails.value[index]
     if (detail.id && newName !== detail.name) {
-      await updateResumeDetailName(detail.id, newName)
+      await resumeDetailService.updateResumeDetailName(detail.id, newName)
       detail.name = newName
       console.log('Tab name updated successfully:', newName)
     }

@@ -97,7 +97,9 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Resume } from '@/models/resume.type'
-import { fetchResumes, cloneResume, updateResumeName, deleteResume } from '@/api/resume-api'
+import ResumeService from '@/api/resume-api'
+
+const resumeService = new ResumeService()
 
 const router = useRouter()
 
@@ -106,7 +108,7 @@ const menu = ref<boolean[]>([])
 
 const loadResumes = async () => {
   try {
-    resumes.value = await fetchResumes()
+    resumes.value = await resumeService.fetchResumes()
     menu.value = resumes.value.map(() => false)
   } catch (error) {
     console.error('Failed to load resumes:', error)
@@ -127,7 +129,7 @@ const createNew = () => {
 const onRename = async (resume: Resume) => {
   try {
     if (resume.id && resume.title !== '') {
-      await updateResumeName(resume.id, resume.title)
+      await resumeService.updateResumeName(resume.id, resume.title)
       resume.isEditing = false
       console.log('Resume renamed successfully:', resume.title)
     }
@@ -141,9 +143,9 @@ const onClone = async (resume: Resume) => {
     const index = resumes.value.indexOf(resume)
     menu.value[index] = false
 
-    const newResume = await cloneResume(resume.id)
-    resumes.value.unshift(newResume)
-    menu.value.unshift(false)
+    const newResume = await resumeService.cloneResume(resume.id)
+    resumes.value.push(newResume)
+    menu.value.push(false)
     console.log('Resume cloned successfully:', newResume.title)
   } catch (error) {
     console.error('Failed to clone resume:', error)
@@ -153,7 +155,7 @@ const onClone = async (resume: Resume) => {
 const onDelete = async (resume: Resume) => {
   try {
     if (resume.id) {
-      await deleteResume(resume.id)
+      await resumeService.deleteResume(resume.id)
       const index = resumes.value.indexOf(resume)
       if (index > -1) {
         resumes.value.splice(index, 1)
