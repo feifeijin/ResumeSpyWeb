@@ -28,6 +28,7 @@
           <v-row class="align-center">
             <v-text-field
               v-if="resume.isEditing"
+              :ref="(el) => (titleInputRefs[index] = el)"
               v-model="resume.title"
               class="editable-title"
               single-line
@@ -39,7 +40,7 @@
             />
             <span
               v-else
-              @dblclick="resume.isEditing = true"
+              @dblclick="startEditing(resume, index)"
               class="editable-title text-truncate ma-4"
               style="max-width: 65%"
             >
@@ -62,7 +63,7 @@
 
                 <!-- 菜单内容 -->
                 <v-list>
-                  <v-list-item @click="resume.isEditing = true">
+                  <v-list-item @click="startEditing(resume, index)">
                     <v-list-item-title>Rename</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="onClone(resume)">
@@ -94,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
@@ -105,6 +106,20 @@ const router = useRouter()
 
 const resumes = ref<Resume[]>([])
 const menu = ref<boolean[]>([])
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const titleInputRefs = ref<any[]>([])
+
+const startEditing = async (resume: Resume, index: number) => {
+  resume.isEditing = true
+  await nextTick()
+  const inputComponent = titleInputRefs.value[index]
+  if (inputComponent) {
+    const inputElement = inputComponent.$el.querySelector('input')
+    if (inputElement) {
+      inputElement.select()
+    }
+  }
+}
 
 const loadResumes = async () => {
   try {
