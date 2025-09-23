@@ -1,10 +1,8 @@
-import { Language } from './enums/language'
-
 export class ResumeDetail {
   id: string
   resumeId: string
   name: string
-  language: Language
+  language: string
   content: string
   isDefault: boolean
   createTime: string
@@ -14,7 +12,7 @@ export class ResumeDetail {
     id: string,
     resumeId: string,
     name: string,
-    language: Language,
+    language: string,
     content: string,
     isDefault: boolean,
     createTime: string,

@@ -121,12 +121,14 @@
 
 <script setup lang="ts">
 import CountryFlag from 'vue-country-flag-next'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 
 const resumeDetailService = new ResumeDetailService()
+const route = useRoute()
+const router = useRouter()
 
 const dialog = ref('')
 
@@ -159,10 +161,17 @@ const loadResumeDetails = async (resumeId: string) => {
 }
 
 onMounted(() => {
-  const router = useRoute()
-  const resumeId = router.query.resumeId as string
-  console.log('Resume ID:', resumeId)
-  loadResumeDetails(resumeId)
+  const resumeId = route.query.resumeId
+  if (typeof resumeId === 'string' && resumeId) {
+    console.log('Resume ID:', resumeId)
+    loadResumeDetails(resumeId)
+  } else {
+    console.log('No Resume ID found, starting in create mode.')
+    // Initialize with a default tab for a new resume
+    tabs.value = ['New Resume']
+    editors.value = ['']
+    resumeDetails.value = [new ResumeDetail('', '', 'New Resume', '', '', true, '', '')]
+  }
 })
 
 const onAdd = async () => {
@@ -195,8 +204,11 @@ const onSave = async (index: number) => {
       const newDetail = await resumeDetailService.createResumeDetail({
         ...detail,
         content,
+        name: tabs.value[index], // Ensure name is passed
       })
       resumeDetails.value[index] = newDetail
+      // Update the URL with the new resumeId
+      router.replace({ query: { resumeId: newDetail.resumeId } })
     }
     console.log('Save successful for tab:', tabs.value[index])
   } catch (error) {
