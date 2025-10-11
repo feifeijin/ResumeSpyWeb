@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Resume } from '@/models/resume.type'
-import { API_BASE_URL } from './api'
+import { API_BASE_URL, BASE_URL } from './api'
 
 class ResumeService {
   // Fetch all resumes
@@ -13,7 +13,7 @@ class ResumeService {
             item.id,
             item.title,
             item.resumeDetailCount,
-            item.resumeImgPath,
+            `${BASE_URL}${item.resumeImgPath}`,
             item.createTime,
             item.lastModifyTime,
             item.preview,
@@ -34,7 +34,7 @@ class ResumeService {
         response.data.id,
         response.data.title,
         response.data.resumeDetailCount,
-        response.data.resumeImgPath,
+        `${BASE_URL}${response.data.resumeImgPath}`,
         response.data.createTime,
         response.data.lastModifyTime,
         response.data.preview,
@@ -62,7 +62,7 @@ class ResumeService {
         response.data.id,
         response.data.title,
         response.data.resumeDetailCount,
-        response.data.resumeImgPath,
+        `${BASE_URL}${response.data.resumeImgPath}`,
         response.data.createTime,
         response.data.lastModifyTime,
         response.data.preview,
@@ -82,7 +82,7 @@ class ResumeService {
         response.data.id,
         response.data.title,
         response.data.resumeDetailCount,
-        response.data.resumeImgPath,
+        `${BASE_URL}${response.data.resumeImgPath}`,
         response.data.createTime,
         response.data.lastModifyTime,
         response.data.preview,
