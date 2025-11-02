@@ -23,7 +23,7 @@
 
     <!-- PC 端显示按钮 -->
     <template v-if="$vuetify.display.mdAndUp" #append>
-      <div class="hidden-sm-and-down">
+      <div class="hidden-sm-and-down d-flex align-center">
         <v-btn
           v-for="item in menu"
           :key="item.name"
@@ -34,6 +34,29 @@
           <v-icon>{{ item.icon }}</v-icon>
           {{ item.name }}
         </v-btn>
+        <!-- Language Selector -->
+        <v-menu offset-y>
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              variant="text"
+              size="small"
+              prepend-icon="mdi-translate"
+              class="ml-2"
+            >
+              {{ currentLanguage }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="language in languages"
+              :key="language.code"
+              @click="changeLanguage(language.code)"
+            >
+              {{ language.name }}
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
     </template>
 
@@ -47,20 +70,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { changeLanguage as setLanguage } from '@/i18n'
 
 const router = useRouter()
 const drawer = ref(false)
-const menu = [
-  { name: 'Create', link: '/create', icon: 'mdi-note-plus' },
+const { t, locale } = useI18n()
+
+const menu = computed(() => [
+  { name: t('navigation.create'), link: '/create', icon: 'mdi-note-plus' },
   {
     name: 'GitHub',
     link: 'https://github.com/feifeijin/ResumeSpyWeb',
     icon: 'mdi-github',
   },
-  { name: 'MySpy', link: '/myspy', icon: 'mdi-account' },
+  { name: t('navigation.mySpy'), link: '/myspy', icon: 'mdi-account' },
+])
+
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'zh', name: '中文' },
+  { code: 'ja', name: '日本語' },
 ]
+
+const currentLanguage = computed(() => {
+  const current = languages.find((lang) => lang.code === locale.value)
+  return current?.name || 'EN'
+})
+
+const changeLanguage = (langCode: string) => {
+  setLanguage(langCode)
+}
 
 const onClick = (item: { name: string; link: string }) => {
   if (item.name === 'GitHub') {

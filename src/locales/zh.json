@@ -1,0 +1,37 @@
+{
+  "common": {
+    "close": "关闭",
+    "cancel": "取消",
+    "delete": "删除",
+    "save": "保存",
+    "sync": "同步",
+    "create": "创建",
+    "add": "添加",
+    "loading": "加载中...",
+    "confirm": "确认"
+  },
+  "navigation": {
+    "home": "首页",
+    "create": "创建",
+    "mySpy": "我的简历"
+  },
+  "createView": {
+    "selectLanguage": "选择语言",
+    "confirmDelete": "确认删除",
+    "deleteConfirm": "您确定要删除此标签页吗？",
+    "confirmSync": "确认同步",
+    "currentTabTitle": "当前标签页标题：{title}",
+    "newResume": "新简历"
+  },
+  "mySpyView": {
+    "title": "我的简历",
+    "rename": "重命名",
+    "clone": "复制",
+    "delete": "删除"
+  },
+  "languages": {
+    "english": "英语",
+    "japanese": "日语",
+    "chinese": "中文"
+  }
+}

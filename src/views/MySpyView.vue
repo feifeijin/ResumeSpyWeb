@@ -3,8 +3,8 @@
     <v-row>
       <!-- 标题栏 -->
       <v-col cols="12" class="d-flex align-center justify-space-between">
-        <h2 class="font-weight-bold">MySpy</h2>
-        <v-btn color="primary" class="px-5" @click="createNew">Create</v-btn>
+        <h2 class="font-weight-bold">{{ $t('mySpyView.title') }}</h2>
+        <v-btn color="primary" class="px-5" @click="createNew">{{ $t('common.create') }}</v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -18,7 +18,7 @@
               <img src="@/assets/discover_bg.png" />
             </v-sheet>
           </v-card-text>
-          <v-btn color="primary" class="mt-3" @click="createNew">Create</v-btn>
+          <v-btn color="primary" class="mt-3" @click="createNew">{{ $t('common.create') }}</v-btn>
         </v-card>
       </v-col>
 
@@ -69,13 +69,13 @@
                 <!-- 菜单内容 -->
                 <v-list>
                   <v-list-item @click="startEditing(resume, index)">
-                    <v-list-item-title>Rename</v-list-item-title>
+                    <v-list-item-title>{{ $t('mySpyView.rename') }}</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="onClone(resume)">
-                    <v-list-item-title>Clone</v-list-item-title>
+                    <v-list-item-title>{{ $t('mySpyView.clone') }}</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="onDelete(resume)">
-                    <v-list-item-title>Delete</v-list-item-title>
+                    <v-list-item-title>{{ $t('mySpyView.delete') }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>

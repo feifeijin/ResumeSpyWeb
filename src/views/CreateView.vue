@@ -50,14 +50,14 @@
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn
               prepend-icon="mdi-file-account"
-              text="Select Language"
+              :text="$t('createView.selectLanguage')"
               variant="outlined"
               v-bind="activatorProps"
             ></v-btn>
           </template>
 
           <template v-slot:default>
-            <v-card prepend-icon="mdi-file-account" title="Select Language">
+            <v-card prepend-icon="mdi-file-account" :title="$t('createView.selectLanguage')">
               <v-divider class="mt-3"></v-divider>
 
               <v-card-text class="px-4">
@@ -78,19 +78,24 @@
               <v-divider></v-divider>
 
               <v-card-actions>
-                <v-btn text="Close" @click="isDialogActive = false"></v-btn>
+                <v-btn :text="$t('common.close')" @click="isDialogActive = false"></v-btn>
 
                 <v-spacer></v-spacer>
 
-                <v-btn color="surface-variant" text="ADD" variant="flat" @click="onAdd"></v-btn>
+                <v-btn
+                  color="surface-variant"
+                  :text="$t('common.add')"
+                  variant="flat"
+                  @click="onAdd"
+                ></v-btn>
               </v-card-actions>
             </v-card>
           </template>
         </v-dialog>
 
-        <v-btn color="secondary" class="ml-2" @click="openSyncDialog" style="white-space: nowrap"
-          >Sync</v-btn
-        >
+        <v-btn color="secondary" class="ml-2" @click="openSyncDialog" style="white-space: nowrap">{{
+          $t('common.sync')
+        }}</v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -108,22 +113,24 @@
     <!-- Delete Confirmation Dialog -->
     <v-dialog v-model="isDeleteDialogActive" width="auto">
       <v-card>
-        <v-card-title class="headline">Confirm Delete</v-card-title>
-        <v-card-text>Are you sure you want to delete this tab?</v-card-text>
+        <v-card-title class="headline">{{ $t('createView.confirmDelete') }}</v-card-title>
+        <v-card-text>{{ $t('createView.deleteConfirm') }}</v-card-text>
         <v-card-actions>
-          <v-btn text="Cancel" @click="isDeleteDialogActive = false"></v-btn>
-          <v-btn color="red" text="Delete" @click="deleteTab"></v-btn>
+          <v-btn :text="$t('common.cancel')" @click="isDeleteDialogActive = false"></v-btn>
+          <v-btn color="red" :text="$t('common.delete')" @click="deleteTab"></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- Sync Confirmation Dialog -->
     <v-dialog v-model="isSyncDialogActive" width="auto">
       <v-card>
-        <v-card-title class="headline">Confirm SYNC</v-card-title>
-        <v-card-text>Current tab title: {{ tabs[activeTab] }}</v-card-text>
+        <v-card-title class="headline">{{ $t('createView.confirmSync') }}</v-card-title>
+        <v-card-text>{{
+          $t('createView.currentTabTitle', { title: tabs[activeTab] })
+        }}</v-card-text>
         <v-card-actions>
-          <v-btn text="Cancel" @click="isSyncDialogActive = false">Cancel</v-btn>
-          <v-btn color="primary" text="Sync" @click="syncTab">Sync</v-btn>
+          <v-btn :text="$t('common.cancel')" @click="isSyncDialogActive = false"></v-btn>
+          <v-btn color="primary" :text="$t('common.sync')" @click="syncTab"></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -140,9 +147,12 @@
 <script setup lang="ts">
 import CountryFlag from 'vue-country-flag-next'
 import { useRoute, useRouter } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
+
+const { t } = useI18n()
 
 const resumeDetailService = new ResumeDetailService()
 const route = useRoute()
@@ -156,10 +166,10 @@ const tabs = ref(resumeDetails.value.map((detail) => detail.name))
 const activeTab = ref(0)
 const editors = ref(resumeDetails.value.map((detail) => detail.content)) // Initialize an array with empty strings for each tab
 
-const countries = ref([
-  { flag: 'us', label: 'English', value: 'EN' },
-  { flag: 'jp', label: 'Japanese', value: 'JA' },
-  { flag: 'cn', label: 'Chinese', value: 'ZH' },
+const countries = computed(() => [
+  { flag: 'us', label: t('languages.english'), value: 'EN' },
+  { flag: 'jp', label: t('languages.japanese'), value: 'JA' },
+  { flag: 'cn', label: t('languages.chinese'), value: 'ZH' },
 ])
 
 const isDialogActive = ref(false)
@@ -189,9 +199,10 @@ onMounted(() => {
   } else {
     console.log('No Resume ID found, starting in create mode.')
     // Initialize with a default tab for a new resume
-    tabs.value = ['New Resume']
+    const newResumeTitle = t('createView.newResume')
+    tabs.value = [newResumeTitle]
     editors.value = ['']
-    resumeDetails.value = [new ResumeDetail('', '', 'New Resume', '', '', true, '', '')]
+    resumeDetails.value = [new ResumeDetail('', '', newResumeTitle, '', '', true, '', '')]
   }
 })
 
