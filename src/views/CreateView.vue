@@ -267,16 +267,22 @@ const openSyncDialog = () => {
 
 const syncTab = async () => {
   if (!currentResumeId.value) {
-    console.error('Sync aborted: resume ID is missing.')
+    console.warn('No resume ID available to sync. Save your resume before syncing.')
+    return
+  }
+
+  const activeResumeDetailID = resumeDetails.value[activeTab.value].id
+  if (!activeResumeDetailID) {
+    console.error('Sync aborted: resume detail ID is missing.')
     return
   }
 
   isSyncDialogActive.value = false
   isLoading.value = true
   try {
-    await resumeDetailService.syncTranslations(currentResumeId.value)
+    await resumeDetailService.syncTranslations(activeResumeDetailID)
     await loadResumeDetails(currentResumeId.value)
-    console.log('Sync completed for resume:', currentResumeId.value)
+    console.log('Sync completed for resume:', activeResumeDetailID)
   } catch (error) {
     console.error('Sync failed:', error)
   } finally {
