@@ -4,7 +4,11 @@
     <v-row align-items="center" class="mb-4">
       <v-col cols="auto">
         <v-tabs v-model="activeTab" background-color="primary" dark>
-          <v-tab v-for="(tab, index) in tabs" :key="`tab-${index}`" class="d-flex align-center">
+          <v-tab
+            v-for="(tab, index) in tabs"
+            :key="`tab-${index}`"
+            :class="['d-flex align-center', { 'tab-editing': isEditingTab(index) }]"
+          >
             <span @dblclick="editTabName(index)" v-if="!isEditingTab(index)">{{ tab }}</span>
             <v-text-field
               v-else
@@ -20,7 +24,7 @@
               ref="tabEditor"
             ></v-text-field>
             <v-icon
-              v-if="index > 0"
+              v-if="index > 0 && !isEditingTab(index)"
               size="small"
               icon="mdi-close"
               color="red"
@@ -339,5 +343,9 @@ const saveTabName = async (index: number) => {
 <style scoped>
 .full-width {
   width: 100%;
+}
+
+.tab-editing {
+  padding: 0 !important;
 }
 </style>
