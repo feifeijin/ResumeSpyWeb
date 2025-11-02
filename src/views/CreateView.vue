@@ -4,18 +4,20 @@
     <v-row align-items="center" class="mb-4">
       <v-col cols="auto">
         <v-tabs v-model="activeTab" background-color="primary" dark>
-          <v-tab v-for="(tab, index) in tabs" :key="tab" class="d-flex align-center">
+          <v-tab v-for="(tab, index) in tabs" :key="`tab-${index}`" class="d-flex align-center">
             <span @dblclick="editTabName(index)" v-if="!isEditingTab(index)">{{ tab }}</span>
             <v-text-field
               v-else
-              v-model="tabs[index]"
+              v-model="editingTabName"
               @blur="saveTabName(index)"
               @keydown.enter="saveTabName(index)"
+              @keydown.esc="cancelEdit"
               single-line
               dense
               hide-details
               autofocus
               style="width: 200px"
+              ref="tabEditor"
             ></v-text-field>
             <v-icon
               v-if="index > 0"
@@ -150,6 +152,7 @@ const tabIndexToDelete = ref(-1)
 const isSyncDialogActive = ref(false)
 const isLoading = ref(false)
 const editingTabIndex = ref<number | null>(null)
+const editingTabName = ref('')
 
 const loadResumeDetails = async (resumeId: string) => {
   currentResumeId.value = resumeId
@@ -292,24 +295,43 @@ const syncTab = async () => {
 
 const editTabName = (index: number) => {
   editingTabIndex.value = index
+  editingTabName.value = tabs.value[index]
 }
 
 const isEditingTab = (index: number) => {
   return editingTabIndex.value === index
 }
 
+const cancelEdit = () => {
+  editingTabIndex.value = null
+  editingTabName.value = ''
+}
+
 const saveTabName = async (index: number) => {
   try {
-    const newName = tabs.value[index]
+    const newName = editingTabName.value.trim()
+    if (!newName) {
+      cancelEdit()
+      return
+    }
+
     const detail = resumeDetails.value[index]
     if (detail.id && newName !== detail.name) {
       await resumeDetailService.updateResumeDetailName(detail.id, newName)
       detail.name = newName
+      tabs.value[index] = newName
       console.log('Tab name updated successfully:', newName)
+    } else if (!detail.id) {
+      // For new tabs that haven't been saved yet
+      tabs.value[index] = newName
+      detail.name = newName
     }
     editingTabIndex.value = null
+    editingTabName.value = ''
   } catch (error) {
     console.error('Failed to update tab name:', error)
+    editingTabIndex.value = null
+    editingTabName.value = ''
   }
 }
 </script>
