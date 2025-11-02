@@ -1,9 +1,9 @@
 <!-- filepath: /Users/ws/Documents/DotCore/ResumeSpyWeb/src/views/CreateView.vue -->
 <template>
   <v-container fluid>
-    <v-row align-items="center" class="mb-4">
-      <v-col cols="auto">
-        <v-tabs v-model="activeTab" background-color="primary" dark>
+    <v-row align-items="center" class="mb-4" no-gutters>
+      <v-col cols="auto" style="min-width: 0; flex-shrink: 1">
+        <v-tabs v-model="activeTab" background-color="primary" dark style="min-width: 0">
           <v-tab
             v-for="(tab, index) in tabs"
             :key="`tab-${index}`"
@@ -44,8 +44,8 @@
           </v-tab>
         </v-tabs>
       </v-col>
-      <v-divider vertical></v-divider>
-      <v-col cols="auto">
+      <v-divider vertical class="mx-2"></v-divider>
+      <v-col cols="auto" style="flex-shrink: 0">
         <v-dialog v-model="isDialogActive" width="auto" scrollable>
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn
@@ -88,7 +88,9 @@
           </template>
         </v-dialog>
 
-        <v-btn color="secondary" class="ml-2" @click="openSyncDialog">Sync</v-btn>
+        <v-btn color="secondary" class="ml-2" @click="openSyncDialog" style="white-space: nowrap"
+          >Sync</v-btn
+        >
       </v-col>
     </v-row>
     <v-row>
@@ -361,6 +363,17 @@ const saveTabName = async (index: number) => {
 .tab-text {
   cursor: pointer;
   min-width: 0;
-  max-width: 200px;
+  max-width: 150px;
+}
+
+/* Ensure the row doesn't wrap */
+.v-row {
+  flex-wrap: nowrap !important;
+}
+
+/* Make tabs container responsive */
+.v-tabs {
+  overflow-x: auto;
+  flex-shrink: 1;
 }
 </style>
