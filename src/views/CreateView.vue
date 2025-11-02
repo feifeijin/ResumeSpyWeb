@@ -9,7 +9,17 @@
             :key="`tab-${index}`"
             :class="['d-flex align-center', { 'tab-editing': isEditingTab(index) }]"
           >
-            <span @dblclick="editTabName(index)" v-if="!isEditingTab(index)">{{ tab }}</span>
+            <v-tooltip location="bottom" v-if="!isEditingTab(index)">
+              <template v-slot:activator="{ props }">
+                <span
+                  @dblclick="editTabName(index)"
+                  class="text-truncate flex-grow-1 tab-text"
+                  v-bind="props"
+                  >{{ tab }}</span
+                >
+              </template>
+              <span>{{ tab }}</span>
+            </v-tooltip>
             <v-text-field
               v-else
               v-model="editingTabName"
@@ -244,22 +254,21 @@ const deleteTab = async () => {
     try {
       const detailId = resumeDetails.value[tabIndexToDelete.value].id
       await resumeDetailService.deleteResumeDetail(detailId)
-      const wasActiveTab = activeTab.value === tabIndexToDelete.value
-      tabs.value.splice(tabIndexToDelete.value, 1)
-      editors.value.splice(tabIndexToDelete.value, 1)
-      if (tabs.value.length > 0) {
-        if (wasActiveTab) {
-          activeTab.value = 0
-        } else if (activeTab.value > tabIndexToDelete.value) {
-          activeTab.value -= 1
-        }
-      } else {
-        activeTab.value = -1
+
+      // Clear editing state if needed
+      cancelEdit()
+
+      // Reload all data to ensure consistency
+      if (currentResumeId.value) {
+        await loadResumeDetails(currentResumeId.value)
       }
+
       isDeleteDialogActive.value = false
       tabIndexToDelete.value = -1
     } catch (error) {
       console.error('Failed to delete resume detail:', error)
+      isDeleteDialogActive.value = false
+      tabIndexToDelete.value = -1
     }
   }
 }
@@ -347,5 +356,11 @@ const saveTabName = async (index: number) => {
 
 .tab-editing {
   padding: 0 !important;
+}
+
+.tab-text {
+  cursor: pointer;
+  min-width: 0;
+  max-width: 200px;
 }
 </style>

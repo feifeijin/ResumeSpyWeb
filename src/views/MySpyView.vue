@@ -38,14 +38,19 @@
               @blur="onRename(resume)"
               @keydown.enter="onRename(resume)"
             />
-            <span
-              v-else
-              @dblclick="startEditing(resume, index)"
-              class="editable-title text-truncate ma-4"
-              style="max-width: 65%"
-            >
-              {{ resume.title }}
-            </span>
+            <v-tooltip location="bottom" v-else>
+              <template v-slot:activator="{ props }">
+                <span
+                  @dblclick="startEditing(resume, index)"
+                  class="editable-title text-truncate ma-4"
+                  style="max-width: 65%"
+                  v-bind="props"
+                >
+                  {{ resume.title }}
+                </span>
+              </template>
+              <span>{{ resume.title }}</span>
+            </v-tooltip>
             <v-spacer></v-spacer>
             <v-card-actions>
               <!-- 菜单按钮 -->
