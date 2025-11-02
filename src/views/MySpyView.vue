@@ -159,8 +159,8 @@ const onClone = async (resume: Resume) => {
     menu.value[index] = false
 
     const newResume = await resumeService.cloneResume(resume.id)
-    resumes.value.push(newResume)
-    menu.value.push(false)
+    resumes.value.unshift(newResume)
+    menu.value.unshift(false)
     console.log('Resume cloned successfully:', newResume.title)
   } catch (error) {
     console.error('Failed to clone resume:', error)
