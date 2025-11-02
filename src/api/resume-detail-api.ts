@@ -160,6 +160,16 @@ class ResumeDetailService {
       throw error
     }
   }
+
+  // Sync resume translations
+  async syncTranslations(id: string): Promise<void> {
+    try {
+      await axios.post(`${API_BASE_URL}/resumeDetail/${id}/sync-translations`)
+    } catch (error) {
+      console.error('Failed to sync translations:', error)
+      throw error
+    }
+  }
 }
 
 export default ResumeDetailService

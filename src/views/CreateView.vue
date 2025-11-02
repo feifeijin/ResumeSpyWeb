@@ -131,6 +131,7 @@ const route = useRoute()
 const router = useRouter()
 
 const dialog = ref('')
+const currentResumeId = ref<string | null>(null)
 
 const resumeDetails = ref<ResumeDetail[]>([])
 const tabs = ref(resumeDetails.value.map((detail) => detail.name))
@@ -151,6 +152,7 @@ const isLoading = ref(false)
 const editingTabIndex = ref<number | null>(null)
 
 const loadResumeDetails = async (resumeId: string) => {
+  currentResumeId.value = resumeId
   try {
     resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
     tabs.value = resumeDetails.value.map((detail) => detail.name)
@@ -184,6 +186,9 @@ const onAdd = async () => {
     resumeDetails.value.push(newDetail)
     tabs.value.push(newDetail.name)
     editors.value.push(newDetail.content)
+    if (newDetail.resumeId) {
+      currentResumeId.value = newDetail.resumeId
+    }
     dialog.value = ''
     isDialogActive.value = false
   } catch (error) {
@@ -199,6 +204,9 @@ const onSave = async (index: number) => {
       // Update existing resume detail
       await resumeDetailService.updateResumeDetailContent(detail.id, content)
       detail.content = content
+      if (detail.resumeId) {
+        currentResumeId.value = detail.resumeId
+      }
     } else {
       // Create new resume detail
       const newDetail = await resumeDetailService.createResumeDetail({
@@ -208,7 +216,10 @@ const onSave = async (index: number) => {
       })
       resumeDetails.value[index] = newDetail
       // Update the URL with the new resumeId
-      router.replace({ query: { resumeId: newDetail.resumeId } })
+      if (newDetail.resumeId) {
+        currentResumeId.value = newDetail.resumeId
+        router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
+      }
     }
     console.log('Save successful for tab:', tabs.value[index])
   } catch (error) {
@@ -247,16 +258,25 @@ const deleteTab = async () => {
 }
 
 const openSyncDialog = () => {
+  if (!currentResumeId.value) {
+    console.warn('No resume ID available to sync. Save your resume before syncing.')
+    return
+  }
   isSyncDialogActive.value = true
 }
 
 const syncTab = async () => {
+  if (!currentResumeId.value) {
+    console.error('Sync aborted: resume ID is missing.')
+    return
+  }
+
   isSyncDialogActive.value = false
   isLoading.value = true
   try {
-    // Simulate a request to the server
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    console.log('Sync completed for tab:', tabs.value[activeTab.value])
+    await resumeDetailService.syncTranslations(currentResumeId.value)
+    await loadResumeDetails(currentResumeId.value)
+    console.log('Sync completed for resume:', currentResumeId.value)
   } catch (error) {
     console.error('Sync failed:', error)
   } finally {
