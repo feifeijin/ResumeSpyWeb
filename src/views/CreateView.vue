@@ -396,6 +396,9 @@ const onAdd = async () => {
       selectedOtherLanguage.value = ''
       isDialogActive.value = false
 
+      // Switch to the newly created tab
+      activeTab.value = tabs.value.length - 1
+
       // Show language-specific success message
       const languageDisplayName = getLanguageDisplayName(language)
       toast.success('toast.success.resumeLanguageAdded', undefined, {

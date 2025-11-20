@@ -29,7 +29,7 @@
       "resumeSyncSuccess": "Resume synchronized successfully",
       "resumeCloneSuccess": "Resume cloned successfully",
       "resumeRenameSuccess": "Resume renamed successfully",
-      "tabRenameSuccess": "Resume content renamed successfully",
+      "languageVersionRenameSuccess": "Language version renamed successfully",
       "languageVersionCreateSuccess": "Language version created successfully",
       "resumeLanguageAdded": "{language} resume added successfully"
     },
@@ -81,9 +81,9 @@
     "chooseLanguage": "Choose Language",
     "addingLanguage": "Creating new language version...",
     "confirmDelete": "Confirm Delete",
-    "deleteConfirm": "Are you sure you want to delete this tab?",
+    "deleteConfirm": "Are you sure you want to delete this language version?",
     "confirmSync": "Confirm SYNC",
-    "currentTabTitle": "Current tab title: {title}",
+    "currentVersionTitle": "Current language version: {title}",
     "newResume": "New Resume"
   },
   "mySpyView": {

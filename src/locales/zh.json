@@ -29,7 +29,7 @@
       "resumeSyncSuccess": "简历同步成功",
       "resumeCloneSuccess": "简历克隆成功",
       "resumeRenameSuccess": "简历重命名成功",
-      "tabRenameSuccess": "简历内容重命名成功",
+      "languageVersionRenameSuccess": "语言版本重命名成功",
       "languageVersionCreateSuccess": "语言版本创建成功",
       "resumeLanguageAdded": "{language}简历添加成功"
     },
@@ -81,9 +81,9 @@
     "chooseLanguage": "选择语言",
     "addingLanguage": "正在创建新语言版本...",
     "confirmDelete": "确认删除",
-    "deleteConfirm": "您确定要删除此标签吗？",
+    "deleteConfirm": "您确定要删除此语言版本吗？",
     "confirmSync": "确认同步",
-    "currentTabTitle": "当前标签标题：{title}",
+    "currentVersionTitle": "当前语言版本：{title}",
     "newResume": "新简历"
   },
   "mySpyView": {

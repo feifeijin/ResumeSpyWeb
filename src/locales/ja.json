@@ -29,7 +29,7 @@
       "resumeSyncSuccess": "履歴書が正常に同期されました",
       "resumeCloneSuccess": "履歴書が正常に複製されました",
       "resumeRenameSuccess": "履歴書が正常に名前変更されました",
-      "tabRenameSuccess": "履歴書コンテンツが正常に名前変更されました",
+      "languageVersionRenameSuccess": "言語版が正常に名前変更されました",
       "languageVersionCreateSuccess": "言語版が正常に作成されました",
       "resumeLanguageAdded": "{language}履歴書が正常に追加されました"
     },
@@ -81,9 +81,9 @@
     "chooseLanguage": "言語を選択",
     "addingLanguage": "新しい言語版を作成中...",
     "confirmDelete": "削除の確認",
-    "deleteConfirm": "このタブを削除してもよろしいですか？",
+    "deleteConfirm": "この言語版を削除してもよろしいですか？",
     "confirmSync": "同期の確認",
-    "currentTabTitle": "現在のタブタイトル：{title}",
+    "currentVersionTitle": "現在の言語版：{title}",
     "newResume": "新しい履歴書"
   },
   "mySpyView": {
