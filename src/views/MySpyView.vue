@@ -102,10 +102,12 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLoading } from '@/composables/useLoading'
 import { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
 
 const resumeService = new ResumeService()
+const { withLoading, commonMessages } = useLoading()
 
 const router = useRouter()
 
@@ -127,12 +129,16 @@ const startEditing = async (resume: Resume, index: number) => {
 }
 
 const loadResumes = async () => {
-  try {
-    resumes.value = await resumeService.fetchResumes()
-    menu.value = resumes.value.map(() => false)
-  } catch (error) {
-    console.error('Failed to load resumes:', error)
-  }
+  await withLoading(
+    async () => {
+      resumes.value = await resumeService.fetchResumes()
+      menu.value = resumes.value.map(() => false)
+    },
+    {
+      id: 'load-resumes',
+      message: commonMessages.loading,
+    },
+  )
 }
 
 onMounted(() => {
@@ -147,44 +153,58 @@ const createNew = () => {
 }
 
 const onRename = async (resume: Resume) => {
-  try {
-    if (resume.id && resume.title !== '') {
-      await resumeService.updateResumeName(resume.id, resume.title)
-      resume.isEditing = false
-      console.log('Resume renamed successfully:', resume.title)
-    }
-  } catch (error) {
-    console.error('Failed to rename resume:', error)
+  if (resume.id && resume.title !== '') {
+    await withLoading(
+      async () => {
+        await resumeService.updateResumeName(resume.id, resume.title)
+        resume.isEditing = false
+        console.log('Resume renamed successfully:', resume.title)
+      },
+      {
+        id: 'rename-resume',
+        message: commonMessages.updating,
+      },
+    )
+  } else {
+    resume.isEditing = false
   }
 }
 
 const onClone = async (resume: Resume) => {
-  try {
-    const index = resumes.value.indexOf(resume)
-    menu.value[index] = false
+  const index = resumes.value.indexOf(resume)
+  menu.value[index] = false
 
-    const newResume = await resumeService.cloneResume(resume.id)
-    resumes.value.unshift(newResume)
-    menu.value.unshift(false)
-    console.log('Resume cloned successfully:', newResume.title)
-  } catch (error) {
-    console.error('Failed to clone resume:', error)
-  }
+  await withLoading(
+    async () => {
+      const newResume = await resumeService.cloneResume(resume.id)
+      resumes.value.unshift(newResume)
+      menu.value.unshift(false)
+      console.log('Resume cloned successfully:', newResume.title)
+    },
+    {
+      id: 'clone-resume',
+      message: 'Cloning resume...', // We could also use commonMessages.cloning if we add it
+    },
+  )
 }
 
 const onDelete = async (resume: Resume) => {
-  try {
-    if (resume.id) {
-      await resumeService.deleteResume(resume.id)
-      const index = resumes.value.indexOf(resume)
-      if (index > -1) {
-        resumes.value.splice(index, 1)
-        menu.value.splice(index, 1)
-      }
-      console.log('Resume deleted successfully:', resume.title)
-    }
-  } catch (error) {
-    console.error('Failed to delete resume:', error)
+  if (resume.id) {
+    await withLoading(
+      async () => {
+        await resumeService.deleteResume(resume.id)
+        const index = resumes.value.indexOf(resume)
+        if (index > -1) {
+          resumes.value.splice(index, 1)
+          menu.value.splice(index, 1)
+        }
+        console.log('Resume deleted successfully:', resume.title)
+      },
+      {
+        id: 'delete-resume',
+        message: commonMessages.deleting,
+      },
+    )
   }
 }
 </script>

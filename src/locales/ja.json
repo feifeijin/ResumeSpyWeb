@@ -8,7 +8,21 @@
     "create": "作成",
     "add": "追加",
     "loading": "読み込み中...",
+    "pleaseWait": "リクエストを処理中です。しばらくお待ちください",
+    "operationsInQueue": "進行中の操作：{count} 件",
     "confirm": "確認"
+  },
+  "loading": {
+    "creating": "作成中...",
+    "updating": "更新中...",
+    "deleting": "削除中...",
+    "saving": "保存中...",
+    "loading": "読み込み中...",
+    "syncing": "同期中...",
+    "processing": "処理中...",
+    "uploading": "アップロード中...",
+    "downloading": "ダウンロード中...",
+    "cloning": "複製中..."
   },
   "navigation": {
     "home": "ホーム",
@@ -17,11 +31,15 @@
   },
   "createView": {
     "selectLanguage": "言語を選択",
+    "selectLanguageHint": "履歴書の新しいバージョンを作成する言語を選択してください：",
+    "selectOtherLanguage": "その他の利用可能な言語から選択",
+    "chooseLanguage": "言語を選択",
+    "addingLanguage": "新しい言語版を作成中...",
     "confirmDelete": "削除の確認",
     "deleteConfirm": "このタブを削除してもよろしいですか？",
     "confirmSync": "同期の確認",
     "currentTabTitle": "現在のタブタイトル：{title}",
-    "newResume": "新しいレジュメ"
+    "newResume": "新しい履歴書"
   },
   "mySpyView": {
     "title": "マイレジュメ",

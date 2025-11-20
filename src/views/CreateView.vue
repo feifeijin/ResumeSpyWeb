@@ -46,7 +46,7 @@
       </v-col>
       <v-divider vertical class="mx-2"></v-divider>
       <v-col cols="auto" style="flex-shrink: 0">
-        <v-dialog v-model="isDialogActive" width="auto" scrollable>
+        <v-dialog v-model="isDialogActive" max-width="500px" persistent>
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn
               prepend-icon="mdi-file-account"
@@ -57,37 +57,100 @@
           </template>
 
           <template v-slot:default>
-            <v-card prepend-icon="mdi-file-account" :title="$t('createView.selectLanguage')">
-              <v-divider class="mt-3"></v-divider>
+            <v-card>
+              <v-card-title class="d-flex align-center pa-6">
+                <v-icon class="me-3" color="primary">mdi-translate</v-icon>
+                <span class="text-h5">{{ $t('createView.selectLanguage') }}</span>
+              </v-card-title>
 
-              <v-card-text class="px-4">
-                <v-radio-group v-model="dialog" class="full-width">
-                  <v-row v-for="country in countries" :key="country.value" align-items="center">
-                    <v-col>
-                      <v-radio :value="country.value">
-                        <template v-slot:label>
-                          <country-flag :country="country.flag" size="small" class="me-2" />
-                          {{ country.label }}
-                        </template>
-                      </v-radio>
-                    </v-col>
-                  </v-row>
+              <v-divider></v-divider>
+
+              <v-card-text class="pa-6">
+                <p class="text-body-2 text-medium-emphasis mb-4">
+                  {{ $t('createView.selectLanguageHint') }}
+                </p>
+                <v-radio-group v-model="dialog" class="mt-2">
+                  <template v-for="country in countries" :key="country.value">
+                    <v-radio :value="country.value" class="mb-3">
+                      <template v-slot:label>
+                        <div class="d-flex align-center">
+                          <country-flag
+                            v-if="country.flag"
+                            :country="country.flag"
+                            size="normal"
+                            class="me-4"
+                          />
+                          <v-icon v-else class="me-4" color="primary" size="large">
+                            mdi-earth
+                          </v-icon>
+                          <div class="d-flex flex-column">
+                            <span class="text-subtitle-1 font-weight-medium">{{
+                              country.label
+                            }}</span>
+                            <span class="text-caption text-medium-emphasis">{{
+                              country.value
+                            }}</span>
+                          </div>
+                        </div>
+                      </template>
+                    </v-radio>
+                  </template>
                 </v-radio-group>
+
+                <!-- Other Language Selection -->
+                <v-expand-transition>
+                  <div v-if="isOtherSelected" class="mt-4 pa-4 bg-grey-lighten-4 rounded">
+                    <p class="text-body-2 mb-3">{{ $t('createView.selectOtherLanguage') }}:</p>
+                    <v-select
+                      v-model="selectedOtherLanguage"
+                      :items="otherLanguages"
+                      item-title="name"
+                      item-value="code"
+                      :label="$t('createView.chooseLanguage')"
+                      variant="outlined"
+                      density="comfortable"
+                    >
+                      <template v-slot:item="{ props, item }">
+                        <v-list-item v-bind="props" class="d-flex align-center">
+                          <template v-slot:prepend>
+                            <country-flag :country="item.raw.flag" size="small" class="me-3" />
+                          </template>
+                          <v-list-item-title>{{ item.raw.name }}</v-list-item-title>
+                          <v-list-item-subtitle>{{ item.raw.code }}</v-list-item-subtitle>
+                        </v-list-item>
+                      </template>
+                      <template v-slot:selection="{ item }">
+                        <div class="d-flex align-center">
+                          <country-flag :country="item.raw.flag" size="small" class="me-2" />
+                          <span>{{ item.raw.name }}</span>
+                        </div>
+                      </template>
+                    </v-select>
+                  </div>
+                </v-expand-transition>
               </v-card-text>
 
               <v-divider></v-divider>
 
-              <v-card-actions>
-                <v-btn :text="$t('common.close')" @click="isDialogActive = false"></v-btn>
-
+              <v-card-actions class="pa-4">
                 <v-spacer></v-spacer>
-
                 <v-btn
-                  color="surface-variant"
-                  :text="$t('common.add')"
-                  variant="flat"
+                  variant="text"
+                  @click="isDialogActive = false"
+                  class="me-2"
+                  :disabled="isGlobalLoading"
+                >
+                  {{ $t('common.cancel') }}
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  variant="elevated"
                   @click="onAdd"
-                ></v-btn>
+                  :disabled="isAddDisabled"
+                  :loading="isGlobalLoading"
+                >
+                  {{ $t('common.add') }}
+                </v-btn>
               </v-card-actions>
             </v-card>
           </template>
@@ -149,10 +212,12 @@ import CountryFlag from 'vue-country-flag-next'
 import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useLoading } from '@/composables/useLoading'
 import { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 
 const { t } = useI18n()
+const { withLoading, commonMessages, isGlobalLoading } = useLoading()
 
 const resumeDetailService = new ResumeDetailService()
 const route = useRoute()
@@ -170,25 +235,54 @@ const countries = computed(() => [
   { flag: 'us', label: t('languages.english'), value: 'EN' },
   { flag: 'jp', label: t('languages.japanese'), value: 'JA' },
   { flag: 'cn', label: t('languages.chinese'), value: 'ZH' },
+  { flag: null, label: t('languages.other'), value: 'OTHER', isOther: true },
 ])
+
+// Additional language options for "Other" selection
+const otherLanguages = [
+  { code: 'ES', name: 'Español', flag: 'es' },
+  { code: 'FR', name: 'Français', flag: 'fr' },
+  { code: 'DE', name: 'Deutsch', flag: 'de' },
+  { code: 'IT', name: 'Italiano', flag: 'it' },
+  { code: 'PT', name: 'Português', flag: 'pt' },
+  { code: 'RU', name: 'Русский', flag: 'ru' },
+  { code: 'KO', name: '한국어', flag: 'kr' },
+  { code: 'TH', name: 'ไทย', flag: 'th' },
+  { code: 'VI', name: 'Tiếng Việt', flag: 'vn' },
+  { code: 'AR', name: 'العربية', flag: 'sa' },
+  { code: 'HI', name: 'हिन्दी', flag: 'in' },
+  { code: 'TR', name: 'Türkçe', flag: 'tr' },
+]
 
 const isDialogActive = ref(false)
 const isDeleteDialogActive = ref(false)
 const tabIndexToDelete = ref(-1)
 const isSyncDialogActive = ref(false)
-const isLoading = ref(false)
 const editingTabIndex = ref<number | null>(null)
 const editingTabName = ref('')
+const selectedOtherLanguage = ref('')
+const isOtherSelected = computed(() => dialog.value === 'OTHER')
+
+const isAddDisabled = computed(() => {
+  if (isGlobalLoading) return true
+  if (!dialog.value) return true
+  if (dialog.value === 'OTHER') return !selectedOtherLanguage.value
+  return false
+})
 
 const loadResumeDetails = async (resumeId: string) => {
   currentResumeId.value = resumeId
-  try {
-    resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
-    tabs.value = resumeDetails.value.map((detail) => detail.name)
-    editors.value = resumeDetails.value.map((detail) => detail.content)
-  } catch (error) {
-    console.error('Failed to load resume details:', error)
-  }
+  await withLoading(
+    async () => {
+      resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
+      tabs.value = resumeDetails.value.map((detail) => detail.name)
+      editors.value = resumeDetails.value.map((detail) => detail.content)
+    },
+    {
+      id: 'load-resume-details',
+      message: commonMessages.loading,
+    },
+  )
 }
 
 onMounted(() => {
@@ -207,54 +301,69 @@ onMounted(() => {
 })
 
 const onAdd = async () => {
-  try {
-    const existingResumeDetailId = resumeDetails.value[activeTab.value].id
-    const newDetail = await resumeDetailService.createResumeDetailFromExisting(
-      existingResumeDetailId,
-      dialog.value,
-    )
-    resumeDetails.value.push(newDetail)
-    tabs.value.push(newDetail.name)
-    editors.value.push(newDetail.content)
-    if (newDetail.resumeId) {
-      currentResumeId.value = newDetail.resumeId
-    }
-    dialog.value = ''
-    isDialogActive.value = false
-  } catch (error) {
-    console.error('Failed to add new resume detail:', error)
-  }
+  const language =
+    dialog.value === 'OTHER' && selectedOtherLanguage.value
+      ? selectedOtherLanguage.value
+      : dialog.value
+
+  const existingResumeDetailId = resumeDetails.value[activeTab.value].id
+
+  await withLoading(
+    async () => {
+      const newDetail = await resumeDetailService.createResumeDetailFromExisting(
+        existingResumeDetailId,
+        language,
+      )
+      resumeDetails.value.push(newDetail)
+      tabs.value.push(newDetail.name)
+      editors.value.push(newDetail.content)
+      if (newDetail.resumeId) {
+        currentResumeId.value = newDetail.resumeId
+      }
+      dialog.value = ''
+      selectedOtherLanguage.value = ''
+      isDialogActive.value = false
+    },
+    {
+      id: 'create-language-version',
+      message: commonMessages.creating,
+    },
+  )
 }
 
 const onSave = async (index: number) => {
-  try {
-    const content = editors.value[index]
-    const detail = resumeDetails.value[index]
-    if (detail.id) {
-      // Update existing resume detail
-      await resumeDetailService.updateResumeDetailContent(detail.id, content)
-      detail.content = content
-      if (detail.resumeId) {
-        currentResumeId.value = detail.resumeId
+  await withLoading(
+    async () => {
+      const content = editors.value[index]
+      const detail = resumeDetails.value[index]
+      if (detail.id) {
+        // Update existing resume detail
+        await resumeDetailService.updateResumeDetailContent(detail.id, content)
+        detail.content = content
+        if (detail.resumeId) {
+          currentResumeId.value = detail.resumeId
+        }
+      } else {
+        // Create new resume detail
+        const newDetail = await resumeDetailService.createResumeDetail({
+          ...detail,
+          content,
+          name: tabs.value[index], // Ensure name is passed
+        })
+        resumeDetails.value[index] = newDetail
+        // Update the URL with the new resumeId
+        if (newDetail.resumeId) {
+          currentResumeId.value = newDetail.resumeId
+          router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
+        }
       }
-    } else {
-      // Create new resume detail
-      const newDetail = await resumeDetailService.createResumeDetail({
-        ...detail,
-        content,
-        name: tabs.value[index], // Ensure name is passed
-      })
-      resumeDetails.value[index] = newDetail
-      // Update the URL with the new resumeId
-      if (newDetail.resumeId) {
-        currentResumeId.value = newDetail.resumeId
-        router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
-      }
-    }
-    console.log('Save successful for tab:', tabs.value[index])
-  } catch (error) {
-    console.error('Failed to save resume detail:', error)
-  }
+      console.log('Save successful for tab:', tabs.value[index])
+    },
+    {
+      id: 'save-resume',
+      message: commonMessages.saving,
+    },
+  )
 }
 
 const openDeleteDialog = (index: number) => {
@@ -264,25 +373,27 @@ const openDeleteDialog = (index: number) => {
 
 const deleteTab = async () => {
   if (tabIndexToDelete.value > -1) {
-    try {
-      const detailId = resumeDetails.value[tabIndexToDelete.value].id
-      await resumeDetailService.deleteResumeDetail(detailId)
+    await withLoading(
+      async () => {
+        const detailId = resumeDetails.value[tabIndexToDelete.value].id
+        await resumeDetailService.deleteResumeDetail(detailId)
 
-      // Clear editing state if needed
-      cancelEdit()
+        // Clear editing state if needed
+        cancelEdit()
 
-      // Reload all data to ensure consistency
-      if (currentResumeId.value) {
-        await loadResumeDetails(currentResumeId.value)
-      }
+        // Reload all data to ensure consistency
+        if (currentResumeId.value) {
+          await loadResumeDetails(currentResumeId.value)
+        }
 
-      isDeleteDialogActive.value = false
-      tabIndexToDelete.value = -1
-    } catch (error) {
-      console.error('Failed to delete resume detail:', error)
-      isDeleteDialogActive.value = false
-      tabIndexToDelete.value = -1
-    }
+        isDeleteDialogActive.value = false
+        tabIndexToDelete.value = -1
+      },
+      {
+        id: 'delete-tab',
+        message: commonMessages.deleting,
+      },
+    )
   }
 }
 
@@ -307,16 +418,18 @@ const syncTab = async () => {
   }
 
   isSyncDialogActive.value = false
-  isLoading.value = true
-  try {
-    await resumeDetailService.syncTranslations(activeResumeDetailID)
-    await loadResumeDetails(currentResumeId.value)
-    console.log('Sync completed for resume:', activeResumeDetailID)
-  } catch (error) {
-    console.error('Sync failed:', error)
-  } finally {
-    isLoading.value = false
-  }
+
+  await withLoading(
+    async () => {
+      await resumeDetailService.syncTranslations(activeResumeDetailID)
+      await loadResumeDetails(currentResumeId.value!)
+      console.log('Sync completed for resume:', activeResumeDetailID)
+    },
+    {
+      id: 'sync-translations',
+      message: commonMessages.syncing,
+    },
+  )
 }
 
 const editTabName = (index: number) => {
@@ -334,28 +447,35 @@ const cancelEdit = () => {
 }
 
 const saveTabName = async (index: number) => {
-  try {
-    const newName = editingTabName.value.trim()
-    if (!newName) {
-      cancelEdit()
-      return
-    }
+  const newName = editingTabName.value.trim()
+  if (!newName) {
+    cancelEdit()
+    return
+  }
 
-    const detail = resumeDetails.value[index]
-    if (detail.id && newName !== detail.name) {
-      await resumeDetailService.updateResumeDetailName(detail.id, newName)
-      detail.name = newName
-      tabs.value[index] = newName
-      console.log('Tab name updated successfully:', newName)
-    } else if (!detail.id) {
-      // For new tabs that haven't been saved yet
-      tabs.value[index] = newName
-      detail.name = newName
-    }
+  const detail = resumeDetails.value[index]
+  if (detail.id && newName !== detail.name) {
+    await withLoading(
+      async () => {
+        await resumeDetailService.updateResumeDetailName(detail.id, newName)
+        detail.name = newName
+        tabs.value[index] = newName
+        console.log('Tab name updated successfully:', newName)
+        editingTabIndex.value = null
+        editingTabName.value = ''
+      },
+      {
+        id: 'update-tab-name',
+        message: commonMessages.updating,
+      },
+    )
+  } else if (!detail.id) {
+    // For new tabs that haven't been saved yet
+    tabs.value[index] = newName
+    detail.name = newName
     editingTabIndex.value = null
     editingTabName.value = ''
-  } catch (error) {
-    console.error('Failed to update tab name:', error)
+  } else {
     editingTabIndex.value = null
     editingTabName.value = ''
   }
@@ -386,5 +506,20 @@ const saveTabName = async (index: number) => {
 .v-tabs {
   overflow-x: auto;
   flex-shrink: 1;
+}
+
+/* Language selection dialog improvements */
+.v-dialog .v-card {
+  overflow: visible;
+}
+
+.v-radio-group .v-radio {
+  margin-bottom: 8px;
+}
+
+.v-radio-group .v-radio:hover {
+  background-color: rgba(var(--v-theme-primary), 0.04);
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
 }
 </style>

@@ -8,7 +8,21 @@
     "create": "Create",
     "add": "ADD",
     "loading": "Loading...",
+    "pleaseWait": "Please wait while we process your request",
+    "operationsInQueue": "{count} operations in progress",
     "confirm": "Confirm"
+  },
+  "loading": {
+    "creating": "Creating...",
+    "updating": "Updating...",
+    "deleting": "Deleting...",
+    "saving": "Saving...",
+    "loading": "Loading...",
+    "syncing": "Syncing...",
+    "processing": "Processing...",
+    "uploading": "Uploading...",
+    "downloading": "Downloading...",
+    "cloning": "Cloning..."
   },
   "navigation": {
     "home": "Home",
@@ -17,6 +31,10 @@
   },
   "createView": {
     "selectLanguage": "Select Language",
+    "selectLanguageHint": "Choose a language to create a new version of your resume:",
+    "selectOtherLanguage": "Select from other available languages",
+    "chooseLanguage": "Choose Language",
+    "addingLanguage": "Creating new language version...",
     "confirmDelete": "Confirm Delete",
     "deleteConfirm": "Are you sure you want to delete this tab?",
     "confirmSync": "Confirm SYNC",

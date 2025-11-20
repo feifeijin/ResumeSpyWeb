@@ -8,7 +8,21 @@
     "create": "创建",
     "add": "添加",
     "loading": "加载中...",
+    "pleaseWait": "请稍等，正在处理您的请求",
+    "operationsInQueue": "进行中的操作：{count} 个",
     "confirm": "确认"
+  },
+  "loading": {
+    "creating": "创建中...",
+    "updating": "更新中...",
+    "deleting": "删除中...",
+    "saving": "保存中...",
+    "loading": "加载中...",
+    "syncing": "同步中...",
+    "processing": "处理中...",
+    "uploading": "上传中...",
+    "downloading": "下载中...",
+    "cloning": "克隆中..."
   },
   "navigation": {
     "home": "首页",
@@ -17,10 +31,14 @@
   },
   "createView": {
     "selectLanguage": "选择语言",
+    "selectLanguageHint": "选择一种语言来创建简历的新版本：",
+    "selectOtherLanguage": "从其他可用语言中选择",
+    "chooseLanguage": "选择语言",
+    "addingLanguage": "正在创建新语言版本...",
     "confirmDelete": "确认删除",
-    "deleteConfirm": "您确定要删除此标签页吗？",
+    "deleteConfirm": "您确定要删除此标签吗？",
     "confirmSync": "确认同步",
-    "currentTabTitle": "当前标签页标题：{title}",
+    "currentTabTitle": "当前标签标题：{title}",
     "newResume": "新简历"
   },
   "mySpyView": {
