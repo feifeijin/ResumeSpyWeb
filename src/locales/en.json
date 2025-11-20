@@ -72,7 +72,38 @@
   "navigation": {
     "home": "Home",
     "create": "Create",
-    "mySpy": "MySpy"
+    "mySpy": "MySpy",
+    "login": "Sign In",
+    "logout": "Sign Out"
+  },
+  "auth": {
+    "title": "Welcome back",
+    "subtitle": "Sign in to continue building your resumes",
+    "login": "Sign In",
+    "register": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "displayName": "Display Name",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account yet?",
+    "haveAccount": "Already have an account?",
+    "loginWith": "Or continue with",
+    "google": "Continue with Google",
+    "github": "Continue with GitHub",
+    "loginSuccess": "Signed in successfully",
+    "registerSuccess": "Account created successfully",
+    "logoutSuccess": "Signed out successfully",
+    "externalFailure": "External login failed. Please try again.",
+    "googleTokenPrompt": "Paste the Google ID token provided by Google Sign-In",
+    "githubTokenPrompt": "Paste the GitHub access token obtained via OAuth or create a fine-grained token",
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email address",
+      "passwordComplexity": "Password must be at least 6 characters and include a lowercase letter and a number",
+      "confirmPassword": "Passwords must match"
+    }
   },
   "createView": {
     "selectLanguage": "Select Language",

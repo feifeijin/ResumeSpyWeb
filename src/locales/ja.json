@@ -72,7 +72,38 @@
   "navigation": {
     "home": "ホーム",
     "create": "作成",
-    "mySpy": "マイレジュメ"
+    "mySpy": "マイレジュメ",
+    "login": "ログイン",
+    "logout": "ログアウト"
+  },
+  "auth": {
+    "title": "お帰りなさい",
+    "subtitle": "履歴書の管理を続けるにはログインしてください",
+    "login": "ログイン",
+    "register": "アカウント作成",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "confirmPassword": "パスワード確認",
+    "displayName": "表示名",
+    "rememberMe": "ログイン状態を保持する",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "noAccount": "アカウントをお持ちでない場合",
+    "haveAccount": "すでにアカウントをお持ちの場合",
+    "loginWith": "または以下で続行",
+    "google": "Google で続行",
+    "github": "GitHub で続行",
+    "loginSuccess": "ログインに成功しました",
+    "registerSuccess": "アカウントを作成しました",
+    "logoutSuccess": "ログアウトしました",
+    "externalFailure": "外部ログインに失敗しました。もう一度お試しください。",
+    "googleTokenPrompt": "Google サインインから取得した ID トークンを入力してください",
+    "githubTokenPrompt": "OAuth で取得した GitHub アクセストークンを入力してください",
+    "validation": {
+      "required": "この項目は必須です",
+      "invalidEmail": "有効なメールアドレスを入力してください",
+      "passwordComplexity": "パスワードは 6 文字以上で、小文字と数字を含める必要があります",
+      "confirmPassword": "パスワードが一致していません"
+    }
   },
   "createView": {
     "selectLanguage": "言語を選択",

@@ -72,7 +72,38 @@
   "navigation": {
     "home": "首页",
     "create": "创建",
-    "mySpy": "我的简历"
+    "mySpy": "我的简历",
+    "login": "登录",
+    "logout": "退出登录"
+  },
+  "auth": {
+    "title": "欢迎回来",
+    "subtitle": "登录以继续管理您的简历",
+    "login": "登录",
+    "register": "创建账号",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "displayName": "显示名称",
+    "rememberMe": "记住我",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "还没有账号？",
+    "haveAccount": "已经有账号？",
+    "loginWith": "或选择以下方式继续",
+    "google": "使用 Google 登录",
+    "github": "使用 GitHub 登录",
+    "loginSuccess": "登录成功",
+    "registerSuccess": "账号创建成功",
+    "logoutSuccess": "已成功退出登录",
+    "externalFailure": "外部登录失败，请重试。",
+    "googleTokenPrompt": "请输入从 Google 登录获取的 ID Token",
+    "githubTokenPrompt": "请输入通过 OAuth 获取的 GitHub Access Token",
+    "validation": {
+      "required": "此字段为必填项",
+      "invalidEmail": "请输入有效的邮箱地址",
+      "passwordComplexity": "密码至少 6 位，且需包含小写字母和数字",
+      "confirmPassword": "两次输入的密码不一致"
+    }
   },
   "createView": {
     "selectLanguage": "选择语言",
