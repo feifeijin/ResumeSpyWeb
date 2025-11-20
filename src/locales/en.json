@@ -95,6 +95,7 @@
   "languages": {
     "english": "English",
     "japanese": "Japanese",
-    "chinese": "Chinese"
+    "chinese": "Chinese",
+    "other": "Other"
   }
 }

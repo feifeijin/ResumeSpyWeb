@@ -95,6 +95,7 @@
   "languages": {
     "english": "英语",
     "japanese": "日语",
-    "chinese": "中文"
+    "chinese": "中文",
+    "other": "其他"
   }
 }
