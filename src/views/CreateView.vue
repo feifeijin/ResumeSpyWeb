@@ -213,11 +213,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
+import { useToast } from '@/composables/useToast'
 import { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 
 const { t } = useI18n()
 const { withLoading, commonMessages, isGlobalLoading } = useLoading()
+const toast = useToast()
 
 const resumeDetailService = new ResumeDetailService()
 const route = useRoute()
@@ -288,10 +290,8 @@ const loadResumeDetails = async (resumeId: string) => {
 onMounted(() => {
   const resumeId = route.query.resumeId
   if (typeof resumeId === 'string' && resumeId) {
-    console.log('Resume ID:', resumeId)
     loadResumeDetails(resumeId)
   } else {
-    console.log('No Resume ID found, starting in create mode.')
     // Initialize with a default tab for a new resume
     const newResumeTitle = t('createView.newResume')
     tabs.value = [newResumeTitle]
@@ -411,7 +411,7 @@ const onSave = async (index: number) => {
           router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
         }
       }
-      console.log('Save successful for tab:', tabs.value[index])
+      toast.success('toast.success.saveSuccess')
     },
     {
       id: 'save-resume',
@@ -477,7 +477,7 @@ const syncTab = async () => {
     async () => {
       await resumeDetailService.syncTranslations(activeResumeDetailID)
       await loadResumeDetails(currentResumeId.value!)
-      console.log('Sync completed for resume:', activeResumeDetailID)
+      toast.success('toast.success.syncSuccess')
     },
     {
       id: 'sync-translations',
@@ -514,7 +514,7 @@ const saveTabName = async (index: number) => {
         await resumeDetailService.updateResumeDetailName(detail.id, newName)
         detail.name = newName
         tabs.value[index] = newName
-        console.log('Tab name updated successfully:', newName)
+        toast.success('toast.success.updateSuccess')
         editingTabIndex.value = null
         editingTabName.value = ''
       },

@@ -12,6 +12,39 @@
     "operationsInQueue": "{count} operations in progress",
     "confirm": "Confirm"
   },
+  "toast": {
+    "success": {
+      "operationCompleted": "Operation completed successfully",
+      "saveSuccess": "Data saved successfully",
+      "createSuccess": "Created successfully",
+      "updateSuccess": "Updated successfully",
+      "deleteSuccess": "Deleted successfully",
+      "syncSuccess": "Synchronized successfully"
+    },
+    "error": {
+      "operationFailed": "Operation failed",
+      "saveError": "Failed to save data",
+      "createError": "Failed to create",
+      "updateError": "Failed to update",
+      "deleteError": "Failed to delete",
+      "syncError": "Synchronization failed",
+      "networkError": "Network connection error",
+      "validationError": "Please check your input",
+      "permissionError": "Permission denied"
+    },
+    "warning": {
+      "unsavedChanges": "You have unsaved changes",
+      "confirmAction": "Please confirm this action",
+      "operationInProgress": "Operation in progress",
+      "quotaWarning": "Approaching quota limit"
+    },
+    "info": {
+      "operationStarted": "Operation started",
+      "syncInProgress": "Synchronization in progress",
+      "autoSaved": "Auto-saved",
+      "updateAvailable": "Update available"
+    }
+  },
   "loading": {
     "creating": "Creating...",
     "updating": "Updating...",

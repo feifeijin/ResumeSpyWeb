@@ -12,6 +12,39 @@
     "operationsInQueue": "進行中の操作：{count} 件",
     "confirm": "確認"
   },
+  "toast": {
+    "success": {
+      "operationCompleted": "操作が正常に完了しました",
+      "saveSuccess": "データが正常に保存されました",
+      "createSuccess": "正常に作成されました",
+      "updateSuccess": "正常に更新されました",
+      "deleteSuccess": "正常に削除されました",
+      "syncSuccess": "正常に同期されました"
+    },
+    "error": {
+      "operationFailed": "操作が失敗しました",
+      "saveError": "データの保存に失敗しました",
+      "createError": "作成に失敗しました",
+      "updateError": "更新に失敗しました",
+      "deleteError": "削除に失敗しました",
+      "syncError": "同期に失敗しました",
+      "networkError": "ネットワーク接続エラー",
+      "validationError": "入力内容をご確認ください",
+      "permissionError": "権限がありません"
+    },
+    "warning": {
+      "unsavedChanges": "未保存の変更があります",
+      "confirmAction": "この操作を確認してください",
+      "operationInProgress": "操作が進行中です",
+      "quotaWarning": "制限に近づいています"
+    },
+    "info": {
+      "operationStarted": "操作を開始しました",
+      "syncInProgress": "同期が進行中です",
+      "autoSaved": "自動保存されました",
+      "updateAvailable": "更新が利用可能です"
+    }
+  },
   "loading": {
     "creating": "作成中...",
     "updating": "更新中...",

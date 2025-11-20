@@ -103,11 +103,13 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLoading } from '@/composables/useLoading'
+import { useToast } from '@/composables/useToast'
 import { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
 
 const resumeService = new ResumeService()
 const { withLoading, commonMessages } = useLoading()
+const toast = useToast()
 
 const router = useRouter()
 
@@ -158,7 +160,7 @@ const onRename = async (resume: Resume) => {
       async () => {
         await resumeService.updateResumeName(resume.id, resume.title)
         resume.isEditing = false
-        console.log('Resume renamed successfully:', resume.title)
+        toast.success('toast.success.updateSuccess')
       },
       {
         id: 'rename-resume',
@@ -179,7 +181,7 @@ const onClone = async (resume: Resume) => {
       const newResume = await resumeService.cloneResume(resume.id)
       resumes.value.unshift(newResume)
       menu.value.unshift(false)
-      console.log('Resume cloned successfully:', newResume.title)
+      toast.success('toast.success.createSuccess')
     },
     {
       id: 'clone-resume',
@@ -198,7 +200,7 @@ const onDelete = async (resume: Resume) => {
           resumes.value.splice(index, 1)
           menu.value.splice(index, 1)
         }
-        console.log('Resume deleted successfully:', resume.title)
+        toast.success('toast.success.deleteSuccess')
       },
       {
         id: 'delete-resume',

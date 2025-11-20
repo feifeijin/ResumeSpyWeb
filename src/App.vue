@@ -2,6 +2,7 @@
 import AppBar from './components/app/AppBar.vue'
 import AppFooter from './components/app/AppFooter.vue'
 import GlobalLoadingOverlay from './components/GlobalLoadingOverlay.vue'
+import GlobalToastContainer from './components/GlobalToastContainer.vue'
 </script>
 
 <template>
@@ -14,5 +15,8 @@ import GlobalLoadingOverlay from './components/GlobalLoadingOverlay.vue'
 
     <!-- Global Loading Overlay -->
     <GlobalLoadingOverlay />
+
+    <!-- Global Toast Container -->
+    <GlobalToastContainer />
   </v-app>
 </template>

@@ -1,16 +1,18 @@
 import { useLoadingStore } from '@/stores/loading'
 import { useI18n } from 'vue-i18n'
+import { useToast } from '@/composables/useToast'
 
 export const useLoading = () => {
   const loadingStore = useLoadingStore()
   const { t } = useI18n()
+  const toast = useToast()
 
   // Helper function to generate unique loading IDs
   const generateLoadingId = (prefix: string = 'operation') => {
     return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
   }
 
-  // Wrapper function for API calls with automatic loading management
+  // Wrapper function for API calls with automatic loading management and error handling
   const withLoading = async <T>(
     operation: () => Promise<T>,
     options: {
@@ -18,6 +20,8 @@ export const useLoading = () => {
       message?: string
       progress?: number
       onProgress?: (progress: number) => void
+      showErrorToast?: boolean
+      errorMessage?: string
     } = {},
   ): Promise<T> => {
     const loadingId = options.id || generateLoadingId()
@@ -30,6 +34,15 @@ export const useLoading = () => {
       const result = await operation()
 
       return result
+    } catch (error) {
+      // Show error toast if enabled (default: true)
+      if (options.showErrorToast !== false) {
+        const errorMsg = options.errorMessage || 'toast.error.operationFailed'
+        toast.error(errorMsg)
+      }
+
+      // Re-throw the error so calling code can handle it if needed
+      throw error
     } finally {
       // Always stop loading, even if operation fails
       loadingStore.stopLoading(loadingId)
@@ -69,5 +82,8 @@ export const useLoading = () => {
     updateLoading: loadingStore.updateLoading,
     stopLoading: loadingStore.stopLoading,
     stopAllLoading: loadingStore.stopAllLoading,
+
+    // Direct toast access for advanced usage
+    toast,
   }
 }

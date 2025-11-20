@@ -12,6 +12,39 @@
     "operationsInQueue": "进行中的操作：{count} 个",
     "confirm": "确认"
   },
+  "toast": {
+    "success": {
+      "operationCompleted": "操作成功完成",
+      "saveSuccess": "数据保存成功",
+      "createSuccess": "创建成功",
+      "updateSuccess": "更新成功",
+      "deleteSuccess": "删除成功",
+      "syncSuccess": "同步成功"
+    },
+    "error": {
+      "operationFailed": "操作失败",
+      "saveError": "数据保存失败",
+      "createError": "创建失败",
+      "updateError": "更新失败",
+      "deleteError": "删除失败",
+      "syncError": "同步失败",
+      "networkError": "网络连接错误",
+      "validationError": "请检查您的输入",
+      "permissionError": "权限不足"
+    },
+    "warning": {
+      "unsavedChanges": "您有未保存的更改",
+      "confirmAction": "请确认此操作",
+      "operationInProgress": "操作进行中",
+      "quotaWarning": "接近配额限制"
+    },
+    "info": {
+      "operationStarted": "操作已开始",
+      "syncInProgress": "同步进行中",
+      "autoSaved": "自动保存",
+      "updateAvailable": "更新可用"
+    }
+  },
   "loading": {
     "creating": "创建中...",
     "updating": "更新中...",
