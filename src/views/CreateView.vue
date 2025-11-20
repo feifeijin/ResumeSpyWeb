@@ -199,7 +199,7 @@
     </v-dialog>
 
     <!-- Loading Indicator -->
-    <v-dialog v-model="isLoading" hide-overlay persistent width="300">
+    <v-dialog v-model="isGlobalLoading" hide-overlay persistent width="300">
       <v-card class="d-flex justify-center align-center" height="100">
         <v-progress-circular indeterminate color="primary"></v-progress-circular>
       </v-card>
@@ -307,6 +307,7 @@ const onAdd = async () => {
       : dialog.value
 
   const existingResumeDetailId = resumeDetails.value[activeTab.value].id
+  const originalName = resumeDetails.value[activeTab.value].name
 
   await withLoading(
     async () => {
@@ -314,6 +315,59 @@ const onAdd = async () => {
         existingResumeDetailId,
         language,
       )
+
+      // Create a clean name by removing any existing language postfix from original name
+      let cleanName = originalName
+
+      // Remove common language postfixes if they exist
+      const postfixPatterns = [
+        / - EN$/i,
+        / - JA$/i,
+        / - ZH$/i,
+        / - ES$/i,
+        / - FR$/i,
+        / - DE$/i,
+        / - IT$/i,
+        / - PT$/i,
+        / - RU$/i,
+        / - KO$/i,
+        / - TH$/i,
+        / - VI$/i,
+        / - AR$/i,
+        / - HI$/i,
+        / - TR$/i,
+        / \(EN\)$/i,
+        / \(JA\)$/i,
+        / \(ZH\)$/i,
+        / \(ES\)$/i,
+        / \(FR\)$/i,
+        / \(DE\)$/i,
+        / \(IT\)$/i,
+        / \(PT\)$/i,
+        / \(RU\)$/i,
+        / \(KO\)$/i,
+        / \(TH\)$/i,
+        / \(VI\)$/i,
+        / \(AR\)$/i,
+        / \(HI\)$/i,
+        / \(TR\)$/i,
+      ]
+
+      postfixPatterns.forEach((pattern) => {
+        cleanName = cleanName.replace(pattern, '')
+      })
+
+      // Add the language postfix to the clean name
+      const nameWithLanguage = `${cleanName} - ${language}`
+
+      // Use the name with language postfix for the new detail
+      newDetail.name = nameWithLanguage
+
+      // Update the backend with the new name if it was changed
+      if (newDetail.id) {
+        await resumeDetailService.updateResumeDetailName(newDetail.id, nameWithLanguage)
+      }
+
       resumeDetails.value.push(newDetail)
       tabs.value.push(newDetail.name)
       editors.value.push(newDetail.content)
