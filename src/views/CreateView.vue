@@ -46,16 +46,13 @@
       </v-col>
       <v-divider vertical class="mx-2"></v-divider>
       <v-col cols="auto" style="flex-shrink: 0">
+        <v-btn
+          prepend-icon="mdi-file-account"
+          :text="$t('createView.selectLanguage')"
+          variant="outlined"
+          @click="handleLanguageDialogOpen"
+        ></v-btn>
         <v-dialog v-model="isDialogActive" max-width="500px" persistent>
-          <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-              prepend-icon="mdi-file-account"
-              :text="$t('createView.selectLanguage')"
-              variant="outlined"
-              v-bind="activatorProps"
-            ></v-btn>
-          </template>
-
           <template v-slot:default>
             <v-card>
               <v-card-title class="d-flex align-center pa-6">
@@ -165,9 +162,7 @@
       <v-col>
         <v-tabs-window v-model="activeTab">
           <v-tabs-window-item v-for="(tab, index) in tabs" :key="tab">
-            <v-md-editor v-model="editors[index]" @save="onSave(index)" height="800px">{{
-              tab
-            }}</v-md-editor>
+            <v-md-editor v-model="editors[index]" @save="onSave(index)">{{ tab }}</v-md-editor>
           </v-tabs-window-item>
         </v-tabs-window>
       </v-col>
@@ -271,6 +266,18 @@ const isAddDisabled = computed(() => {
   if (dialog.value === 'OTHER' && !selectedOtherLanguage.value) return true
   return false
 })
+
+const handleLanguageDialogOpen = () => {
+  const currentContent = editors.value[activeTab.value] ?? ''
+  if (!currentContent || currentContent.trim().length === 0) {
+    toast.error(t('createView.emptyContentError'))
+    return
+  }
+
+  dialog.value = ''
+  selectedOtherLanguage.value = ''
+  isDialogActive.value = true
+}
 
 // Helper function to get language display name from code
 const getLanguageDisplayName = (languageCode: string): string => {

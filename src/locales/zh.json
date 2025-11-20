@@ -115,7 +115,8 @@
     "deleteConfirm": "您确定要删除此语言版本吗？",
     "confirmSync": "确认同步",
     "currentVersionTitle": "当前语言版本：{title}",
-    "newResume": "新简历"
+    "newResume": "新简历",
+    "emptyContentError": "请先填写当前简历内容，再创建其他语言版本。"
   },
   "mySpyView": {
     "title": "我的简历",

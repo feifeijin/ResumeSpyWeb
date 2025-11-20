@@ -115,7 +115,8 @@
     "deleteConfirm": "この言語版を削除してもよろしいですか？",
     "confirmSync": "同期の確認",
     "currentVersionTitle": "現在の言語版：{title}",
-    "newResume": "新しい履歴書"
+    "newResume": "新しい履歴書",
+    "emptyContentError": "現在の履歴書に内容を入力してから別の言語を作成してください。"
   },
   "mySpyView": {
     "title": "マイレジュメ",
