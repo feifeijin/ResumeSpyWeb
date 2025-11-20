@@ -268,9 +268,27 @@ const isOtherSelected = computed(() => dialog.value === 'OTHER')
 const isAddDisabled = computed(() => {
   if (isGlobalLoading) return true
   if (!dialog.value) return true
-  if (dialog.value === 'OTHER') return !selectedOtherLanguage.value
+  if (dialog.value === 'OTHER' && !selectedOtherLanguage.value) return true
   return false
 })
+
+// Helper function to get language display name from code
+const getLanguageDisplayName = (languageCode: string): string => {
+  // Check main languages first
+  const mainLanguage = countries.value.find((country) => country.value === languageCode)
+  if (mainLanguage && !mainLanguage.isOther) {
+    return mainLanguage.label
+  }
+
+  // Check other languages
+  const otherLanguage = otherLanguages.find((lang) => lang.code === languageCode)
+  if (otherLanguage) {
+    return otherLanguage.name
+  }
+
+  // Fallback to language code if not found
+  return languageCode
+}
 
 const loadResumeDetails = async (resumeId: string) => {
   currentResumeId.value = resumeId
@@ -377,7 +395,12 @@ const onAdd = async () => {
       dialog.value = ''
       selectedOtherLanguage.value = ''
       isDialogActive.value = false
-      toast.success('toast.success.createSuccess')
+
+      // Show language-specific success message
+      const languageDisplayName = getLanguageDisplayName(language)
+      toast.success('toast.success.resumeLanguageAdded', undefined, {
+        language: languageDisplayName,
+      })
     },
     {
       id: 'create-language-version',
@@ -412,7 +435,7 @@ const onSave = async (index: number) => {
           router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
         }
       }
-      toast.success('toast.success.saveSuccess')
+      toast.success('toast.success.resumeSaveSuccess')
     },
     {
       id: 'save-resume',
@@ -478,7 +501,7 @@ const syncTab = async () => {
     async () => {
       await resumeDetailService.syncTranslations(activeResumeDetailID)
       await loadResumeDetails(currentResumeId.value!)
-      toast.success('toast.success.syncSuccess')
+      toast.success('toast.success.resumeSyncSuccess')
     },
     {
       id: 'sync-translations',
@@ -515,7 +538,7 @@ const saveTabName = async (index: number) => {
         await resumeDetailService.updateResumeDetailName(detail.id, newName)
         detail.name = newName
         tabs.value[index] = newName
-        toast.success('toast.success.renameSuccess')
+        toast.success('toast.success.tabRenameSuccess')
         editingTabIndex.value = null
         editingTabName.value = ''
       },

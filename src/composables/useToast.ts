@@ -10,13 +10,22 @@ export const useToast = () => {
     success: (
       message: string,
       options?: Partial<Omit<ToastMessage, 'id' | 'type' | 'message'>>,
+      translationParams?: Record<string, unknown>,
     ) => {
-      const translatedMessage = message.includes('.') ? t(message) : message
+      const translatedMessage = message.includes('.')
+        ? t(message, translationParams || {})
+        : message
       return toastStore.showSuccess(translatedMessage, options)
     },
 
-    error: (message: string, options?: Partial<Omit<ToastMessage, 'id' | 'type' | 'message'>>) => {
-      const translatedMessage = message.includes('.') ? t(message) : message
+    error: (
+      message: string,
+      options?: Partial<Omit<ToastMessage, 'id' | 'type' | 'message'>>,
+      translationParams?: Record<string, unknown>,
+    ) => {
+      const translatedMessage = message.includes('.')
+        ? t(message, translationParams || {})
+        : message
       return toastStore.showError(translatedMessage, {
         persistent: false, // Allow manual dismissal
         ...options,
@@ -26,13 +35,22 @@ export const useToast = () => {
     warning: (
       message: string,
       options?: Partial<Omit<ToastMessage, 'id' | 'type' | 'message'>>,
+      translationParams?: Record<string, unknown>,
     ) => {
-      const translatedMessage = message.includes('.') ? t(message) : message
+      const translatedMessage = message.includes('.')
+        ? t(message, translationParams || {})
+        : message
       return toastStore.showWarning(translatedMessage, options)
     },
 
-    info: (message: string, options?: Partial<Omit<ToastMessage, 'id' | 'type' | 'message'>>) => {
-      const translatedMessage = message.includes('.') ? t(message) : message
+    info: (
+      message: string,
+      options?: Partial<Omit<ToastMessage, 'id' | 'type' | 'message'>>,
+      translationParams?: Record<string, unknown>,
+    ) => {
+      const translatedMessage = message.includes('.')
+        ? t(message, translationParams || {})
+        : message
       return toastStore.showInfo(translatedMessage, options)
     },
   }

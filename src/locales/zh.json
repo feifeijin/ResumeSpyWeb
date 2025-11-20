@@ -21,7 +21,17 @@
       "deleteSuccess": "删除成功",
       "syncSuccess": "同步成功",
       "cloneSuccess": "克隆成功",
-      "renameSuccess": "重命名成功"
+      "renameSuccess": "重命名成功",
+      "resumeSaveSuccess": "简历保存成功",
+      "resumeCreateSuccess": "简历创建成功",
+      "resumeUpdateSuccess": "简历更新成功",
+      "resumeDeleteSuccess": "简历删除成功",
+      "resumeSyncSuccess": "简历同步成功",
+      "resumeCloneSuccess": "简历克隆成功",
+      "resumeRenameSuccess": "简历重命名成功",
+      "tabRenameSuccess": "标签重命名成功",
+      "languageVersionCreateSuccess": "语言版本创建成功",
+      "resumeLanguageAdded": "{language}简历添加成功"
     },
     "error": {
       "operationFailed": "操作失败",

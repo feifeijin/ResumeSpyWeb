@@ -160,7 +160,7 @@ const onRename = async (resume: Resume) => {
       async () => {
         await resumeService.updateResumeName(resume.id, resume.title)
         resume.isEditing = false
-        toast.success('toast.success.renameSuccess')
+        toast.success('toast.success.resumeRenameSuccess')
       },
       {
         id: 'rename-resume',
@@ -181,7 +181,7 @@ const onClone = async (resume: Resume) => {
       const newResume = await resumeService.cloneResume(resume.id)
       resumes.value.unshift(newResume)
       menu.value.unshift(false)
-      toast.success('toast.success.cloneSuccess')
+      toast.success('toast.success.resumeCloneSuccess')
     },
     {
       id: 'clone-resume',
@@ -200,7 +200,7 @@ const onDelete = async (resume: Resume) => {
           resumes.value.splice(index, 1)
           menu.value.splice(index, 1)
         }
-        toast.success('toast.success.deleteSuccess')
+        toast.success('toast.success.resumeDeleteSuccess')
       },
       {
         id: 'delete-resume',

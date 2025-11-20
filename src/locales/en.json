@@ -21,7 +21,17 @@
       "deleteSuccess": "Deleted successfully",
       "syncSuccess": "Synchronized successfully",
       "cloneSuccess": "Cloned successfully",
-      "renameSuccess": "Renamed successfully"
+      "renameSuccess": "Renamed successfully",
+      "resumeSaveSuccess": "Resume saved successfully",
+      "resumeCreateSuccess": "Resume created successfully",
+      "resumeUpdateSuccess": "Resume updated successfully",
+      "resumeDeleteSuccess": "Resume deleted successfully",
+      "resumeSyncSuccess": "Resume synchronized successfully",
+      "resumeCloneSuccess": "Resume cloned successfully",
+      "resumeRenameSuccess": "Resume renamed successfully",
+      "tabRenameSuccess": "Tab renamed successfully",
+      "languageVersionCreateSuccess": "Language version created successfully",
+      "resumeLanguageAdded": "{language} resume added successfully"
     },
     "error": {
       "operationFailed": "Operation failed",

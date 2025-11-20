@@ -21,7 +21,17 @@
       "deleteSuccess": "正常に削除されました",
       "syncSuccess": "正常に同期されました",
       "cloneSuccess": "正常に複製されました",
-      "renameSuccess": "正常に名前変更されました"
+      "renameSuccess": "正常に名前変更されました",
+      "resumeSaveSuccess": "履歴書が正常に保存されました",
+      "resumeCreateSuccess": "履歴書が正常に作成されました",
+      "resumeUpdateSuccess": "履歴書が正常に更新されました",
+      "resumeDeleteSuccess": "履歴書が正常に削除されました",
+      "resumeSyncSuccess": "履歴書が正常に同期されました",
+      "resumeCloneSuccess": "履歴書が正常に複製されました",
+      "resumeRenameSuccess": "履歴書が正常に名前変更されました",
+      "tabRenameSuccess": "タブが正常に名前変更されました",
+      "languageVersionCreateSuccess": "言語版が正常に作成されました",
+      "resumeLanguageAdded": "{language}履歴書が正常に追加されました"
     },
     "error": {
       "operationFailed": "操作が失敗しました",
