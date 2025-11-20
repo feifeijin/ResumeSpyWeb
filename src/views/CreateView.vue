@@ -162,7 +162,9 @@
       <v-col>
         <v-tabs-window v-model="activeTab">
           <v-tabs-window-item v-for="(tab, index) in tabs" :key="tab">
-            <v-md-editor v-model="editors[index]" @save="onSave(index)">{{ tab }}</v-md-editor>
+            <v-md-editor v-model="editors[index]" @save="onSave(index)" height="800px">{{
+              tab
+            }}</v-md-editor>
           </v-tabs-window-item>
         </v-tabs-window>
       </v-col>
