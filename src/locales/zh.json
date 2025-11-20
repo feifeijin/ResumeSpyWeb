@@ -19,7 +19,9 @@
       "createSuccess": "创建成功",
       "updateSuccess": "更新成功",
       "deleteSuccess": "删除成功",
-      "syncSuccess": "同步成功"
+      "syncSuccess": "同步成功",
+      "cloneSuccess": "克隆成功",
+      "renameSuccess": "重命名成功"
     },
     "error": {
       "operationFailed": "操作失败",

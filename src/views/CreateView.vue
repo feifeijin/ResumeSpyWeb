@@ -377,6 +377,7 @@ const onAdd = async () => {
       dialog.value = ''
       selectedOtherLanguage.value = ''
       isDialogActive.value = false
+      toast.success('toast.success.createSuccess')
     },
     {
       id: 'create-language-version',
@@ -514,7 +515,7 @@ const saveTabName = async (index: number) => {
         await resumeDetailService.updateResumeDetailName(detail.id, newName)
         detail.name = newName
         tabs.value[index] = newName
-        toast.success('toast.success.updateSuccess')
+        toast.success('toast.success.renameSuccess')
         editingTabIndex.value = null
         editingTabName.value = ''
       },

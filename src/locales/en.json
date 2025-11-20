@@ -19,7 +19,9 @@
       "createSuccess": "Created successfully",
       "updateSuccess": "Updated successfully",
       "deleteSuccess": "Deleted successfully",
-      "syncSuccess": "Synchronized successfully"
+      "syncSuccess": "Synchronized successfully",
+      "cloneSuccess": "Cloned successfully",
+      "renameSuccess": "Renamed successfully"
     },
     "error": {
       "operationFailed": "Operation failed",
