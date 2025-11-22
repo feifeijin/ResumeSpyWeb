@@ -6,140 +6,46 @@
           <v-card-title class="text-h5 text-center font-weight-bold">
             {{ t('auth.title') }}
           </v-card-title>
-          <v-card-subtitle class="text-center text-body-2 mb-2">
+          <v-card-subtitle class="text-center text-body-2 mb-6">
             {{ t('auth.subtitle') }}
           </v-card-subtitle>
 
-          <v-tabs v-model="activeTab" align-tabs="center" density="comfortable" class="mt-4">
-            <v-tab value="login">{{ t('auth.login') }}</v-tab>
-            <v-tab value="register">{{ t('auth.register') }}</v-tab>
-          </v-tabs>
+          <v-form
+            ref="magicLinkFormRef"
+            v-model="magicLinkFormValid"
+            @submit.prevent="handleRequest"
+          >
+            <v-text-field
+              v-model="magicLinkForm.email"
+              :label="t('auth.email')"
+              :rules="[rules.required, rules.email]"
+              type="email"
+              autocomplete="email"
+              prepend-inner-icon="mdi-email"
+              density="comfortable"
+              variant="outlined"
+            />
 
-          <v-window v-model="activeTab" class="mt-6">
-            <v-window-item value="login">
-              <v-form ref="loginFormRef" v-model="loginFormValid" @submit.prevent="handleLogin">
-                <v-text-field
-                  v-model="loginForm.email"
-                  :label="t('auth.email')"
-                  :rules="[rules.required, rules.email]"
-                  type="email"
-                  autocomplete="email"
-                  prepend-inner-icon="mdi-email"
-                  density="comfortable"
-                  variant="outlined"
-                />
+            <v-alert
+              v-if="linkSent"
+              type="success"
+              variant="tonal"
+              class="mb-4"
+              :text="t('auth.magicLinkSent', { email: magicLinkForm.email })"
+            />
 
-                <v-text-field
-                  v-model="loginForm.password"
-                  :label="t('auth.password')"
-                  :rules="[rules.required]"
-                  type="password"
-                  autocomplete="current-password"
-                  prepend-inner-icon="mdi-lock"
-                  density="comfortable"
-                  variant="outlined"
-                />
-
-                <div class="d-flex justify-space-between align-center mb-4">
-                  <v-checkbox
-                    v-model="loginForm.rememberMe"
-                    :label="t('auth.rememberMe')"
-                    density="comfortable"
-                    hide-details
-                  />
-                </div>
-
-                <v-btn
-                  type="submit"
-                  color="primary"
-                  class="my-2"
-                  size="large"
-                  :loading="isProcessing"
-                  :disabled="!loginFormValid"
-                  block
-                >
-                  {{ t('auth.login') }}
-                </v-btn>
-
-                <p class="text-body-2 text-center mt-4">
-                  {{ t('auth.noAccount') }}
-                  <v-btn variant="text" size="small" @click="activeTab = 'register'">
-                    {{ t('auth.register') }}
-                  </v-btn>
-                </p>
-              </v-form>
-            </v-window-item>
-
-            <v-window-item value="register">
-              <v-form
-                ref="registerFormRef"
-                v-model="registerFormValid"
-                @submit.prevent="handleRegister"
-              >
-                <v-text-field
-                  v-model="registerForm.displayName"
-                  :label="t('auth.displayName')"
-                  :rules="[rules.required]"
-                  autocomplete="name"
-                  prepend-inner-icon="mdi-account"
-                  density="comfortable"
-                  variant="outlined"
-                />
-
-                <v-text-field
-                  v-model="registerForm.email"
-                  :label="t('auth.email')"
-                  :rules="[rules.required, rules.email]"
-                  type="email"
-                  autocomplete="email"
-                  prepend-inner-icon="mdi-email"
-                  density="comfortable"
-                  variant="outlined"
-                />
-
-                <v-text-field
-                  v-model="registerForm.password"
-                  :label="t('auth.password')"
-                  :rules="[rules.required, rules.password]"
-                  type="password"
-                  autocomplete="new-password"
-                  prepend-inner-icon="mdi-lock"
-                  density="comfortable"
-                  variant="outlined"
-                />
-
-                <v-text-field
-                  v-model="registerForm.confirmPassword"
-                  :label="t('auth.confirmPassword')"
-                  :rules="[rules.required, rules.confirmPassword]"
-                  type="password"
-                  autocomplete="new-password"
-                  prepend-inner-icon="mdi-lock-check"
-                  density="comfortable"
-                  variant="outlined"
-                />
-
-                <v-btn
-                  type="submit"
-                  color="primary"
-                  class="my-2"
-                  size="large"
-                  :loading="isProcessing"
-                  :disabled="!registerFormValid"
-                  block
-                >
-                  {{ t('auth.register') }}
-                </v-btn>
-
-                <p class="text-body-2 text-center mt-4">
-                  {{ t('auth.haveAccount') }}
-                  <v-btn variant="text" size="small" @click="activeTab = 'login'">
-                    {{ t('auth.login') }}
-                  </v-btn>
-                </p>
-              </v-form>
-            </v-window-item>
-          </v-window>
+            <v-btn
+              type="submit"
+              color="primary"
+              class="my-2"
+              size="large"
+              :loading="isProcessing"
+              :disabled="!magicLinkFormValid"
+              block
+            >
+              {{ t(linkSent ? 'auth.resendLink' : 'auth.sendLink') }}
+            </v-btn>
+          </v-form>
 
           <v-divider class="my-6" />
 
@@ -187,35 +93,18 @@ const { t } = useI18n()
 const toast = useToast()
 const { isLoading, isAuthenticated } = storeToRefs(authStore)
 
-const activeTab = ref<'login' | 'register'>('login')
-const loginFormRef = ref()
-const registerFormRef = ref()
-const loginFormValid = ref(false)
-const registerFormValid = ref(false)
+const magicLinkFormRef = ref()
+const magicLinkFormValid = ref(false)
+const linkSent = ref(false)
 
-const loginForm = reactive({
+const magicLinkForm = reactive({
   email: '',
-  password: '',
-  rememberMe: true,
 })
-
-const registerForm = reactive({
-  displayName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-})
-
-const passwordPattern = /^(?=.*[a-z])(?=.*\d).{6,}$/
 
 const rules = {
   required: (value: string) =>
     (!!value && value.trim().length > 0) || t('auth.validation.required'),
   email: (value: string) => /.+@.+\..+/.test(value) || t('auth.validation.invalidEmail'),
-  password: (value: string) =>
-    passwordPattern.test(value) || t('auth.validation.passwordComplexity'),
-  confirmPassword: (value: string) =>
-    value === registerForm.password || t('auth.validation.confirmPassword'),
 }
 
 const redirectTarget = computed(() => {
@@ -225,43 +114,35 @@ const redirectTarget = computed(() => {
 
 const isProcessing = computed(() => isLoading.value)
 
-const handleLogin = async () => {
-  const validation = await loginFormRef.value?.validate?.()
+const handleRequest = async () => {
+  const validation = await magicLinkFormRef.value?.validate?.()
   if (validation?.valid === false) {
     return
   }
 
   try {
-    await authStore.login({
-      email: loginForm.email,
-      password: loginForm.password,
-      rememberMe: loginForm.rememberMe,
+    await authStore.requestMagicLink({
+      email: magicLinkForm.email.trim(),
+      redirectUrl: buildRedirectUrl(),
     })
-    toast.success(t('auth.loginSuccess'))
-    router.replace(redirectTarget.value)
+    toast.success(t('auth.linkRequestSuccess'))
+    linkSent.value = true
   } catch (error) {
     toast.error(error instanceof Error ? error.message : String(error))
   }
 }
 
-const handleRegister = async () => {
-  const validation = await registerFormRef.value?.validate?.()
-  if (validation?.valid === false) {
-    return
+const buildRedirectUrl = () => {
+  if (typeof window === 'undefined') {
+    return '/auth/magic'
   }
 
-  try {
-    await authStore.register({
-      displayName: registerForm.displayName,
-      email: registerForm.email,
-      password: registerForm.password,
-      confirmPassword: registerForm.confirmPassword,
-    })
-    toast.success(t('auth.registerSuccess'))
-    router.replace(redirectTarget.value)
-  } catch (error) {
-    toast.error(error instanceof Error ? error.message : String(error))
+  const baseUrl = `${window.location.origin}/auth/magic`
+  const params = new URLSearchParams()
+  if (redirectTarget.value && redirectTarget.value !== '/') {
+    params.set('redirect', redirectTarget.value)
   }
+  return params.toString() ? `${baseUrl}?${params}` : baseUrl
 }
 
 const handleGoogleLogin = async () => {
@@ -305,15 +186,20 @@ watch(
 )
 
 watch(
-  () => route.query.mode,
-  (mode) => {
-    if (mode === 'register') {
-      activeTab.value = 'register'
-    } else if (mode === 'login') {
-      activeTab.value = 'login'
+  () => route.query.email,
+  (email) => {
+    if (typeof email === 'string' && email.length > 0 && !linkSent.value) {
+      magicLinkForm.email = email
     }
   },
   { immediate: true },
+)
+
+watch(
+  () => magicLinkForm.email,
+  () => {
+    linkSent.value = false
+  },
 )
 </script>
 

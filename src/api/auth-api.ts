@@ -3,27 +3,27 @@ import type { AxiosResponse } from 'axios'
 import { API_BASE_URL } from './api'
 import type {
   AuthResponse,
+  ConfirmEmailLinkRequest,
+  EmailLinkRequest,
   ExternalAuthRequest,
-  LoginRequest,
   LogoutRequest,
   RefreshTokenRequest,
-  RegisterRequest,
 } from '@/models/auth.type'
 
 const AUTH_BASE_URL = `${API_BASE_URL}/auth`
 
 const authApi = {
-  async register(payload: RegisterRequest): Promise<AuthResponse> {
+  async requestMagicLink(payload: EmailLinkRequest): Promise<AuthResponse> {
     const { data }: AxiosResponse<AuthResponse> = await axios.post(
-      `${AUTH_BASE_URL}/register`,
+      `${AUTH_BASE_URL}/magic/request`,
       payload,
     )
     return data
   },
 
-  async login(payload: LoginRequest): Promise<AuthResponse> {
+  async confirmMagicLink(payload: ConfirmEmailLinkRequest): Promise<AuthResponse> {
     const { data }: AxiosResponse<AuthResponse> = await axios.post(
-      `${AUTH_BASE_URL}/login`,
+      `${AUTH_BASE_URL}/magic/confirm`,
       payload,
     )
     return data

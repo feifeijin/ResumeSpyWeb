@@ -11,17 +11,14 @@ export interface AuthResponse {
   errors?: string[]
 }
 
-export interface LoginRequest {
+export interface EmailLinkRequest {
   email: string
-  password: string
-  rememberMe?: boolean
+  redirectUrl?: string
 }
 
-export interface RegisterRequest {
+export interface ConfirmEmailLinkRequest {
   email: string
-  password: string
-  confirmPassword: string
-  displayName?: string
+  token: string
 }
 
 export interface RefreshTokenRequest {

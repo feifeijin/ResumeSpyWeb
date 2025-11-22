@@ -153,7 +153,7 @@ const onClick = (item: { name: string; link: string }) => {
 
 const navigateToAuth = () => {
   drawer.value = false
-  router.push({ name: 'auth', query: { mode: 'login' } })
+  router.push({ name: 'auth' })
 }
 
 const goToMySpy = () => {

@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import MySpyView from '../views/MySpyView.vue'
 import CreateView from '../views/CreateView.vue'
 import AuthView from '../views/AuthView.vue'
+import AuthMagicView from '../views/AuthMagicView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -27,6 +28,12 @@ const router = createRouter({
       path: '/auth',
       name: 'auth',
       component: AuthView,
+      meta: { requiresGuest: true },
+    },
+    {
+      path: '/auth/magic',
+      name: 'auth-magic',
+      component: AuthMagicView,
       meta: { requiresGuest: true },
     },
   ],

@@ -5,9 +5,9 @@ import authApi from '@/api/auth-api'
 import type {
   AuthResponse,
   AuthSession,
+  ConfirmEmailLinkRequest,
+  EmailLinkRequest,
   ExternalAuthRequest,
-  LoginRequest,
-  RegisterRequest,
 } from '@/models/auth.type'
 
 const STORAGE_KEY = 'resumeSpy.auth.session'
@@ -142,22 +142,23 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  const register = async (payload: RegisterRequest) =>
+  const requestMagicLink = async (payload: EmailLinkRequest) =>
     withLoading(async () => {
       try {
-        const response = await authApi.register(payload)
-        setSession(response)
+        const response = await authApi.requestMagicLink(payload)
+        if (!response.succeeded) {
+          throw new Error(response.errors?.join('\n') || 'Unable to send magic link.')
+        }
         return response
       } catch (error) {
-        clearSession()
         throw new Error(resolveErrorMessage(error))
       }
     })
 
-  const login = async (payload: LoginRequest) =>
+  const confirmMagicLink = async (payload: ConfirmEmailLinkRequest) =>
     withLoading(async () => {
       try {
-        const response = await authApi.login(payload)
+        const response = await authApi.confirmMagicLink(payload)
         setSession(response)
         return response
       } catch (error) {
@@ -254,8 +255,8 @@ export const useAuthStore = defineStore('auth', () => {
     canRefresh,
 
     // Actions
-    register,
-    login,
+    requestMagicLink,
+    confirmMagicLink,
     externalLogin,
     loginWithGoogle,
     loginWithGithub,
