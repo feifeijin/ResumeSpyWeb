@@ -106,12 +106,16 @@ import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
 import type { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
+import { useGuestStore } from '@/stores/guest'
+import { useAuthStore } from '@/stores/auth'
 
 const resumeService = new ResumeService()
 const { withLoading, commonMessages } = useLoading()
 const toast = useToast()
 
 const router = useRouter()
+const guestStore = useGuestStore()
+const authStore = useAuthStore()
 
 const resumes = ref<Resume[]>([])
 const menu = ref<boolean[]>([])
@@ -151,6 +155,10 @@ const openEditPage = (id: string) => {
   router.push({ name: 'create', query: { resumeId: id } })
 }
 const createNew = () => {
+  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
+    toast.error('You have reached the guest resume limit. Please sign in to create more.')
+    return
+  }
   router.push('/create') // 进行 Vue Router 路由跳转
 }
 
@@ -175,6 +183,11 @@ const onRename = async (resume: Resume) => {
 const onClone = async (resume: Resume) => {
   const index = resumes.value.indexOf(resume)
   menu.value[index] = false
+
+  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
+    toast.error('You have reached the guest resume limit. Please sign in to clone resumes.')
+    return
+  }
 
   await withLoading(
     async () => {

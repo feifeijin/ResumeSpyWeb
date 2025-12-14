@@ -16,7 +16,7 @@ export const setupAxiosInterceptors = (pinia: Pinia) => {
   }
 
   axios.defaults.baseURL = API_BASE_URL
-  axios.defaults.withCredentials = false
+  axios.defaults.withCredentials = true
 
   axios.interceptors.request.use((config) => {
     const authStore = useAuthStore(pinia)

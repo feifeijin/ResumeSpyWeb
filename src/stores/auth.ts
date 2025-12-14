@@ -9,6 +9,8 @@ import type {
   EmailLinkRequest,
   ExternalAuthRequest,
 } from '@/models/auth.type'
+import { useGuestStore } from './guest'
+import router from '@/router'
 
 const STORAGE_KEY = 'resumeSpy.auth.session'
 
@@ -160,6 +162,10 @@ export const useAuthStore = defineStore('auth', () => {
       try {
         const response = await authApi.confirmMagicLink(payload)
         setSession(response)
+        // Post-auth: clear guest state and navigate to MySpy to refresh resumes
+        const guestStore = useGuestStore()
+        guestStore.clearGuestSession()
+        router.push({ name: 'myspy' })
         return response
       } catch (error) {
         clearSession()
@@ -172,6 +178,10 @@ export const useAuthStore = defineStore('auth', () => {
       try {
         const response = await authApi.externalLogin(payload)
         setSession(response)
+        // Post-auth: clear guest state and navigate to MySpy to refresh resumes
+        const guestStore = useGuestStore()
+        guestStore.clearGuestSession()
+        router.push({ name: 'myspy' })
         return response
       } catch (error) {
         clearSession()

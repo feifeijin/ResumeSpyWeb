@@ -213,6 +213,8 @@ import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
 import type { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
+import { useGuestStore } from '@/stores/guest'
+import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18n()
 const { withLoading, commonMessages, isGlobalLoading } = useLoading()
@@ -221,6 +223,8 @@ const toast = useToast()
 const resumeDetailService = new ResumeDetailService()
 const route = useRoute()
 const router = useRouter()
+const guestStore = useGuestStore()
+const authStore = useAuthStore()
 
 const dialog = ref('')
 const currentResumeId = ref<string | null>(null)
@@ -339,6 +343,11 @@ onMounted(() => {
 })
 
 const onAdd = async () => {
+  // Prevent adding new language/version if guest limit reached
+  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
+    toast.error(t('errors.guestLimitReached'))
+    return
+  }
   const language =
     dialog.value === 'OTHER' && selectedOtherLanguage.value
       ? selectedOtherLanguage.value
@@ -433,6 +442,11 @@ const onAdd = async () => {
 }
 
 const onSave = async (index: number) => {
+  // Prevent first-time creation if guest limit reached
+  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
+    toast.error(t('errors.guestLimitReached'))
+    return
+  }
   await withLoading(
     async () => {
       const content = editors.value[index]
