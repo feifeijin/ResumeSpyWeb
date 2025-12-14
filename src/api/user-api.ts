@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { User } from '@/models/user.type'
+import type { User } from '@/models/user.type'
 import { API_BASE_URL } from './api'
 
 class UserService {
@@ -7,10 +7,13 @@ class UserService {
   async fetchUsers(): Promise<User[]> {
     try {
       const response = await axios.get(`${API_BASE_URL}/users`)
-      return response.data.map(
-        (item: User) =>
-          new User(item.id, item.name, item.email, item.createTime, item.lastModifyTime),
-      )
+      return response.data.map((item: User) => ({
+        id: item.id,
+        name: item.name,
+        email: item.email,
+        createTime: item.createTime,
+        lastModifyTime: item.lastModifyTime,
+      }))
     } catch (error) {
       console.error('Failed to fetch users:', error)
       throw error
@@ -21,13 +24,13 @@ class UserService {
   async createUser(user: User): Promise<User> {
     try {
       const response = await axios.post(`${API_BASE_URL}/users`, user)
-      return new User(
-        response.data.id,
-        response.data.name,
-        response.data.email,
-        response.data.createTime,
-        response.data.lastModifyTime,
-      )
+      return {
+        id: response.data.id,
+        name: response.data.name,
+        email: response.data.email,
+        createTime: response.data.createTime,
+        lastModifyTime: response.data.lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to create user:', error)
       throw error
@@ -38,13 +41,13 @@ class UserService {
   async updateUser(user: User): Promise<User> {
     try {
       const response = await axios.put(`${API_BASE_URL}/users/${user.id}`, user)
-      return new User(
-        response.data.id,
-        response.data.name,
-        response.data.email,
-        response.data.createTime,
-        response.data.lastModifyTime,
-      )
+      return {
+        id: response.data.id,
+        name: response.data.name,
+        email: response.data.email,
+        createTime: response.data.createTime,
+        lastModifyTime: response.data.lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to update user:', error)
       throw error
@@ -66,7 +69,13 @@ class UserService {
     try {
       const response = await axios.post(`${API_BASE_URL}/login`, { email, password })
       const { id, name, createTime, lastModifyTime } = response.data
-      return new User(id, name, email, createTime, lastModifyTime)
+      return {
+        id,
+        name,
+        email,
+        createTime,
+        lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to login:', error)
       throw error
@@ -78,7 +87,13 @@ class UserService {
     try {
       const response = await axios.post(`${API_BASE_URL}/register`, { name, email, password })
       const { id, createTime, lastModifyTime } = response.data
-      return new User(id, name, email, createTime, lastModifyTime)
+      return {
+        id,
+        name,
+        email,
+        createTime,
+        lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to register:', error)
       throw error

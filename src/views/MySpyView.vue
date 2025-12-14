@@ -104,7 +104,7 @@ import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
-import { Resume } from '@/models/resume.type'
+import type { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
 
 const resumeService = new ResumeService()

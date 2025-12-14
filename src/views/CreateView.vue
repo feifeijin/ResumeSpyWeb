@@ -211,7 +211,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
-import { ResumeDetail } from '@/models/resume-detail.type'
+import type { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 
 const { t } = useI18n()
@@ -323,7 +323,18 @@ onMounted(() => {
     const newResumeTitle = t('createView.newResume')
     tabs.value = [newResumeTitle]
     editors.value = ['']
-    resumeDetails.value = [new ResumeDetail('', '', newResumeTitle, '', '', true, '', '')]
+    resumeDetails.value = [
+      {
+        id: '',
+        resumeId: '',
+        name: newResumeTitle,
+        language: '',
+        content: '',
+        isDefault: true,
+        createTime: '',
+        lastModifyTime: '',
+      },
+    ]
   }
 })
 

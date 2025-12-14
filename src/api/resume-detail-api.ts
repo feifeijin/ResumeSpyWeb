@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ResumeDetail } from '@/models/resume-detail.type'
+import type { ResumeDetail } from '@/models/resume-detail.type'
 import { API_BASE_URL } from './api'
 
 class ResumeDetailService {
@@ -7,19 +7,16 @@ class ResumeDetailService {
   async fetchResumeDetailsByResumeId(resumeId: string): Promise<ResumeDetail[]> {
     try {
       const response = await axios.get(`${API_BASE_URL}/resumeDetail?resumeId=${resumeId}`)
-      return response.data.map(
-        (item: ResumeDetail) =>
-          new ResumeDetail(
-            item.id,
-            item.resumeId,
-            item.name,
-            item.language,
-            item.content,
-            item.isDefault,
-            item.createTime,
-            item.lastModifyTime,
-          ),
-      )
+      return response.data.map((item: ResumeDetail) => ({
+        id: item.id,
+        resumeId: item.resumeId,
+        name: item.name,
+        language: item.language,
+        content: item.content,
+        isDefault: item.isDefault,
+        createTime: item.createTime,
+        lastModifyTime: item.lastModifyTime,
+      }))
     } catch (error) {
       console.error(`Failed to fetch resume details for resume ID ${resumeId}:`, error)
       throw error
@@ -30,16 +27,16 @@ class ResumeDetailService {
   async createResumeDetail(resumeDetail: ResumeDetail): Promise<ResumeDetail> {
     try {
       const response = await axios.post(`${API_BASE_URL}/resumeDetail`, resumeDetail)
-      return new ResumeDetail(
-        response.data.id,
-        response.data.resumeId,
-        response.data.name,
-        response.data.language,
-        response.data.content,
-        response.data.isDefault,
-        response.data.createTime,
-        response.data.lastModifyTime,
-      )
+      return {
+        id: response.data.id,
+        resumeId: response.data.resumeId,
+        name: response.data.name,
+        language: response.data.language,
+        content: response.data.content,
+        isDefault: response.data.isDefault,
+        createTime: response.data.createTime,
+        lastModifyTime: response.data.lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to create resume detail:', error)
       throw error
@@ -53,16 +50,16 @@ class ResumeDetailService {
         `${API_BASE_URL}/resumeDetail/${resumeDetail.id}`,
         resumeDetail,
       )
-      return new ResumeDetail(
-        response.data.id,
-        response.data.resumeId,
-        response.data.name,
-        response.data.language,
-        response.data.content,
-        response.data.isDefault,
-        response.data.createTime,
-        response.data.lastModifyTime,
-      )
+      return {
+        id: response.data.id,
+        resumeId: response.data.resumeId,
+        name: response.data.name,
+        language: response.data.language,
+        content: response.data.content,
+        isDefault: response.data.isDefault,
+        createTime: response.data.createTime,
+        lastModifyTime: response.data.lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to update resume detail:', error)
       throw error
@@ -81,16 +78,16 @@ class ResumeDetailService {
           },
         },
       )
-      return new ResumeDetail(
-        response.data.id,
-        response.data.resumeId,
-        response.data.name,
-        response.data.language,
-        response.data.content,
-        response.data.isDefault,
-        response.data.createTime,
-        response.data.lastModifyTime,
-      )
+      return {
+        id: response.data.id,
+        resumeId: response.data.resumeId,
+        name: response.data.name,
+        language: response.data.language,
+        content: response.data.content,
+        isDefault: response.data.isDefault,
+        createTime: response.data.createTime,
+        lastModifyTime: response.data.lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to update resume detail name:', error)
       throw error
@@ -109,16 +106,16 @@ class ResumeDetailService {
           },
         },
       )
-      return new ResumeDetail(
-        response.data.id,
-        response.data.resumeId,
-        response.data.name,
-        response.data.language,
-        response.data.content,
-        response.data.isDefault,
-        response.data.createTime,
-        response.data.lastModifyTime,
-      )
+      return {
+        id: response.data.id,
+        resumeId: response.data.resumeId,
+        name: response.data.name,
+        language: response.data.language,
+        content: response.data.content,
+        isDefault: response.data.isDefault,
+        createTime: response.data.createTime,
+        lastModifyTime: response.data.lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to update resume detail content:', error)
       throw error
@@ -135,16 +132,16 @@ class ResumeDetailService {
         ExistingResumeDetailId: existingResumeDetailId,
         Language: language,
       })
-      return new ResumeDetail(
-        response.data.id,
-        response.data.resumeId,
-        response.data.name,
-        response.data.language,
-        response.data.content,
-        response.data.isDefault,
-        response.data.createTime,
-        response.data.lastModifyTime,
-      )
+      return {
+        id: response.data.id,
+        resumeId: response.data.resumeId,
+        name: response.data.name,
+        language: response.data.language,
+        content: response.data.content,
+        isDefault: response.data.isDefault,
+        createTime: response.data.createTime,
+        lastModifyTime: response.data.lastModifyTime,
+      }
     } catch (error) {
       console.error('Failed to create resume detail from existing:', error)
       throw error
