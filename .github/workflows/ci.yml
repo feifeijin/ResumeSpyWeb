@@ -1,0 +1,48 @@
+# CI workflow for ResumeSpyWeb (Frontend)
+# Runs on all pull requests and pushes to main/release branches
+# Purpose: Validate builds, run type checking, linting, and tests
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - release
+  pull_request:
+    branches:
+      - main
+      - release
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Build
+        run: npm run build-only
+
+      - name: Run unit tests
+        run: npm run test:unit -- --run --reporter=verbose
