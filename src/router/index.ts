@@ -4,6 +4,7 @@ import MySpyView from '../views/MySpyView.vue'
 import CreateView from '../views/CreateView.vue'
 import AuthView from '../views/AuthView.vue'
 import AuthMagicView from '../views/AuthMagicView.vue'
+import ArticleView from '../views/ArticleView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -13,6 +14,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/articles/:slug',
+      name: 'article',
+      component: ArticleView,
     },
     {
       path: '/myspy',
