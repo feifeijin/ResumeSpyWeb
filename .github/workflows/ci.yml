@@ -1,5 +1,5 @@
 # CI workflow for ResumeSpyWeb (Frontend)
-# Runs on all pull requests and pushes to main/release branches
+# Runs on all pull requests and pushes to master/release branches
 # Purpose: Validate builds, run type checking, linting, and tests
 
 name: CI
@@ -7,11 +7,11 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - master
       - release
   pull_request:
     branches:
-      - main
+      - master
       - release
 
 permissions:
