@@ -24,6 +24,8 @@ ResumeSpyWeb is the front-end of the Resume Manager platform, built with Vue 3, 
 
 This repository uses **GitHub Actions** for Continuous Integration (CI) and **Vercel** for Continuous Deployment (CD).
 
+---
+
 ### Architecture
 
 - **CI**: GitHub Actions validates code quality (lint, type-check, build, tests)
@@ -34,8 +36,8 @@ This repository uses **GitHub Actions** for Continuous Integration (CI) and **Ve
 ## Continuous Integration (CI)
 
 CI runs automatically on:
-- **Pull Requests** → Validates code quality before merging
-- **Push to `main`** → Ensures production-ready code
+- **Pull Requests**: Validates code quality before merging
+- **Push to master/main/release**: Ensures production-ready code
 
 ### CI Pipeline Steps:
 1. **Checkout** - Clone the repository
@@ -45,194 +47,209 @@ CI runs automatically on:
 5. **Build** - Build the production bundle
 6. **Unit Tests** - Run Vitest tests
 
-✅ CI does **NOT** deploy - deployment is handled by Vercel.
+**Note:** CI focuses on validation only. Deployment is handled by Vercel (see CD section below).
 
 ---
 
-## Continuous Deployment (CD)
+### Continuous Deployment (CD) with Vercel
 
-### Overview
+This project uses **Vercel** for continuous deployment. Vercel automatically deploys the application based on Git branch activity.
 
-Vercel automatically deploys the application through its GitHub integration:
+#### Deployment Environments
 
-| Trigger | Environment | API Used | Deployment Type |
-|---------|-------------|----------|----------------|
-| **Pull Request** | Preview | DEV API | Preview URL |
-| **Push to `main`** | Production | PROD API | Production URL |
+| Environment | Branch | API Endpoint | Vercel Type | Auto-Deploy |
+|-------------|--------|--------------|-------------|-------------|
+| **Production** | `master` | PROD API | Production | ✅ Yes |
+| **Preview** | PR branches | DEV API | Preview | ✅ Yes |
+| **Local Dev** | - | Local backend | - | Manual |
 
-### How Preview Deployments Work (PRs)
+#### How It Works
 
-When you open a Pull Request:
+##### 1️⃣ Pull Request Preview Deployments
 
-1. **GitHub Actions CI** runs automatically:
-   - Validates lint, type-check, build, and tests
-   - Must pass before merge
+When you **create or update a Pull Request**:
 
-2. **Vercel** creates a Preview Deployment:
-   - Builds the app using `.env.development`
-   - Connects to **DEV API**
-   - Generates a unique preview URL (e.g., `https://resumespyweb-pr-123.vercel.app`)
-   - Adds a comment to the PR with the preview link
+1. **GitHub CI** runs automatically:
+   - Installs dependencies
+   - Runs linting
+   - Runs type checking
+   - Builds the application
+   - Runs unit tests
 
-3. **Review**:
-   - Click the Vercel preview link in the PR
-   - Test the changes in a live environment
-   - Preview uses DEV API - safe to test without affecting production
+2. **Vercel** automatically:
+   - Detects the PR
+   - Builds the application using `.env.development` (DEV API)
+   - Generates a **unique preview URL** (e.g., `https://resumespyweb-pr-123.vercel.app`)
+   - Posts the preview URL as a comment on the PR
+   - Updates the preview on every new commit to the PR
+
+3. **You can**:
+   - Click the preview URL to test changes in a real environment
+   - Share the preview URL with team members for review
+   - Verify that the DEV API integration works correctly
+
+**Preview deployments use the DEV API** configured in `.env.development`.
+
+##### 2️⃣ Production Deployment
+
+When you **merge a PR to `master`**:
+
+1. **GitHub CI** validates the code again on `master`
+
+2. **Vercel** automatically:
+   - Detects the push to `master`
+   - Builds the application using `.env.production` (PROD API)
+   - Deploys to the **production domain** (e.g., `https://resumespy.com` or `https://resumespyweb.vercel.app`)
+   - The deployment typically completes in 1-2 minutes
+
+**Production deployments use the PROD API** configured in `.env.production`.
+
+---
+
+### Vercel Setup Instructions
+
+#### Initial Setup (One-Time)
+
+1. **Install Vercel GitHub App**:
+   - Go to [Vercel](https://vercel.com)
+   - Sign in with your GitHub account
+   - Click "Import Project"
+   - Select `feifeijin/ResumeSpyWeb` repository
+   - Vercel will auto-detect Vite settings from `vercel.json`
+
+2. **Configure Production Branch**:
+   - In Vercel Dashboard → Project Settings → Git
+   - Set Production Branch to: `master`
+
+3. **Configure Environment Variables in Vercel** (if needed):
+   - Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+   - For **Production**, set:
+     - `VITE_API_BASE_URL` = `https://your-actual-prod-api.com/`
+   - For **Preview**, set:
+     - `VITE_API_BASE_URL` = `https://your-actual-dev-api.com/`
+   
+   > **Note**: Environment variables in Vercel **override** values in `.env.development` and `.env.production` if set. You can use Vercel environment variables for sensitive or environment-specific URLs, or update the `.env.*` files directly.
+
+4. **Configure Production Domain** (optional):
+   - Go to Vercel Dashboard → Your Project → Settings → Domains
+   - Add your custom domain (e.g., `app.resumespy.com`)
+   - Vercel provides automatic HTTPS certificates
+
+---
+
+### Verifying Deployments
+
+#### Preview Deployment Verification
+
+1. Open the PR on GitHub
+2. Wait for the Vercel bot to comment with the preview URL
+3. Click the preview URL
+4. Open browser DevTools → Network tab
+5. Verify API calls go to the **DEV API** endpoint
+6. Test the application functionality
+
+#### Production Deployment Verification
+
+1. After merging to `master`, go to the Vercel Dashboard
+2. Wait for the deployment to complete (watch the Deployments tab)
+3. Visit your production URL
+4. Open browser DevTools → Network tab
+5. Verify API calls go to the **PROD API** endpoint
+6. Perform smoke tests on critical features
+
+---
+
+### Environment Configuration Files
+
+| File | Purpose | Committed? | Used By |
+|------|---------|-----------|---------|
+| `.env.development` | DEV API configuration | ✅ Yes | PR previews & local dev |
+| `.env.production` | PROD API configuration | ✅ Yes | Production deployments |
+| `.env.local` | Local overrides (optional) | ❌ No (gitignored) | Local development only |
+| `.env.example` | Template for contributors | ✅ Yes | Documentation |
+
+#### How Environment Variables Work
+
+The application reads `VITE_API_BASE_URL` from `import.meta.env` (see `src/api/api.ts`).
+
+Vite loads environment files in this priority order (higher priority = loaded last):
+1. `.env` (always loaded)
+2. `.env.local` (local overrides, not committed)
+3. `.env.[mode]` (e.g., `.env.development` or `.env.production`)
+4. `.env.[mode].local` (local overrides for specific mode, not committed)
+
+**Vercel automatically uses:**
+- `.env.development` for PR preview builds
+- `.env.production` for production builds from `master`
+
+---
+
+### Rollback Strategy
+
+If a production deployment has issues:
+
+**Option 1: Instant Rollback (Vercel Dashboard)**
+1. Go to Vercel Dashboard → Deployments
+2. Find the last stable deployment
+3. Click "..." → "Promote to Production"
+4. The rollback is instant (no rebuild needed)
+
+**Option 2: Git Rollback**
+1. Revert the problematic commit on `master`
+2. Push to `master`
+3. Vercel will automatically redeploy
+4. This triggers a new build (takes 1-2 minutes)
+
+---
+
+### Troubleshooting
+
+#### Preview Deployment Not Created
+- Check that the Vercel GitHub App has access to the repository
+- Verify Vercel project settings include the correct branch configuration
+- Check Vercel deployment logs for build errors
+
+#### Wrong API Being Used
+- Verify `.env.development` and `.env.production` have correct values
+- Check Vercel environment variable overrides in the dashboard (Settings → Environment Variables)
+- Inspect network requests in browser DevTools to confirm the API base URL
+- Check `src/api/api.ts` to see how the environment variable is read
+
+#### Build Fails on Vercel
+- Check Vercel deployment logs for specific error messages
+- Ensure `package.json` scripts are correct (`build`, `build-only`)
+- Verify that all dependencies are listed in `package.json`
+- Test the build locally: `npm run build`
+- Verify `vercel.json` configuration is valid
+
+#### Environment Variable Not Loading
+- Ensure the variable name starts with `VITE_` (Vite requirement)
+- Check that the `.env.*` file is committed to the repository
+- Verify the file is in the repository root (not in a subdirectory)
+- Restart your local dev server after changing environment files
+
+---
+
+### CI vs CD Separation
+
+- **CI (GitHub Actions)**: Validates code quality (lint, type-check, test, build)
+- **CD (Vercel)**: Handles deployment to hosting infrastructure
+
+**Important:** GitHub Actions does **NOT** deploy - it only validates.
+
+This separation ensures:
+- ✅ Fast CI feedback (no deployment overhead)
+- ✅ Reliable deployments managed by Vercel's infrastructure
+- ✅ Clear separation of concerns
+- ✅ Easy rollbacks via Vercel dashboard
+
+---
 
 ### How Production Deployments Work
 
 When code is merged to `main`:
 
-1. **GitHub Actions CI** validates the build again
-
-2. **Vercel** deploys to Production:
-   - Builds the app using `.env.production`
-   - Connects to **PROD API**
-   - Deploys to production URL (e.g., `https://resumespyweb.vercel.app`)
-   - Automatic rollback available if needed
-
-### Verifying Deployments in Browser
-
-#### Preview Deployment (PR):
-1. Open the PR on GitHub
-2. Look for the **Vercel bot comment** with the preview URL
-3. Click the preview link
-4. Open browser DevTools → Network tab
-5. Verify API calls go to **DEV API** endpoint
-
-#### Production Deployment:
-1. Visit your production URL (configured in Vercel)
-2. Open browser DevTools → Network tab
-3. Verify API calls go to **PROD API** endpoint
-
----
-
-## Environment Configuration
-
-The application uses environment-specific configuration via `.env` files:
-
-| File | Used By | API Endpoint | Purpose |
-|------|---------|--------------|---------|
-| `.env.development` | Vercel Preview, Local Dev | DEV API | PR previews and development |
-| `.env.production` | Vercel Production | PROD API | Production deployments |
-| `.env.local` | Local Development | Custom | Developer override (gitignored) |
-
-### Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `VITE_API_BASE_URL` | Backend API base URL | Yes |
-
-### Setup Instructions
-
-1. **For Vercel**:
-   - Connect this repository to Vercel via GitHub integration
-   - Vercel will automatically use `.env.development` for previews
-   - Vercel will automatically use `.env.production` for production
-   - No manual environment variable configuration needed in Vercel dashboard
-
-2. **For Local Development**:
-   ```bash
-   # Copy the example file
-   cp .env.example .env.local
-   
-   # Edit .env.local with your local backend URL
-   # This file is gitignored and won't be committed
-   ```
-
-3. **Update API URLs**:
-   - Edit `.env.development` with your DEV API URL
-   - Edit `.env.production` with your PROD API URL
-
----
-
-## First-Time Vercel Setup
-
-If you haven't connected Vercel yet:
-
-1. Go to [vercel.com](https://vercel.com) and sign in with GitHub
-2. Click **"Add New Project"**
-3. Import this repository (`feifeijin/ResumeSpyWeb`)
-4. Configure project:
-   - **Framework Preset**: Vite
-   - **Root Directory**: `./` (leave default)
-   - **Build Command**: `npm run build` (auto-detected)
-   - **Output Directory**: `dist` (auto-detected)
-5. Click **"Deploy"**
-
-Vercel will:
-- ✅ Automatically detect it's a Vite project
-- ✅ Read `vercel.json` for configuration
-- ✅ Use `.env.production` for production builds
-- ✅ Use `.env.development` for preview builds
-- ✅ Enable automatic deployments for all PRs and `main` branch pushes
-
----
-
-## Workflow Summary
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  Developer Opens Pull Request                           │
-└─────────────────┬───────────────────────────────────────┘
-                  │
-         ┌────────┴─────────┐
-         ▼                  ▼
-┌─────────────────┐  ┌──────────────────────┐
-│  GitHub Actions │  │  Vercel Preview      │
-│  CI Pipeline    │  │  Deployment          │
-│  • Lint         │  │  • Uses DEV API      │
-│  • Type Check   │  │  • Preview URL       │
-│  • Build        │  │  • Safe Testing      │
-│  • Unit Tests   │  │                      │
-└────────┬────────┘  └──────────┬───────────┘
-         │                      │
-         └──────────┬───────────┘
-                    ▼
-         ┌─────────────────────┐
-         │  Code Review & Test │
-         └──────────┬──────────┘
-                    ▼
-         ┌─────────────────────┐
-         │  Merge to main      │
-         └──────────┬──────────┘
-                    │
-         ┌──────────┴─────────┐
-         ▼                    ▼
-┌─────────────────┐  ┌─────────────────────┐
-│  GitHub Actions │  │  Vercel Production  │
-│  CI Pipeline    │  │  Deployment         │
-│  (runs again)   │  │  • Uses PROD API    │
-└─────────────────┘  │  • Live Production  │
-                     └─────────────────────┘
-```
-
----
-
-## Troubleshooting
-
-### Preview using wrong API
-- Check `.env.development` has correct DEV API URL
-- Vercel should automatically use this file for preview builds
-
-### Production using wrong API
-- Check `.env.production` has correct PROD API URL
-- Vercel should automatically use this file for production builds
-
-### Build fails on Vercel
-- Check GitHub Actions CI passes first
-- Check Vercel build logs for specific errors
-- Verify `vercel.json` configuration is correct
-
-### Environment variables not working
-- Ensure variable names start with `VITE_` (required by Vite)
-- Variables are embedded at build time, not runtime
-- Rebuild the app after changing environment variables
-
----
-
-## Notes
-
-- E2E tests (Cypress) are not run in CI as they require a running backend
-- The CI workflow focuses on validation; CD is fully handled by Vercel
-- For local development, create `.env.local` (gitignored) with your custom settings
+- Deployment is handled by Vercel (not GitHub Actions)
+- E2E tests are not run in CI (require running backend)
+- CI focuses on validation; CD is platform-specific
+- Environment files (`.env.development`, `.env.production`) are committed to the repository
