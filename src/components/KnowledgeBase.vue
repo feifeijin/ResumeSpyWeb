@@ -11,8 +11,8 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="(article, index) in articles"
-          :key="index"
+          v-for="article in articles"
+          :key="article.title"
           class="pa-5"
           cols="12"
           md="4"
@@ -57,7 +57,27 @@ interface Article {
   tags: string[]
 }
 
+function isArticleArray(value: unknown): value is Article[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        typeof item === 'object' &&
+        item !== null &&
+        'title' in item &&
+        'excerpt' in item &&
+        'tags' in item &&
+        typeof item.title === 'string' &&
+        typeof item.excerpt === 'string' &&
+        Array.isArray(item.tags),
+    )
+  )
+}
+
 const { t, tm } = useI18n()
 
-const articles = computed(() => tm('articles.items') as unknown as Article[])
+const articles = computed(() => {
+  const value = tm('articles.items')
+  return isArticleArray(value) ? value : []
+})
 </script>
