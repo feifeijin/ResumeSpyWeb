@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build-only",
   "outputDirectory": "dist",
   "framework": "vite",
   "installCommand": "npm ci",
