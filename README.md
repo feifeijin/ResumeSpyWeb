@@ -24,13 +24,22 @@ ResumeSpyWeb is the front-end of the Resume Manager platform, built with Vue 3, 
 
 This repository uses **GitHub Actions** for Continuous Integration (CI) and **Vercel** for Continuous Deployment (CD).
 
-### Continuous Integration (CI)
+---
+
+### Architecture
+
+- **CI**: GitHub Actions validates code quality (lint, type-check, build, tests)
+- **CD**: Vercel handles all deployments automatically via GitHub integration
+
+---
+
+## Continuous Integration (CI)
 
 CI runs automatically on:
 - **Pull Requests**: Validates code quality before merging
 - **Push to master/release**: Ensures production-ready code
 
-#### CI Pipeline Steps:
+### CI Pipeline Steps:
 1. **Checkout** - Clone the repository
 2. **Install Dependencies** - Run `npm ci`
 3. **Lint** - Check code style with ESLint
