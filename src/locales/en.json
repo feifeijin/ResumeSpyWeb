@@ -135,33 +135,41 @@
     "title": "Resume Writing Insights & Tips",
     "subtitle": "Expert guidance on creating standout resumes and leveraging ResumeSpyWeb",
     "readMore": "Read More",
+    "backToArticles": "Back to Articles",
+    "notFound": "Article Not Found",
     "items": [
       {
+        "slug": "mastering-resume-writing-best-practices-2025",
         "title": "Mastering Resume Writing: Best Practices for 2025",
         "excerpt": "Learn the essential techniques for crafting a compelling resume that captures recruiters' attention. From formatting to content strategy, discover what makes a resume truly stand out.",
         "tags": ["Resume Writing", "Best Practices", "Career Tips"]
       },
       {
+        "slug": "resume-optimization-seo-for-your-career",
         "title": "Resume Optimization: SEO for Your Career",
         "excerpt": "Just like websites need SEO, your resume needs optimization for Applicant Tracking Systems (ATS). Learn how to structure your resume to pass automated screening while remaining human-readable.",
         "tags": ["ATS Optimization", "Keywords", "Resume Strategy"]
       },
       {
+        "slug": "showcasing-language-skills-on-resume",
         "title": "Showcasing Language Skills on Your Resume",
         "excerpt": "In today's global market, multilingual abilities are invaluable. Discover how to effectively present your language proficiency and leverage ResumeSpyWeb's multi-language features.",
         "tags": ["Language Skills", "Multilingual", "Global Career"]
       },
       {
+        "slug": "version-control-for-your-resume",
         "title": "Version Control for Your Resume: Why It Matters",
         "excerpt": "Managing multiple resume versions is crucial for targeting different roles. Learn how ResumeSpyWeb's version control helps you maintain tailored resumes for every opportunity.",
         "tags": ["Version Control", "ResumeSpyWeb", "Job Applications"]
       },
       {
+        "slug": "creating-job-specific-resumes-efficiently",
         "title": "Creating Job-Specific Resumes Efficiently",
         "excerpt": "Generic resumes rarely work. Discover strategies for quickly customizing your resume for specific job descriptions using ResumeSpyWeb's powerful editing tools.",
         "tags": ["Customization", "Job Matching", "Efficiency"]
       },
       {
+        "slug": "github-profile-to-professional-resume",
         "title": "GitHub Profile to Professional Resume",
         "excerpt": "Transform your GitHub profile into a professional resume automatically. Learn how ResumeSpyWeb analyzes your repositories and contributions to build a compelling narrative.",
         "tags": ["GitHub", "Tech Resume", "Automation"]

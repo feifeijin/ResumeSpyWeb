@@ -27,17 +27,28 @@
                 {{ article.excerpt }}
               </v-card-text>
 
-              <v-card-actions class="px-5 pb-4">
-                <v-chip
-                  v-for="tag in article.tags"
-                  :key="tag"
-                  class="mr-2 mb-2"
-                  size="small"
-                  variant="outlined"
+              <v-card-actions class="px-5 pb-4 flex-column align-start">
+                <div class="d-flex flex-wrap mb-3">
+                  <v-chip
+                    v-for="tag in article.tags"
+                    :key="tag"
+                    class="mr-2 mb-2"
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                  >
+                    {{ tag }}
+                  </v-chip>
+                </div>
+                <v-btn
+                  :to="`/articles/${article.slug}`"
                   color="primary"
+                  variant="text"
+                  size="small"
                 >
-                  {{ tag }}
-                </v-chip>
+                  {{ t('articles.readMore') }}
+                  <v-icon end>mdi-arrow-right</v-icon>
+                </v-btn>
               </v-card-actions>
             </v-card>
           </article>
@@ -52,6 +63,7 @@ import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 
 interface Article {
+  slug: string
   title: string
   excerpt: string
   tags: string[]
@@ -64,9 +76,11 @@ function isArticleArray(value: unknown): value is Article[] {
       (item) =>
         typeof item === 'object' &&
         item !== null &&
+        'slug' in item &&
         'title' in item &&
         'excerpt' in item &&
         'tags' in item &&
+        typeof item.slug === 'string' &&
         typeof item.title === 'string' &&
         typeof item.excerpt === 'string' &&
         Array.isArray(item.tags) &&

@@ -135,33 +135,41 @@
     "title": "简历写作洞察与技巧",
     "subtitle": "打造出色简历的专家指导，充分利用 ResumeSpyWeb",
     "readMore": "了解更多",
+    "backToArticles": "返回文章列表",
+    "notFound": "文章未找到",
     "items": [
       {
+        "slug": "mastering-resume-writing-best-practices-2025",
         "title": "掌握简历写作：2025年最佳实践",
         "excerpt": "学习制作引人注目的简历的基本技巧，吸引招聘人员的注意。从格式到内容策略，了解什么让简历真正脱颖而出。",
         "tags": ["简历写作", "最佳实践", "职业建议"]
       },
       {
+        "slug": "resume-optimization-seo-for-your-career",
         "title": "简历优化：职业生涯的SEO",
         "excerpt": "就像网站需要SEO一样，您的简历需要针对申请人跟踪系统（ATS）进行优化。学习如何构建简历以通过自动筛选，同时保持人类可读性。",
         "tags": ["ATS优化", "关键词", "简历策略"]
       },
       {
+        "slug": "showcasing-language-skills-on-resume",
         "title": "在简历中展示语言技能",
         "excerpt": "在当今全球市场中，多语言能力是无价的。了解如何有效呈现您的语言水平，并利用 ResumeSpyWeb 的多语言功能。",
         "tags": ["语言技能", "多语言", "全球职业"]
       },
       {
+        "slug": "version-control-for-your-resume",
         "title": "简历版本控制：为什么它很重要",
         "excerpt": "管理多个简历版本对于针对不同职位至关重要。了解 ResumeSpyWeb 的版本控制如何帮助您为每个机会维护量身定制的简历。",
         "tags": ["版本控制", "ResumeSpyWeb", "求职申请"]
       },
       {
+        "slug": "creating-job-specific-resumes-efficiently",
         "title": "高效创建针对特定职位的简历",
         "excerpt": "通用简历很少奏效。了解使用 ResumeSpyWeb 强大的编辑工具快速定制简历以匹配特定职位描述的策略。",
         "tags": ["定制", "职位匹配", "效率"]
       },
       {
+        "slug": "github-profile-to-professional-resume",
         "title": "GitHub简介转专业简历",
         "excerpt": "自动将您的 GitHub 个人资料转换为专业简历。了解 ResumeSpyWeb 如何分析您的仓库和贡献以构建引人注目的叙述。",
         "tags": ["GitHub", "技术简历", "自动化"]
