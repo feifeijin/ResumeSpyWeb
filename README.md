@@ -26,13 +26,20 @@ This repository uses **GitHub Actions** for Continuous Integration (CI) and **Ve
 
 ---
 
-### Continuous Integration (CI)
+### Architecture
+
+- **CI**: GitHub Actions validates code quality (lint, type-check, build, tests)
+- **CD**: Vercel handles all deployments automatically via GitHub integration
+
+---
+
+## Continuous Integration (CI)
 
 CI runs automatically on:
 - **Pull Requests**: Validates code quality before merging
 - **Push to master/main/release**: Ensures production-ready code
 
-#### CI Pipeline Steps:
+### CI Pipeline Steps:
 1. **Checkout** - Clone the repository
 2. **Install Dependencies** - Run `npm ci`
 3. **Lint** - Check code style with ESLint
@@ -238,7 +245,9 @@ This separation ensures:
 
 ---
 
-### Limitations & Assumptions
+### How Production Deployments Work
+
+When code is merged to `main`:
 
 - Deployment is handled by Vercel (not GitHub Actions)
 - E2E tests are not run in CI (require running backend)
