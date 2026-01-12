@@ -1,29 +1,57 @@
 <template>
-  <v-sheet id="team" class="text-center py-16" min-height="800">
-    <div class="text-h4 font-weight-bold">Articles</div>
+  <v-sheet id="articles" class="text-center py-16" min-height="800">
+    <header>
+      <h2 class="text-h4 font-weight-bold">{{ t('articles.title') }}</h2>
 
-    <div class="text-body-1 text-medium-emphasis mt-5">
-      Discover more about our high performing team.
-    </div>
+      <p class="text-body-1 text-medium-emphasis mt-5">
+        {{ t('articles.subtitle') }}
+      </p>
+    </header>
 
     <v-container>
       <v-row>
-        <v-col v-for="person in team" :key="person.name" class="pa-5" cols="12" md="3">
-          <v-card class="bg-white rounded-t-xl pb-5" flat>
-            <v-img class="w-100 rounded-t-xl" :src="person.image" />
+        <v-col
+          v-for="(article, index) in articles"
+          :key="`article-${index}-${article.slug}`"
+          class="pa-5"
+          cols="12"
+          md="4"
+        >
+          <article>
+            <v-card class="bg-white rounded-xl pb-5 d-flex flex-column" flat height="100%">
+              <v-card-title class="text-h6 mt-3 px-5">
+                {{ article.title }}
+              </v-card-title>
 
-            <div class="mt-3 text-body-1">
-              {{ person.name }}
-            </div>
+              <v-card-text class="text-body-2 text-medium-emphasis px-5 flex-grow-1">
+                {{ article.excerpt }}
+              </v-card-text>
 
-            <div class="mt-3 text-grey-lighten-1 font-italic text-body-1">
-              {{ person.title }}
-            </div>
-
-            <div class="mt-5 text-medium-emphasis mx-5">
-              {{ person.description }}
-            </div>
-          </v-card>
+              <v-card-actions class="px-5 pb-4 flex-column align-start">
+                <div class="d-flex flex-wrap mb-3">
+                  <v-chip
+                    v-for="tag in article.tags"
+                    :key="tag"
+                    class="mr-2 mb-2"
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                  >
+                    {{ tag }}
+                  </v-chip>
+                </div>
+                <v-btn
+                  :to="`/articles/${article.slug}`"
+                  color="primary"
+                  variant="text"
+                  size="small"
+                >
+                  {{ t('articles.readMore') }}
+                  <v-icon end>mdi-arrow-right</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </article>
         </v-col>
       </v-row>
     </v-container>
@@ -31,34 +59,41 @@
 </template>
 
 <script setup lang="ts">
-const team = [
-  {
-    image: './assets/team/person1.png',
-    name: 'CHRISTINA HAWKINS',
-    title: 'Head of SEO',
-    description:
-      'Johnathan is our co-founder and has developed search strategies for a variety of clients for over 5 years.',
-  },
-  {
-    image: './assets/team/person2.png',
-    name: 'CHRISTINA HAWKINS',
-    title: 'Head of SEO',
-    description:
-      'Johnathan is our co-founder and has developed search strategies for a variety of clients for over 5 years.',
-  },
-  {
-    image: './assets/team/person3.png',
-    name: 'CHRISTINA HAWKINS',
-    title: 'Head of SEO',
-    description:
-      'Johnathan is our co-founder and has developed search strategies for a variety of clients for over 5 years.',
-  },
-  {
-    image: './assets/team/person3.png',
-    name: 'CHRISTINA HAWKINS',
-    title: 'Head of SEO',
-    description:
-      'Johnathan is our co-founder and has developed search strategies for a variety of clients for over 5 years.',
-  },
-]
+import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
+
+interface Article {
+  slug: string
+  title: string
+  excerpt: string
+  tags: string[]
+}
+
+function isArticle(item: unknown): item is Article {
+  if (typeof item !== 'object' || item === null) {
+    return false
+  }
+  
+  const obj = item as Record<string, unknown>
+  
+  return (
+    typeof obj.slug === 'string' &&
+    typeof obj.title === 'string' &&
+    typeof obj.excerpt === 'string' &&
+    Array.isArray(obj.tags) &&
+    obj.tags.every((tag) => typeof tag === 'string')
+  )
+}
+
+const { t, tm } = useI18n()
+
+const articles = computed<Article[]>(() => {
+  const value = tm('articles.items') as unknown
+  
+  if (!Array.isArray(value)) {
+    return []
+  }
+  
+  return value.filter((item): item is Article => isArticle(item))
+})
 </script>
