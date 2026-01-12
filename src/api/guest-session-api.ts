@@ -4,7 +4,7 @@ import type {
   CreateGuestSessionResponse,
   CheckResumeQuotaResponse,
   GuestSessionInfo,
-} from '@/models/resume.type'
+} from '@/models/Resume.type'
 
 class GuestSessionAPI {
   /**

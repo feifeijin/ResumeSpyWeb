@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import guestSessionAPI from '@/api/guest-session-api'
-import type { CreateGuestSessionResponse, CheckResumeQuotaResponse } from '@/models/resume.type'
+import type { CreateGuestSessionResponse, CheckResumeQuotaResponse } from '@/models/Resume.type'
 
 export const useGuestStore = defineStore('guest', () => {
   // State
