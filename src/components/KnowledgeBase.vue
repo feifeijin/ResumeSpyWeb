@@ -12,7 +12,7 @@
       <v-row>
         <v-col
           v-for="(article, index) in articles"
-          :key="`article-${index}-${article.title}`"
+          :key="`article-${index}-${article.slug}`"
           class="pa-5"
           cols="12"
           md="4"
@@ -69,30 +69,31 @@ interface Article {
   tags: string[]
 }
 
-function isArticleArray(value: unknown): value is Article[] {
+function isArticle(item: unknown): item is Article {
+  if (typeof item !== 'object' || item === null) {
+    return false
+  }
+  
+  const obj = item as Record<string, unknown>
+  
   return (
-    Array.isArray(value) &&
-    value.every(
-      (item) =>
-        typeof item === 'object' &&
-        item !== null &&
-        'slug' in item &&
-        'title' in item &&
-        'excerpt' in item &&
-        'tags' in item &&
-        typeof item.slug === 'string' &&
-        typeof item.title === 'string' &&
-        typeof item.excerpt === 'string' &&
-        Array.isArray(item.tags) &&
-        item.tags.every((tag: unknown) => typeof tag === 'string'),
-    )
+    typeof obj.slug === 'string' &&
+    typeof obj.title === 'string' &&
+    typeof obj.excerpt === 'string' &&
+    Array.isArray(obj.tags) &&
+    obj.tags.every((tag) => typeof tag === 'string')
   )
 }
 
 const { t, tm } = useI18n()
 
-const articles = computed(() => {
+const articles = computed<Article[]>(() => {
   const value = tm('articles.items')
-  return isArticleArray(value) ? value : []
+  
+  if (!Array.isArray(value)) {
+    return []
+  }
+  
+  return value.filter(isArticle)
 })
 </script>
