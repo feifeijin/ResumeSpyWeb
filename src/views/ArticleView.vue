@@ -62,14 +62,14 @@ const slug = computed(() => route.params.slug as string)
 
 const { getArticleBySlug } = useArticleContent()
 
-interface Article {
+interface ArticleMeta {
   slug: string
   title: string
   excerpt: string
   tags: string[]
 }
 
-interface ArticleWithContent extends Article {
+interface ArticleWithContent extends ArticleMeta {
   content: string
   notFound: false
 }
@@ -80,13 +80,37 @@ interface ArticleNotFound {
 
 type ArticleData = ArticleWithContent | ArticleNotFound
 
-const articleMeta = computed(() => {
-  const articles = tm('articles.items') as unknown as Article[]
-  return articles.find((a) => a.slug === slug.value)
+function isArticleMeta(value: unknown): value is ArticleMeta {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'slug' in value &&
+    'title' in value &&
+    'excerpt' in value &&
+    'tags' in value &&
+    typeof (value as ArticleMeta).slug === 'string' &&
+    typeof (value as ArticleMeta).title === 'string' &&
+    typeof (value as ArticleMeta).excerpt === 'string' &&
+    Array.isArray((value as ArticleMeta).tags)
+  )
+}
+
+const articleMeta = computed<ArticleMeta | undefined>(() => {
+  const items = tm('articles.items')
+  if (!Array.isArray(items)) {
+    return undefined
+  }
+  
+  const found = items.find((item) => {
+    return isArticleMeta(item) && item.slug === slug.value
+  })
+  
+  return found && isArticleMeta(found) ? found : undefined
 })
 
 const article = computed<ArticleData | null>(() => {
-  if (!articleMeta.value) {
+  const meta = articleMeta.value
+  if (!meta) {
     return { notFound: true }
   }
 
@@ -96,7 +120,7 @@ const article = computed<ArticleData | null>(() => {
   }
 
   return {
-    ...articleMeta.value,
+    ...meta,
     content,
     notFound: false,
   }
