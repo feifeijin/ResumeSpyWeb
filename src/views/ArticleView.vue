@@ -69,21 +69,36 @@ interface Article {
   tags: string[]
 }
 
+interface ArticleWithContent extends Article {
+  content: string
+  notFound: false
+}
+
+interface ArticleNotFound {
+  notFound: true
+}
+
+type ArticleData = ArticleWithContent | ArticleNotFound
+
 const articleMeta = computed(() => {
   const articles = tm('articles.items') as unknown as Article[]
   return articles.find((a) => a.slug === slug.value)
 })
 
-const article = computed(() => {
+const article = computed<ArticleData | null>(() => {
   if (!articleMeta.value) {
     return { notFound: true }
   }
 
   const content = getArticleBySlug(slug.value)
+  if (!content) {
+    return { notFound: true }
+  }
+
   return {
     ...articleMeta.value,
     content,
-    notFound: !content,
+    notFound: false,
   }
 })
 </script>
