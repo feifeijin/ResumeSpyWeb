@@ -96,16 +96,16 @@ function isArticleMeta(value: unknown): value is ArticleMeta {
 }
 
 const articleMeta = computed<ArticleMeta | undefined>(() => {
-  const items = tm('articles.items')
+  const items = tm('articles.items') as unknown
   if (!Array.isArray(items)) {
     return undefined
   }
   
-  const found = items.find((item) => {
-    return isArticleMeta(item) && item.slug === slug.value
+  const found = items.find((item: unknown) => {
+    return isArticleMeta(item) && (item as ArticleMeta).slug === slug.value
   })
   
-  return found && isArticleMeta(found) ? found : undefined
+  return found && isArticleMeta(found) ? (found as ArticleMeta) : undefined
 })
 
 const article = computed<ArticleData | null>(() => {

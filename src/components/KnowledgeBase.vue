@@ -88,12 +88,12 @@ function isArticle(item: unknown): item is Article {
 const { t, tm } = useI18n()
 
 const articles = computed<Article[]>(() => {
-  const value = tm('articles.items')
+  const value = tm('articles.items') as unknown
   
   if (!Array.isArray(value)) {
     return []
   }
   
-  return value.filter(isArticle)
+  return value.filter((item): item is Article => isArticle(item))
 })
 </script>
