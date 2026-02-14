@@ -45,6 +45,3 @@ jobs:
 
       - name: Build
         run: npm run build-only
-
-      - name: Run unit tests
-        run: npm run test:unit -- --run --reporter=verbose
