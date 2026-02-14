@@ -69,7 +69,7 @@ const bannerDismissed = ref(false)
 
 onMounted(async () => {
   // Initialize guest session if one exists
-  const hasExistingSession = await guestStore.initializeGuestSession()
+  await guestStore.initializeGuestSession()
 
   // Check if guest should be shown the banner
   if (guestStore.isGuest && !bannerDismissed.value) {
