@@ -5,10 +5,9 @@ import { API_BASE_URL, BASE_URL } from './api'
 const resolveImgPath = (path?: string | null): string => {
   if (!path) {
     return ''
-  }
-  else if (path.startsWith('http://') || path.startsWith('https://')) {
+  } else if (path.startsWith('http://') || path.startsWith('https://')) {
     return path
-  }else{
+  } else {
     return `${BASE_URL}${path}`
   }
 }
