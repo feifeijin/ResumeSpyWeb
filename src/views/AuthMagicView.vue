@@ -52,8 +52,6 @@ const state = ref<'processing' | 'success' | 'error'>('processing')
 const errorMessage = ref('')
 const isRedirecting = ref(false)
 
-const email = computed(() => (typeof route.query.email === 'string' ? route.query.email : ''))
-const token = computed(() => (typeof route.query.token === 'string' ? route.query.token : ''))
 const redirectTarget = computed(() =>
   typeof route.query.redirect === 'string' && route.query.redirect.length > 0
     ? route.query.redirect
@@ -72,27 +70,18 @@ const title = computed(() => {
 })
 
 const goToDestination = async () => {
-  if (state.value !== 'success') {
-    return
-  }
-
+  if (state.value !== 'success') return
   isRedirecting.value = true
   await router.replace(redirectTarget.value)
 }
 
 const goToAuth = () => {
-  router.replace({ name: 'auth', query: { email: email.value } })
+  router.replace({ name: 'auth' })
 }
 
 onMounted(async () => {
-  if (!email.value || !token.value) {
-    state.value = 'error'
-    errorMessage.value = t('auth.magicInvalidLink')
-    return
-  }
-
   try {
-    await authStore.confirmMagicLink({ email: email.value, token: token.value })
+    await authStore.handleMagicLinkCallback()
     state.value = 'success'
     toast.success(t('auth.loginSuccess'))
     await goToDestination()

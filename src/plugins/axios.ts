@@ -1,13 +1,9 @@
 import axios from 'axios'
-import type { InternalAxiosRequestConfig } from 'axios'
 import type { Pinia } from 'pinia'
 import { API_BASE_URL } from '@/api/api'
 import { useAuthStore } from '@/stores/auth'
 import { getOrCreateAnonymousId } from '@/utils/anonymous-id'
-
-interface RetryableRequestConfig extends InternalAxiosRequestConfig {
-  _retry?: boolean
-}
+import { supabase } from '@/lib/supabase'
 
 let interceptorsRegistered = false
 
@@ -19,52 +15,32 @@ export const setupAxiosInterceptors = (pinia: Pinia) => {
   axios.defaults.baseURL = API_BASE_URL
   axios.defaults.withCredentials = true
 
-  axios.interceptors.request.use((config) => {
+  axios.interceptors.request.use(async (config) => {
     const authStore = useAuthStore(pinia)
-    if (authStore.isAuthenticated && authStore.accessToken) {
-      config.headers = config.headers || {}
-      if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${authStore.accessToken}`
+    config.headers = config.headers || {}
+
+    if (authStore.isAuthenticated) {
+      // Let Supabase handle token refresh automatically
+      const { data } = await supabase.auth.getSession()
+      const token = data.session?.access_token ?? authStore.accessToken
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
       }
     } else {
-      config.headers = config.headers || {}
       config.headers['X-Anonymous-Id'] = getOrCreateAnonymousId()
     }
+
     return config
   })
 
   axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const originalRequest = error.config as RetryableRequestConfig | undefined
-      if (!originalRequest) {
-        return Promise.reject(error)
-      }
-
       const status = error.response?.status
-      const isAuthEndpoint =
-        typeof originalRequest.url === 'string' && originalRequest.url.includes('/auth/')
+      const url = error.config?.url ?? ''
 
-      if (status === 401 && !isAuthEndpoint) {
+      if (status === 401 && !url.includes('/auth/')) {
         const authStore = useAuthStore(pinia)
-        if (!authStore.canRefresh) {
-          authStore.clearSession()
-          return Promise.reject(error)
-        }
-
-        if (originalRequest._retry) {
-          authStore.clearSession()
-          return Promise.reject(error)
-        }
-
-        originalRequest._retry = true
-        const refreshed = await authStore.tryRefreshToken()
-        if (refreshed && authStore.accessToken) {
-          originalRequest.headers = originalRequest.headers || {}
-          originalRequest.headers.Authorization = `Bearer ${authStore.accessToken}`
-          return axios(originalRequest)
-        }
-
         authStore.clearSession()
       }
 

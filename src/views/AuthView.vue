@@ -46,32 +46,6 @@
               {{ t(linkSent ? 'auth.resendLink' : 'auth.sendLink') }}
             </v-btn>
           </v-form>
-
-          <v-divider class="my-6" />
-
-          <div class="d-flex flex-column align-center mb-2">
-            <span class="text-caption mb-2">{{ t('auth.loginWith') }}</span>
-            <v-btn
-              color="primary"
-              variant="outlined"
-              prepend-icon="mdi-google"
-              class="mb-2"
-              :loading="isProcessing"
-              @click="handleGoogleLogin"
-            >
-              {{ t('auth.google') }}
-            </v-btn>
-            <v-btn
-              color="black"
-              variant="outlined"
-              prepend-icon="mdi-github"
-              class="mt-1"
-              :loading="isProcessing"
-              @click="handleGithubLogin"
-            >
-              {{ t('auth.github') }}
-            </v-btn>
-          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -121,55 +95,9 @@ const handleRequest = async () => {
   }
 
   try {
-    await authStore.requestMagicLink({
-      email: magicLinkForm.email.trim(),
-      redirectUrl: buildRedirectUrl(),
-    })
+    await authStore.sendMagicLink(magicLinkForm.email.trim())
     toast.success(t('auth.linkRequestSuccess'))
     linkSent.value = true
-  } catch (error) {
-    toast.error(error instanceof Error ? error.message : String(error))
-  }
-}
-
-const buildRedirectUrl = () => {
-  if (typeof window === 'undefined') {
-    return '/auth/magic'
-  }
-
-  const baseUrl = `${window.location.origin}/auth/magic`
-  const params = new URLSearchParams()
-  if (redirectTarget.value && redirectTarget.value !== '/') {
-    params.set('redirect', redirectTarget.value)
-  }
-  return params.toString() ? `${baseUrl}?${params}` : baseUrl
-}
-
-const handleGoogleLogin = async () => {
-  const credential = window.prompt(t('auth.googleTokenPrompt'))
-  if (!credential) {
-    return
-  }
-
-  try {
-    await authStore.loginWithGoogle(credential.trim())
-    toast.success(t('auth.loginSuccess'))
-    router.replace(redirectTarget.value)
-  } catch (error) {
-    toast.error(error instanceof Error ? error.message : String(error))
-  }
-}
-
-const handleGithubLogin = async () => {
-  const token = window.prompt(t('auth.githubTokenPrompt'))
-  if (!token) {
-    return
-  }
-
-  try {
-    await authStore.loginWithGithub(token.trim())
-    toast.success(t('auth.loginSuccess'))
-    router.replace(redirectTarget.value)
   } catch (error) {
     toast.error(error instanceof Error ? error.message : String(error))
   }
