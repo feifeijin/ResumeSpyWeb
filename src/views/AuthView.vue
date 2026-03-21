@@ -99,7 +99,12 @@ const handleRequest = async () => {
     toast.success(t('auth.linkRequestSuccess'))
     linkSent.value = true
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : String(error))
+    const msg = error instanceof Error ? error.message : String(error)
+    if (msg.includes('rate_limit') || msg.includes('rate limit')) {
+      toast.error(t('auth.rateLimitError'))
+    } else {
+      toast.error(msg)
+    }
   }
 }
 

@@ -87,6 +87,7 @@
     "github": "GitHub で続行",
     "loginSuccess": "ログインに成功しました",
     "linkRequestSuccess": "マジックリンクを送信しました。メールを確認してください。",
+    "rateLimitError": "次のマジックリンクを送信するまで60秒お待ちください。",
     "logoutSuccess": "ログアウトしました",
     "externalFailure": "外部ログインに失敗しました。もう一度お試しください。",
     "googleTokenPrompt": "Google サインインから取得した ID トークンを入力してください",

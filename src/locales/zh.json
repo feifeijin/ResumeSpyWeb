@@ -87,6 +87,7 @@
     "github": "使用 GitHub 登录",
     "loginSuccess": "登录成功",
     "linkRequestSuccess": "魔法链接已发送，请检查邮箱。",
+    "rateLimitError": "请等待60秒后再请求新的魔法链接。",
     "logoutSuccess": "已成功退出登录",
     "externalFailure": "外部登录失败，请重试。",
     "googleTokenPrompt": "请输入从 Google 登录获取的 ID Token",
