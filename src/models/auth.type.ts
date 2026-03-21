@@ -5,6 +5,7 @@ export interface AuthSyncResponse {
   email?: string
   displayName?: string
   isNewUser?: boolean
+  convertedResumeCount?: number
   errors?: string[]
 }
 

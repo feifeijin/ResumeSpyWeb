@@ -21,13 +21,12 @@ app.use(i18n)
 
 setupAxiosInterceptors(pinia)
 
-// Initialize auth from Supabase session, then set up guest if needed
+// Initialize auth from Supabase session, then set up guest if needed, then mount
 const authStore = useAuthStore(pinia)
 authStore.initialize().then(() => {
   if (!authStore.isAuthenticated) {
     const guestStore = useGuestStore(pinia)
     guestStore.initializeGuestSession()
   }
+  app.mount('#app')
 })
-
-app.mount('#app')

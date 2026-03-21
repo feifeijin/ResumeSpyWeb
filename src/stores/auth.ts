@@ -72,7 +72,11 @@ export const useAuthStore = defineStore('auth', () => {
         // Clear guest session after successful auth
         const guestStore = useGuestStore()
         guestStore.clearGuestSession()
-        clearAnonymousId()
+        // Only clear anonymous ID if conversion succeeded or there was nothing to convert (>= 0).
+        // If conversion failed (-1), keep the ID so it can be retried on next sync.
+        if ((response.convertedResumeCount ?? 0) >= 0) {
+          clearAnonymousId()
+        }
       }
     } catch (err) {
       console.warn('Backend sync failed — user can still use Supabase session.', err)
