@@ -149,15 +149,21 @@ const loadResumes = async () => {
 
 onMounted(() => {
   loadResumes()
+  if (!authStore.isAuthenticated) {
+    guestStore.checkResumeQuota()
+  }
 })
 
 const openEditPage = (id: string) => {
   router.push({ name: 'create', query: { resumeId: id } })
 }
-const createNew = () => {
-  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
-    toast.error('You have reached the guest resume limit. Please sign in to create more.')
-    return
+const createNew = async () => {
+  if (!authStore.isAuthenticated) {
+    const quota = await guestStore.checkResumeQuota()
+    if (quota && guestStore.hasReachedLimit) {
+      toast.error('You have reached the guest resume limit. Please sign in to create more.')
+      return
+    }
   }
   router.push('/create') // 进行 Vue Router 路由跳转
 }
@@ -184,9 +190,12 @@ const onClone = async (resume: Resume) => {
   const index = resumes.value.indexOf(resume)
   menu.value[index] = false
 
-  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
-    toast.error('You have reached the guest resume limit. Please sign in to clone resumes.')
-    return
+  if (!authStore.isAuthenticated) {
+    const quota = await guestStore.checkResumeQuota()
+    if (quota && guestStore.hasReachedLimit) {
+      toast.error('You have reached the guest resume limit. Please sign in to clone resumes.')
+      return
+    }
   }
 
   await withLoading(
@@ -194,9 +203,10 @@ const onClone = async (resume: Resume) => {
       const newResume = await resumeService.cloneResume(resume.id)
       resumes.value.unshift(newResume)
       menu.value.unshift(false)
-      // Sync guest store count after successful clone
+      // Reconcile guest quota from backend after successful clone
       if (!authStore.isAuthenticated) {
-        guestStore.incrementResumeCount()
+        await guestStore.checkResumeQuota()
+        guestStore.notifyQuotaChanged()
       }
       toast.success('toast.success.resumeCloneSuccess')
     },
@@ -217,9 +227,14 @@ const onDelete = async (resume: Resume) => {
           resumes.value.splice(index, 1)
           menu.value.splice(index, 1)
         }
-        // Sync guest store count after successful delete
-        if (!authStore.isAuthenticated && resume.isGuest) {
-          guestStore.decrementResumeCount()
+        // Reconcile guest quota from backend after successful delete
+        if (!authStore.isAuthenticated) {
+          const quota = await guestStore.checkResumeQuota()
+          // Fallback for transient quota API failures: avoid stale lockout in UI.
+          if (!quota) {
+            guestStore.decrementResumeCount()
+          }
+          guestStore.notifyQuotaChanged()
         }
         toast.success('toast.success.resumeDeleteSuccess')
       },

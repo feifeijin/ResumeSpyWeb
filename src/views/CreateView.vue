@@ -451,9 +451,12 @@ const onSave = async (index: number) => {
         }
       } else {
         // Create new resume detail - check limit
-        if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
-          toast.error(t('errors.guestLimitReached'))
-          return
+        if (!authStore.isAuthenticated) {
+          await guestStore.checkResumeQuota()
+          if (guestStore.hasReachedLimit) {
+            toast.error(t('errors.guestLimitReached'))
+            return
+          }
         }
         const newDetail = await resumeDetailService.createResumeDetail({
           ...detail,
@@ -465,9 +468,10 @@ const onSave = async (index: number) => {
         if (newDetail.resumeId) {
           currentResumeId.value = newDetail.resumeId
           router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
-          // Sync guest store count after successful new resume creation
+          // Reconcile guest quota from backend after successful new resume creation
           if (!authStore.isAuthenticated) {
-            guestStore.incrementResumeCount()
+            await guestStore.checkResumeQuota()
+            guestStore.notifyQuotaChanged()
           }
         }
       }
