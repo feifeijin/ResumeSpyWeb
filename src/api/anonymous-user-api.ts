@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { API_BASE_URL } from './api'
-import type { CheckResumeQuotaResponse, AnonymousUserInfo } from '@/models/Resume.type'
+import type { CheckResumeQuotaResponse, AnonymousUserInfo } from '@/models/resume.type'
 
 class AnonymousUserAPI {
   async checkResumeQuota(): Promise<CheckResumeQuotaResponse> {

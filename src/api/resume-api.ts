@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Resume } from '@/models/Resume.type'
+import type { Resume } from '@/models/resume.type'
 import { API_BASE_URL, BASE_URL } from './api'
 
 const resolveImgPath = (path?: string | null): string => {

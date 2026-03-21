@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { Pinia } from 'pinia'
 import { API_BASE_URL } from '@/api/api'
 import { useAuthStore } from '@/stores/auth'
-import { getOrCreateAnonymousId } from '@/utils/anonymous-id'
+import { getAnonymousId, getOrCreateAnonymousId } from '@/utils/anonymous-id'
 import { supabase } from '@/lib/supabase'
 
 let interceptorsRegistered = false
@@ -25,6 +25,11 @@ export const setupAxiosInterceptors = (pinia: Pinia) => {
       const token = data.session?.access_token ?? authStore.accessToken
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
+      }
+      // Also send anonymous ID if it exists (for guest→user resume transfer during sync)
+      const anonymousId = getAnonymousId()
+      if (anonymousId) {
+        config.headers['X-Anonymous-Id'] = anonymousId
       }
     } else {
       config.headers['X-Anonymous-Id'] = getOrCreateAnonymousId()

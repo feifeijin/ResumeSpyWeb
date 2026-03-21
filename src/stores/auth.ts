@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import authApi from '@/api/auth-api'
 import type { AuthSession } from '@/models/auth.type'
 import { useGuestStore } from './guest'
+import { clearAnonymousId } from '@/utils/anonymous-id'
 import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -71,6 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
         // Clear guest session after successful auth
         const guestStore = useGuestStore()
         guestStore.clearGuestSession()
+        clearAnonymousId()
       }
     } catch (err) {
       console.warn('Backend sync failed — user can still use Supabase session.', err)

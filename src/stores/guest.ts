@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 import anonymousUserAPI from '@/api/anonymous-user-api'
 import { getAnonymousId } from '@/utils/anonymous-id'
-import type { CheckResumeQuotaResponse } from '@/models/Resume.type'
+import type { CheckResumeQuotaResponse } from '@/models/resume.type'
 
 const QUOTA_SYNC_STORAGE_KEY = 'anonymous:quota-sync'
 const QUOTA_SYNC_CHANNEL = 'anonymous-quota-channel'
