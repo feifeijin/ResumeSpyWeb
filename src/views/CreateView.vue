@@ -343,11 +343,7 @@ onMounted(() => {
 })
 
 const onAdd = async () => {
-  // Prevent adding new language/version if guest limit reached
-  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
-    toast.error(t('errors.guestLimitReached'))
-    return
-  }
+  // Note: Adding language versions doesn't consume the resume quota - it adds a ResumeDetail to existing Resume
   const language =
     dialog.value === 'OTHER' && selectedOtherLanguage.value
       ? selectedOtherLanguage.value
@@ -442,24 +438,23 @@ const onAdd = async () => {
 }
 
 const onSave = async (index: number) => {
-  // Prevent first-time creation if guest limit reached
-  if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
-    toast.error(t('errors.guestLimitReached'))
-    return
-  }
   await withLoading(
     async () => {
       const content = editors.value[index]
       const detail = resumeDetails.value[index]
       if (detail.id) {
-        // Update existing resume detail
+        // Update existing resume detail - always allowed
         await resumeDetailService.updateResumeDetailContent(detail.id, content)
         detail.content = content
         if (detail.resumeId) {
           currentResumeId.value = detail.resumeId
         }
       } else {
-        // Create new resume detail
+        // Create new resume detail - check limit
+        if (!authStore.isAuthenticated && guestStore.hasReachedLimit) {
+          toast.error(t('errors.guestLimitReached'))
+          return
+        }
         const newDetail = await resumeDetailService.createResumeDetail({
           ...detail,
           content,
@@ -470,6 +465,10 @@ const onSave = async (index: number) => {
         if (newDetail.resumeId) {
           currentResumeId.value = newDetail.resumeId
           router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
+          // Sync guest store count after successful new resume creation
+          if (!authStore.isAuthenticated) {
+            guestStore.incrementResumeCount()
+          }
         }
       }
       toast.success('toast.success.resumeSaveSuccess')

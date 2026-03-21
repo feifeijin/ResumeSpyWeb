@@ -194,6 +194,10 @@ const onClone = async (resume: Resume) => {
       const newResume = await resumeService.cloneResume(resume.id)
       resumes.value.unshift(newResume)
       menu.value.unshift(false)
+      // Sync guest store count after successful clone
+      if (!authStore.isAuthenticated) {
+        guestStore.incrementResumeCount()
+      }
       toast.success('toast.success.resumeCloneSuccess')
     },
     {
@@ -212,6 +216,10 @@ const onDelete = async (resume: Resume) => {
         if (index > -1) {
           resumes.value.splice(index, 1)
           menu.value.splice(index, 1)
+        }
+        // Sync guest store count after successful delete
+        if (!authStore.isAuthenticated && resume.isGuest) {
+          guestStore.decrementResumeCount()
         }
         toast.success('toast.success.resumeDeleteSuccess')
       },
