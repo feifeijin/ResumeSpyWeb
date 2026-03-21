@@ -13,14 +13,6 @@ export interface Resume {
 }
 
 /**
- * Guest session response
- */
-export interface CreateGuestSessionResponse {
-  sessionId: string
-  expiresAt: string
-}
-
-/**
  * Resume quota check response
  */
 export interface CheckResumeQuotaResponse {
@@ -30,11 +22,10 @@ export interface CheckResumeQuotaResponse {
 }
 
 /**
- * Guest session info
+ * Anonymous user info
  */
-export interface GuestSessionInfo {
-  sessionId: string
+export interface AnonymousUserInfo {
+  anonymousUserId: string
   resumeCount: number
-  expiresAt: string
   isConverted: boolean
 }

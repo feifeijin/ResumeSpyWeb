@@ -1,279 +1,136 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { isAxiosError } from 'axios'
+import { supabase } from '@/lib/supabase'
 import authApi from '@/api/auth-api'
-import type {
-  AuthResponse,
-  AuthSession,
-  ConfirmEmailLinkRequest,
-  EmailLinkRequest,
-  ExternalAuthRequest,
-} from '@/models/auth.type'
+import type { AuthSession } from '@/models/auth.type'
 import { useGuestStore } from './guest'
+import { clearAnonymousId } from '@/utils/anonymous-id'
 import router from '@/router'
 
-const STORAGE_KEY = 'resumeSpy.auth.session'
-
-const loadSession = (): AuthSession | null => {
-  if (typeof window === 'undefined') {
-    return null
-  }
-
-  const raw = window.localStorage.getItem(STORAGE_KEY)
-  if (!raw) {
-    return null
-  }
-
-  try {
-    return JSON.parse(raw) as AuthSession
-  } catch (error) {
-    console.warn('Failed to parse stored auth session', error)
-    window.localStorage.removeItem(STORAGE_KEY)
-    return null
-  }
-}
-
-const persistSession = (session: AuthSession | null) => {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  if (!session) {
-    window.localStorage.removeItem(STORAGE_KEY)
-    return
-  }
-
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
-}
-
-const resolveErrorMessage = (error: unknown): string => {
-  if (isAxiosError(error)) {
-    const payload = error.response?.data as
-      | AuthResponse
-      | { title?: string; detail?: string; message?: string; errors?: Record<string, string[]> }
-      | undefined
-
-    if (payload) {
-      if ('succeeded' in payload && payload.errors?.length) {
-        return payload.errors.join('\n')
-      }
-
-      if ('errors' in payload && payload.errors) {
-        const flatErrors = Object.values(payload.errors).flat()
-        if (flatErrors.length) {
-          return flatErrors.join('\n')
-        }
-      }
-
-      if ('detail' in payload && payload.detail) {
-        return payload.detail
-      }
-
-      if ('title' in payload && payload.title) {
-        return payload.title
-      }
-
-      if ('message' in payload && payload.message) {
-        return payload.message
-      }
-    }
-
-    return error.response?.statusText || 'Authentication request failed.'
-  }
-
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  return 'An unexpected error occurred.'
-}
-
-const ensureAuthResponse = (response: AuthResponse): AuthSession => {
-  if (!response.succeeded) {
-    throw new Error(response.errors?.join('\n') || 'Authentication failed.')
-  }
-
-  if (!response.accessToken || !response.refreshToken) {
-    throw new Error('Authentication response did not include token data.')
-  }
-
-  return {
-    userId: response.userId ?? '',
-    email: response.email ?? '',
-    displayName: response.displayName ?? response.email ?? undefined,
-    accessToken: response.accessToken,
-    accessTokenExpiresAt: response.accessTokenExpiresAt,
-    refreshToken: response.refreshToken,
-    refreshTokenExpiresAt: response.refreshTokenExpiresAt,
-    isNewUser: response.isNewUser,
-  }
-}
-
 export const useAuthStore = defineStore('auth', () => {
-  const session = ref<AuthSession | null>(loadSession())
+  const session = ref<AuthSession | null>(null)
   const loading = ref(false)
-  let refreshInFlight: Promise<boolean> | null = null
+  let initialized = false
 
-  const isAuthenticated = computed(() =>
-    Boolean(session.value?.accessToken && session.value?.refreshToken),
-  )
+  const isAuthenticated = computed(() => Boolean(session.value?.accessToken))
   const isLoading = computed(() => loading.value)
   const accessToken = computed(() => session.value?.accessToken ?? '')
-  const refreshToken = computed(() => session.value?.refreshToken ?? '')
   const displayName = computed(() => session.value?.displayName ?? session.value?.email ?? '')
   const email = computed(() => session.value?.email ?? '')
-  const canRefresh = computed(() => Boolean(session.value?.refreshToken))
 
-  const setSession = (response: AuthResponse) => {
-    const nextSession = ensureAuthResponse(response)
-    session.value = nextSession
-    persistSession(nextSession)
+  const setSession = (accessToken: string, userId: string, email: string, displayName?: string) => {
+    session.value = { accessToken, userId, email, displayName }
   }
 
   const clearSession = () => {
     session.value = null
-    persistSession(null)
   }
 
-  const withLoading = async <T>(operation: () => Promise<T>): Promise<T> => {
+  /** Send a Supabase magic link OTP to the provided email */
+  const sendMagicLink = async (email: string) => {
     loading.value = true
     try {
-      return await operation()
+      const redirectTo = `${window.location.origin}/auth/magic`
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: redirectTo },
+      })
+      if (error) throw new Error(error.message)
     } finally {
       loading.value = false
     }
   }
 
-  const requestMagicLink = async (payload: EmailLinkRequest) =>
-    withLoading(async () => {
-      try {
-        const response = await authApi.requestMagicLink(payload)
-        if (!response.succeeded) {
-          throw new Error(response.errors?.join('\n') || 'Unable to send magic link.')
-        }
-        return response
-      } catch (error) {
-        throw new Error(resolveErrorMessage(error))
-      }
-    })
-
-  const confirmMagicLink = async (payload: ConfirmEmailLinkRequest) =>
-    withLoading(async () => {
-      try {
-        const response = await authApi.confirmMagicLink(payload)
-        setSession(response)
-        // Post-auth: clear guest state and navigate to MySpy to refresh resumes
-        const guestStore = useGuestStore()
-        guestStore.clearGuestSession()
-        router.push({ name: 'myspy' })
-        return response
-      } catch (error) {
-        clearSession()
-        throw new Error(resolveErrorMessage(error))
-      }
-    })
-
-  const externalLogin = async (payload: ExternalAuthRequest) =>
-    withLoading(async () => {
-      try {
-        const response = await authApi.externalLogin(payload)
-        setSession(response)
-        // Post-auth: clear guest state and navigate to MySpy to refresh resumes
-        const guestStore = useGuestStore()
-        guestStore.clearGuestSession()
-        router.push({ name: 'myspy' })
-        return response
-      } catch (error) {
-        clearSession()
-        throw new Error(resolveErrorMessage(error))
-      }
-    })
-
-  const loginWithGoogle = async (idToken: string) => externalLogin({ provider: 'google', idToken })
-
-  const loginWithGithub = async (accessTokenValue: string) =>
-    externalLogin({ provider: 'github', accessToken: accessTokenValue })
-
-  const refreshSession = async () => {
-    if (!session.value?.accessToken || !session.value.refreshToken) {
-      throw new Error('No refresh token available.')
-    }
-
+  /** Called after Supabase redirects back — exchanges hash params for a session */
+  const handleMagicLinkCallback = async () => {
+    loading.value = true
     try {
-      const response = await authApi.refresh({
-        accessToken: session.value.accessToken,
-        refreshToken: session.value.refreshToken,
-      })
-      setSession(response)
-      return true
-    } catch (error) {
-      clearSession()
-      throw new Error(resolveErrorMessage(error))
+      const { data, error } = await supabase.auth.getSession()
+      if (error) throw new Error(error.message)
+      if (!data.session) throw new Error('No session returned from Supabase.')
+
+      setSession(data.session.access_token, data.session.user.id, data.session.user.email ?? '')
+
+      // Sync with backend
+      await syncWithBackend()
+    } finally {
+      loading.value = false
     }
   }
 
-  const tryRefreshToken = async (): Promise<boolean> => {
-    if (!canRefresh.value) {
-      return false
-    }
-
-    if (!refreshInFlight) {
-      refreshInFlight = (async () => {
-        try {
-          await refreshSession()
-          return true
-        } catch (error) {
-          console.warn('Refresh token request failed', error)
-          return false
-        } finally {
-          refreshInFlight = null
+  /** Sync the Supabase session with the backend to ensure a local user exists */
+  const syncWithBackend = async () => {
+    try {
+      const response = await authApi.syncSession()
+      if (response.succeeded && session.value) {
+        session.value = {
+          ...session.value,
+          userId: response.userId ?? session.value.userId,
+          displayName: response.displayName ?? session.value.displayName,
+          isNewUser: response.isNewUser,
         }
-      })()
+        // Clear guest session after successful auth
+        const guestStore = useGuestStore()
+        guestStore.clearGuestSession()
+        // Only clear anonymous ID if conversion succeeded or there was nothing to convert (>= 0).
+        // If conversion failed (-1), keep the ID so it can be retried on next sync.
+        if ((response.convertedResumeCount ?? 0) >= 0) {
+          clearAnonymousId()
+        }
+      }
+    } catch (err) {
+      console.warn('Backend sync failed — user can still use Supabase session.', err)
     }
-
-    return refreshInFlight
   }
 
   const logout = async () => {
-    if (!session.value?.refreshToken) {
-      clearSession()
-      return
+    try {
+      await authApi.logout()
+    } catch {
+      // Ignore backend errors — token may already be expired
+    }
+    try {
+      await supabase.auth.signOut()
+    } catch {
+      // Ignore Supabase errors
+    }
+    clearSession()
+    router.push({ name: 'auth' })
+  }
+
+  /** Initialize auth state from Supabase on app start */
+  const initialize = async () => {
+    if (initialized) return
+    initialized = true
+
+    const { data } = await supabase.auth.getSession()
+    if (data.session) {
+      setSession(data.session.access_token, data.session.user.id, data.session.user.email ?? '')
+      await syncWithBackend()
     }
 
-    try {
-      await authApi.logout({ refreshToken: session.value.refreshToken })
-    } catch (error) {
-      // Log but do not block logout on failure (token may already be invalid)
-      console.warn('Failed to notify backend about logout', error)
-    } finally {
-      clearSession()
-    }
+    // Listen for future auth state changes (token refresh, sign-out, etc.)
+    supabase.auth.onAuthStateChange((_event, supaSession) => {
+      if (supaSession) {
+        setSession(supaSession.access_token, supaSession.user.id, supaSession.user.email ?? '')
+      } else {
+        clearSession()
+      }
+    })
   }
 
   return {
-    // State
     session,
     loading,
     isLoading,
-
-    // Getters
     isAuthenticated,
     accessToken,
-    refreshToken,
     displayName,
     email,
-    canRefresh,
-
-    // Actions
-    requestMagicLink,
-    confirmMagicLink,
-    externalLogin,
-    loginWithGoogle,
-    loginWithGithub,
-    refreshSession,
-    tryRefreshToken,
+    sendMagicLink,
+    handleMagicLinkCallback,
     logout,
     clearSession,
-    setSession,
+    initialize,
   }
 })

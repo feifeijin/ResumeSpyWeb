@@ -87,6 +87,7 @@
     "github": "Continue with GitHub",
     "loginSuccess": "Signed in successfully",
     "linkRequestSuccess": "Magic link sent. Check your inbox.",
+    "rateLimitError": "Please wait 60 seconds before requesting another magic link.",
     "logoutSuccess": "Signed out successfully",
     "externalFailure": "External login failed. Please try again.",
     "googleTokenPrompt": "Paste the Google ID token provided by Google Sign-In",

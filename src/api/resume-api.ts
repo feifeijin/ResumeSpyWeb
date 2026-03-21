@@ -1,6 +1,16 @@
 import axios from 'axios'
-import type { Resume } from '@/models/Resume.type'
+import type { Resume } from '@/models/resume.type'
 import { API_BASE_URL, BASE_URL } from './api'
+
+const resolveImgPath = (path?: string | null): string => {
+  if (!path) {
+    return ''
+  } else if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  } else {
+    return `${BASE_URL}${path}`
+  }
+}
 
 class ResumeService {
   // Fetch all resumes
@@ -11,7 +21,7 @@ class ResumeService {
         id: item.id,
         title: item.title,
         resumeDetailCount: item.resumeDetailCount,
-        resumeImgPath: `${BASE_URL}${item.resumeImgPath}`,
+        resumeImgPath: resolveImgPath(item.resumeImgPath),
         createTime: item.createTime,
         lastModifyTime: item.lastModifyTime,
         preview: item.preview,
@@ -31,7 +41,7 @@ class ResumeService {
         id: response.data.id,
         title: response.data.title,
         resumeDetailCount: response.data.resumeDetailCount,
-        resumeImgPath: `${BASE_URL}${response.data.resumeImgPath}`,
+        resumeImgPath: resolveImgPath(response.data.resumeImgPath),
         createTime: response.data.createTime,
         lastModifyTime: response.data.lastModifyTime,
         preview: response.data.preview,
@@ -59,7 +69,7 @@ class ResumeService {
         id: response.data.id,
         title: response.data.title,
         resumeDetailCount: response.data.resumeDetailCount,
-        resumeImgPath: `${BASE_URL}${response.data.resumeImgPath}`,
+        resumeImgPath: resolveImgPath(response.data.resumeImgPath),
         createTime: response.data.createTime,
         lastModifyTime: response.data.lastModifyTime,
         preview: response.data.preview,
@@ -79,7 +89,7 @@ class ResumeService {
         id: response.data.id,
         title: response.data.title,
         resumeDetailCount: response.data.resumeDetailCount,
-        resumeImgPath: `${BASE_URL}${response.data.resumeImgPath}`,
+        resumeImgPath: resolveImgPath(response.data.resumeImgPath),
         createTime: response.data.createTime,
         lastModifyTime: response.data.lastModifyTime,
         preview: response.data.preview,
