@@ -3,6 +3,7 @@ import type { InternalAxiosRequestConfig } from 'axios'
 import type { Pinia } from 'pinia'
 import { API_BASE_URL } from '@/api/api'
 import { useAuthStore } from '@/stores/auth'
+import { getOrCreateAnonymousId } from '@/utils/anonymous-id'
 
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
@@ -25,6 +26,9 @@ export const setupAxiosInterceptors = (pinia: Pinia) => {
       if (!config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${authStore.accessToken}`
       }
+    } else {
+      config.headers = config.headers || {}
+      config.headers['X-Anonymous-Id'] = getOrCreateAnonymousId()
     }
     return config
   })
