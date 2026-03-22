@@ -9,27 +9,33 @@ declare const it: ItFunction
 
 declare const beforeEach: (fn: () => void | Promise<void>) => void
 
-declare const expect: (actual: unknown) => any
+declare const expect: (actual: unknown) => unknown
 
 declare const vi: {
-  fn: <T extends (...args: any[]) => any>(impl?: T) => jest.MockedFunction<T>
-  mock: (moduleName: string, factory?: (...args: any[]) => any) => void
+  fn: <T extends (...args: unknown[]) => unknown>(impl?: T) => jest.MockedFunction<T>
+  mock: (moduleName: string, factory?: (...args: unknown[]) => unknown) => void
   useFakeTimers: () => void
   advanceTimersByTime: (msToRun: number) => void
-  spyOn: <T extends object, K extends keyof T>(obj: T, methodName: K) => any
+  spyOn: <T extends object, K extends keyof T>(
+    obj: T,
+    methodName: K,
+  ) => jest.MockedFunction<T[K] extends (...args: unknown[]) => unknown ? T[K] : never>
   hoisted: <T>(factory: () => T) => T
 }
 
 declare const jest: {
-  fn: <T extends (...args: any[]) => any>(impl?: T) => jest.MockedFunction<T>
-  mock: (moduleName: string, factory?: (...args: any[]) => any) => void
+  fn: <T extends (...args: unknown[]) => unknown>(impl?: T) => jest.MockedFunction<T>
+  mock: (moduleName: string, factory?: (...args: unknown[]) => unknown) => void
   useFakeTimers: () => void
   advanceTimersByTime: (msToRun: number) => void
-  spyOn: <T extends object, K extends keyof T>(obj: T, methodName: K) => any
+  spyOn: <T extends object, K extends keyof T>(
+    obj: T,
+    methodName: K,
+  ) => jest.MockedFunction<T[K] extends (...args: unknown[]) => unknown ? T[K] : never>
 }
 
 declare namespace jest {
-  interface MockedFunction<T extends (...args: any[]) => any> {
+  interface MockedFunction<T extends (...args: unknown[]) => unknown> {
     (...args: Parameters<T>): ReturnType<T>
     mockReset: () => void
     mockClear: () => void

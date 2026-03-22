@@ -4,9 +4,7 @@
       <div class="guest-info">
         <v-icon icon="mdi-account-circle-outline"></v-icon>
         <span class="guest-text">
-          You're browsing as a guest ({{ guestStore.resumeCount }}/{{
-            guestStore.maxResumeCount
-          }}
+          You're browsing as a guest ({{ guestStore.resumeCount }}/{{ guestStore.maxResumeCount }}
           resumes)
         </span>
       </div>
@@ -69,7 +67,7 @@ const bannerDismissed = ref(false)
 
 onMounted(async () => {
   // Initialize guest session if one exists
-  const hasExistingSession = await guestStore.initializeGuestSession()
+  await guestStore.initializeGuestSession()
 
   // Check if guest should be shown the banner
   if (guestStore.isGuest && !bannerDismissed.value) {
