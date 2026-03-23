@@ -118,13 +118,28 @@
     "confirmSync": "确认同步",
     "currentVersionTitle": "当前语言版本：{title}",
     "newResume": "新简历",
-    "emptyContentError": "请先填写当前简历内容，再创建其他语言版本。"
+    "emptyContentError": "请先填写当前简历内容，再创建其他语言版本。",
+    "preview": "预览",
+    "previewTitle": "简历预览",
+    "tailorForJD": "匹配职位",
+    "tailorDialogTitle": "根据职位描述优化简历",
+    "tailorDialogHint": "粘贴职位描述，AI 将在保留真实信息的前提下优化您的简历以更好匹配该职位。",
+    "tailorJobDescriptionLabel": "职位描述",
+    "tailorJobDescriptionPlaceholder": "请在此粘贴完整的职位描述...",
+    "tailorConfirm": "优化我的简历",
+    "tailorEmptyError": "请先粘贴职位描述再进行优化。",
+    "tailorSuccess": "简历优化成功！请在保存前检查修改内容。",
+    "exportPdf": "导出 PDF",
+    "setDefault": "设为默认",
+    "setDefaultSuccess": "已成功设为默认版本。",
+    "unsavedBeforeAction": "请先保存简历再使用此功能。"
   },
   "mySpyView": {
     "title": "我的简历",
     "rename": "重命名",
     "clone": "复制",
-    "delete": "删除"
+    "delete": "删除",
+    "exportPdf": "导出 PDF"
   },
   "languages": {
     "english": "英语",

@@ -118,13 +118,28 @@
     "confirmSync": "同期の確認",
     "currentVersionTitle": "現在の言語版：{title}",
     "newResume": "新しい履歴書",
-    "emptyContentError": "現在の履歴書に内容を入力してから別の言語を作成してください。"
+    "emptyContentError": "現在の履歴書に内容を入力してから別の言語を作成してください。",
+    "preview": "プレビュー",
+    "previewTitle": "履歴書プレビュー",
+    "tailorForJD": "JD に合わせる",
+    "tailorDialogTitle": "求人票に合わせて履歴書を最適化",
+    "tailorDialogHint": "求人票を貼り付けてください。AI が実際の情報を保ちながら、この求人に合わせて履歴書を最適化します。",
+    "tailorJobDescriptionLabel": "求人票",
+    "tailorJobDescriptionPlaceholder": "求人票の全文をここに貼り付けてください...",
+    "tailorConfirm": "履歴書を最適化",
+    "tailorEmptyError": "最適化する前に求人票を貼り付けてください。",
+    "tailorSuccess": "履歴書の最適化が完了しました！保存前に変更内容を確認してください。",
+    "exportPdf": "PDF エクスポート",
+    "setDefault": "デフォルトに設定",
+    "setDefaultSuccess": "デフォルトバージョンとして設定されました。",
+    "unsavedBeforeAction": "この機能を使用する前に履歴書を保存してください。"
   },
   "mySpyView": {
     "title": "マイレジュメ",
     "rename": "名前変更",
     "clone": "複製",
-    "delete": "削除"
+    "delete": "削除",
+    "exportPdf": "PDF エクスポート"
   },
   "languages": {
     "english": "英語",

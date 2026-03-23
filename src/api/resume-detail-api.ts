@@ -167,6 +167,42 @@ class ResumeDetailService {
       throw error
     }
   }
+
+  // Set a resume detail as the default
+  async setDefault(id: string): Promise<void> {
+    try {
+      await axios.patch(`${API_BASE_URL}/resumeDetail/${id}/set-default`)
+    } catch (error) {
+      console.error('Failed to set default resume detail:', error)
+      throw error
+    }
+  }
+
+  // Tailor resume content for a job description using AI
+  async tailorResume(id: string, jobDescription: string): Promise<string> {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/resumeDetail/${id}/tailor`, {
+        jobDescription,
+      })
+      return response.data.content
+    } catch (error) {
+      console.error('Failed to tailor resume:', error)
+      throw error
+    }
+  }
+
+  // Export resume detail as PDF (returns a Blob)
+  async exportPdf(id: string): Promise<Blob> {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/resumeDetail/${id}/export/pdf`, {
+        responseType: 'blob',
+      })
+      return response.data
+    } catch (error) {
+      console.error('Failed to export PDF:', error)
+      throw error
+    }
+  }
 }
 
 export default ResumeDetailService

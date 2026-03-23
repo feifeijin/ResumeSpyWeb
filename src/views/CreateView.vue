@@ -1,7 +1,9 @@
 <!-- filepath: /Users/ws/Documents/DotCore/ResumeSpyWeb/src/views/CreateView.vue -->
 <template>
   <v-container fluid>
-    <v-row align-items="center" class="mb-4" no-gutters>
+    <!-- Toolbar Row: Tabs + Actions -->
+    <v-row align="center" class="mb-4" no-gutters>
+      <!-- Tabs -->
       <v-col cols="auto" style="min-width: 0; flex-shrink: 1">
         <v-tabs v-model="activeTab" background-color="primary" dark style="min-width: 0">
           <v-tab
@@ -15,8 +17,7 @@
                   @dblclick="editTabName(index)"
                   class="text-truncate flex-grow-1 tab-text"
                   v-bind="props"
-                  >{{ tab }}</span
-                >
+                >{{ tab }}</span>
               </template>
               <span>{{ tab }}</span>
             </v-tooltip>
@@ -33,6 +34,14 @@
               style="width: 200px"
               ref="tabEditor"
             ></v-text-field>
+            <!-- Star icon for default tab -->
+            <v-icon
+              v-if="!isEditingTab(index) && resumeDetails[index]?.isDefault"
+              size="x-small"
+              icon="mdi-star"
+              color="amber"
+              class="ms-1"
+            ></v-icon>
             <v-icon
               v-if="index > 0 && !isEditingTab(index)"
               size="small"
@@ -44,120 +53,70 @@
           </v-tab>
         </v-tabs>
       </v-col>
+
       <v-divider vertical class="mx-2"></v-divider>
-      <v-col cols="auto" style="flex-shrink: 0">
+
+      <!-- Action Buttons -->
+      <v-col cols="auto" style="flex-shrink: 0" class="d-flex align-center flex-wrap gap-1">
+        <!-- Add Language -->
         <v-btn
           prepend-icon="mdi-file-account"
           :text="$t('createView.selectLanguage')"
           variant="outlined"
           @click="handleLanguageDialogOpen"
+          size="small"
         ></v-btn>
-        <v-dialog v-model="isDialogActive" max-width="500px" persistent>
-          <template v-slot:default>
-            <v-card>
-              <v-card-title class="d-flex align-center pa-6">
-                <v-icon class="me-3" color="primary">mdi-translate</v-icon>
-                <span class="text-h5">{{ $t('createView.selectLanguage') }}</span>
-              </v-card-title>
 
-              <v-divider></v-divider>
+        <!-- Sync -->
+        <v-btn color="secondary" size="small" @click="openSyncDialog" style="white-space: nowrap">
+          {{ $t('common.sync') }}
+        </v-btn>
 
-              <v-card-text class="pa-6">
-                <p class="text-body-2 text-medium-emphasis mb-4">
-                  {{ $t('createView.selectLanguageHint') }}
-                </p>
-                <v-radio-group v-model="dialog" class="mt-2">
-                  <template v-for="country in countries" :key="country.value">
-                    <v-radio :value="country.value" class="mb-3">
-                      <template v-slot:label>
-                        <div class="d-flex align-center">
-                          <country-flag
-                            v-if="country.flag"
-                            :country="country.flag"
-                            size="normal"
-                            class="me-4"
-                          />
-                          <v-icon v-else class="me-4" color="primary" size="large">
-                            mdi-earth
-                          </v-icon>
-                          <div class="d-flex flex-column">
-                            <span class="text-subtitle-1 font-weight-medium">{{
-                              country.label
-                            }}</span>
-                            <span class="text-caption text-medium-emphasis">{{
-                              country.value
-                            }}</span>
-                          </div>
-                        </div>
-                      </template>
-                    </v-radio>
-                  </template>
-                </v-radio-group>
+        <!-- Preview -->
+        <v-btn
+          color="info"
+          size="small"
+          prepend-icon="mdi-eye"
+          variant="tonal"
+          @click="openPreview"
+        >
+          {{ $t('createView.preview') }}
+        </v-btn>
 
-                <!-- Other Language Selection -->
-                <v-expand-transition>
-                  <div v-if="isOtherSelected" class="mt-4 pa-4 bg-grey-lighten-4 rounded">
-                    <p class="text-body-2 mb-3">{{ $t('createView.selectOtherLanguage') }}:</p>
-                    <v-select
-                      v-model="selectedOtherLanguage"
-                      :items="otherLanguages"
-                      item-title="name"
-                      item-value="code"
-                      :label="$t('createView.chooseLanguage')"
-                      variant="outlined"
-                      density="comfortable"
-                    >
-                      <template v-slot:item="{ props, item }">
-                        <v-list-item v-bind="props" class="d-flex align-center">
-                          <template v-slot:prepend>
-                            <country-flag :country="item.raw.flag" size="small" class="me-3" />
-                          </template>
-                          <v-list-item-title>{{ item.raw.name }}</v-list-item-title>
-                          <v-list-item-subtitle>{{ item.raw.code }}</v-list-item-subtitle>
-                        </v-list-item>
-                      </template>
-                      <template v-slot:selection="{ item }">
-                        <div class="d-flex align-center">
-                          <country-flag :country="item.raw.flag" size="small" class="me-2" />
-                          <span>{{ item.raw.name }}</span>
-                        </div>
-                      </template>
-                    </v-select>
-                  </div>
-                </v-expand-transition>
-              </v-card-text>
+        <!-- Tailor for JD -->
+        <v-btn
+          color="purple"
+          size="small"
+          prepend-icon="mdi-magic-staff"
+          variant="tonal"
+          @click="openTailorDialog"
+        >
+          {{ $t('createView.tailorForJD') }}
+        </v-btn>
 
-              <v-divider></v-divider>
-
-              <v-card-actions class="pa-4">
-                <v-spacer></v-spacer>
-                <v-btn
-                  variant="text"
-                  @click="isDialogActive = false"
-                  class="me-2"
-                  :disabled="isGlobalLoading"
-                >
-                  {{ $t('common.cancel') }}
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  variant="elevated"
-                  @click="onAdd"
-                  :disabled="isAddDisabled"
-                  :loading="isGlobalLoading"
-                >
-                  {{ $t('common.add') }}
-                </v-btn>
-              </v-card-actions>
-            </v-card>
+        <!-- More Actions Menu -->
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" icon="mdi-dots-vertical" variant="text" size="small"></v-btn>
           </template>
-        </v-dialog>
-
-        <v-btn color="secondary" class="ml-2" @click="openSyncDialog" style="white-space: nowrap">{{
-          $t('common.sync')
-        }}</v-btn>
+          <v-list density="compact">
+            <v-list-item
+              prepend-icon="mdi-file-pdf-box"
+              :title="$t('createView.exportPdf')"
+              @click="exportCurrentTabAsPdf"
+            ></v-list-item>
+            <v-list-item
+              prepend-icon="mdi-star-outline"
+              :title="$t('createView.setDefault')"
+              @click="setCurrentTabAsDefault"
+              :disabled="!currentDetailId || resumeDetails[activeTab]?.isDefault"
+            ></v-list-item>
+          </v-list>
+        </v-menu>
       </v-col>
     </v-row>
+
+    <!-- Editor -->
     <v-row>
       <v-col>
         <v-tabs-window v-model="activeTab">
@@ -170,7 +129,95 @@
       </v-col>
     </v-row>
 
-    <!-- Delete Confirmation Dialog -->
+    <!-- ── Language Selection Dialog ── -->
+    <v-dialog v-model="isDialogActive" max-width="500px" persistent>
+      <v-card>
+        <v-card-title class="d-flex align-center pa-6">
+          <v-icon class="me-3" color="primary">mdi-translate</v-icon>
+          <span class="text-h5">{{ $t('createView.selectLanguage') }}</span>
+        </v-card-title>
+
+        <v-divider></v-divider>
+
+        <v-card-text class="pa-6">
+          <p class="text-body-2 text-medium-emphasis mb-4">
+            {{ $t('createView.selectLanguageHint') }}
+          </p>
+          <v-radio-group v-model="dialog" class="mt-2">
+            <template v-for="country in countries" :key="country.value">
+              <v-radio :value="country.value" class="mb-3">
+                <template v-slot:label>
+                  <div class="d-flex align-center">
+                    <country-flag
+                      v-if="country.flag"
+                      :country="country.flag"
+                      size="normal"
+                      class="me-4"
+                    />
+                    <v-icon v-else class="me-4" color="primary" size="large">mdi-earth</v-icon>
+                    <div class="d-flex flex-column">
+                      <span class="text-subtitle-1 font-weight-medium">{{ country.label }}</span>
+                      <span class="text-caption text-medium-emphasis">{{ country.value }}</span>
+                    </div>
+                  </div>
+                </template>
+              </v-radio>
+            </template>
+          </v-radio-group>
+
+          <v-expand-transition>
+            <div v-if="isOtherSelected" class="mt-4 pa-4 bg-grey-lighten-4 rounded">
+              <p class="text-body-2 mb-3">{{ $t('createView.selectOtherLanguage') }}:</p>
+              <v-select
+                v-model="selectedOtherLanguage"
+                :items="otherLanguages"
+                item-title="name"
+                item-value="code"
+                :label="$t('createView.chooseLanguage')"
+                variant="outlined"
+                density="comfortable"
+              >
+                <template v-slot:item="{ props, item }">
+                  <v-list-item v-bind="props" class="d-flex align-center">
+                    <template v-slot:prepend>
+                      <country-flag :country="item.raw.flag" size="small" class="me-3" />
+                    </template>
+                    <v-list-item-title>{{ item.raw.name }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.raw.code }}</v-list-item-subtitle>
+                  </v-list-item>
+                </template>
+                <template v-slot:selection="{ item }">
+                  <div class="d-flex align-center">
+                    <country-flag :country="item.raw.flag" size="small" class="me-2" />
+                    <span>{{ item.raw.name }}</span>
+                  </div>
+                </template>
+              </v-select>
+            </div>
+          </v-expand-transition>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions class="pa-4">
+          <v-spacer></v-spacer>
+          <v-btn variant="text" @click="isDialogActive = false" class="me-2" :disabled="isGlobalLoading">
+            {{ $t('common.cancel') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            variant="elevated"
+            @click="onAdd"
+            :disabled="isAddDisabled"
+            :loading="isGlobalLoading"
+          >
+            {{ $t('common.add') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- ── Delete Tab Dialog ── -->
     <v-dialog v-model="isDeleteDialogActive" width="auto">
       <v-card>
         <v-card-title class="headline">{{ $t('createView.confirmDelete') }}</v-card-title>
@@ -181,16 +228,88 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- Sync Confirmation Dialog -->
+
+    <!-- ── Sync Dialog ── -->
     <v-dialog v-model="isSyncDialogActive" width="auto">
       <v-card>
         <v-card-title class="headline">{{ $t('createView.confirmSync') }}</v-card-title>
-        <v-card-text>{{
-          $t('createView.currentTabTitle', { title: tabs[activeTab] })
-        }}</v-card-text>
+        <v-card-text>{{ $t('createView.currentTabTitle', { title: tabs[activeTab] }) }}</v-card-text>
         <v-card-actions>
           <v-btn :text="$t('common.cancel')" @click="isSyncDialogActive = false"></v-btn>
           <v-btn color="primary" :text="$t('common.sync')" @click="syncTab"></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- ── Preview Dialog ── -->
+    <v-dialog v-model="isPreviewActive" max-width="860px" scrollable>
+      <v-card>
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon class="me-2" color="info">mdi-eye</v-icon>
+          <span>{{ $t('createView.previewTitle') }}</span>
+          <v-spacer></v-spacer>
+          <v-btn icon="mdi-close" variant="text" @click="isPreviewActive = false"></v-btn>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text style="max-height: 75vh; overflow-y: auto">
+          <v-md-preview :text="editors[activeTab] || ''" />
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions class="pa-4">
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            prepend-icon="mdi-file-pdf-box"
+            variant="tonal"
+            @click="() => { isPreviewActive = false; exportCurrentTabAsPdf() }"
+          >
+            {{ $t('createView.exportPdf') }}
+          </v-btn>
+          <v-btn variant="text" @click="isPreviewActive = false" class="ms-2">
+            {{ $t('common.close') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- ── JD Tailoring Dialog ── -->
+    <v-dialog v-model="isTailorDialogActive" max-width="680px" persistent>
+      <v-card>
+        <v-card-title class="d-flex align-center pa-5">
+          <v-icon class="me-2" color="purple">mdi-magic-staff</v-icon>
+          <span>{{ $t('createView.tailorDialogTitle') }}</span>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text class="pa-5">
+          <p class="text-body-2 text-medium-emphasis mb-4">
+            {{ $t('createView.tailorDialogHint') }}
+          </p>
+          <v-textarea
+            v-model="jobDescription"
+            :label="$t('createView.tailorJobDescriptionLabel')"
+            :placeholder="$t('createView.tailorJobDescriptionPlaceholder')"
+            variant="outlined"
+            rows="10"
+            auto-grow
+            :disabled="isGlobalLoading"
+          ></v-textarea>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions class="pa-4">
+          <v-spacer></v-spacer>
+          <v-btn variant="text" @click="isTailorDialogActive = false" :disabled="isGlobalLoading">
+            {{ $t('common.cancel') }}
+          </v-btn>
+          <v-btn
+            color="purple"
+            variant="elevated"
+            prepend-icon="mdi-magic-staff"
+            @click="runTailor"
+            :disabled="!jobDescription.trim() || isGlobalLoading"
+            :loading="isGlobalLoading"
+          >
+            {{ $t('createView.tailorConfirm') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -232,7 +351,10 @@ const currentResumeId = ref<string | null>(null)
 const resumeDetails = ref<ResumeDetail[]>([])
 const tabs = ref(resumeDetails.value.map((detail) => detail.name))
 const activeTab = ref(0)
-const editors = ref(resumeDetails.value.map((detail) => detail.content)) // Initialize an array with empty strings for each tab
+const editors = ref(resumeDetails.value.map((detail) => detail.content))
+
+// Derived helper
+const currentDetailId = computed(() => resumeDetails.value[activeTab.value]?.id || '')
 
 const countries = computed(() => [
   { flag: 'us', label: t('languages.english'), value: 'EN' },
@@ -241,7 +363,6 @@ const countries = computed(() => [
   { flag: null, label: t('languages.other'), value: 'OTHER', isOther: true },
 ])
 
-// Additional language options for "Other" selection
 const otherLanguages = [
   { code: 'ES', name: 'Español', flag: 'es' },
   { code: 'FR', name: 'Français', flag: 'fr' },
@@ -257,13 +378,18 @@ const otherLanguages = [
   { code: 'TR', name: 'Türkçe', flag: 'tr' },
 ]
 
+// Dialog state
 const isDialogActive = ref(false)
 const isDeleteDialogActive = ref(false)
 const tabIndexToDelete = ref(-1)
 const isSyncDialogActive = ref(false)
+const isPreviewActive = ref(false)
+const isTailorDialogActive = ref(false)
 const editingTabIndex = ref<number | null>(null)
 const editingTabName = ref('')
 const selectedOtherLanguage = ref('')
+const jobDescription = ref('')
+
 const isOtherSelected = computed(() => dialog.value === 'OTHER')
 
 const isAddDisabled = computed(() => {
@@ -273,35 +399,7 @@ const isAddDisabled = computed(() => {
   return false
 })
 
-const handleLanguageDialogOpen = () => {
-  const currentContent = editors.value[activeTab.value] ?? ''
-  if (!currentContent || currentContent.trim().length === 0) {
-    toast.error(t('createView.emptyContentError'))
-    return
-  }
-
-  dialog.value = ''
-  selectedOtherLanguage.value = ''
-  isDialogActive.value = true
-}
-
-// Helper function to get language display name from code
-const getLanguageDisplayName = (languageCode: string): string => {
-  // Check main languages first
-  const mainLanguage = countries.value.find((country) => country.value === languageCode)
-  if (mainLanguage && !mainLanguage.isOther) {
-    return mainLanguage.label
-  }
-
-  // Check other languages
-  const otherLanguage = otherLanguages.find((lang) => lang.code === languageCode)
-  if (otherLanguage) {
-    return otherLanguage.name
-  }
-
-  // Fallback to language code if not found
-  return languageCode
-}
+// ─── Load resume details ───────────────────────────────────────────────────────
 
 const loadResumeDetails = async (resumeId: string) => {
   currentResumeId.value = resumeId
@@ -311,10 +409,7 @@ const loadResumeDetails = async (resumeId: string) => {
       tabs.value = resumeDetails.value.map((detail) => detail.name)
       editors.value = resumeDetails.value.map((detail) => detail.content)
     },
-    {
-      id: 'load-resume-details',
-      message: commonMessages.loading,
-    },
+    { id: 'load-resume-details', message: commonMessages.loading },
   )
 }
 
@@ -323,7 +418,6 @@ onMounted(() => {
   if (typeof resumeId === 'string' && resumeId) {
     loadResumeDetails(resumeId)
   } else {
-    // Initialize with a default tab for a new resume
     const newResumeTitle = t('createView.newResume')
     tabs.value = [newResumeTitle]
     editors.value = ['']
@@ -342,8 +436,30 @@ onMounted(() => {
   }
 })
 
+// ─── Language helpers ──────────────────────────────────────────────────────────
+
+const getLanguageDisplayName = (languageCode: string): string => {
+  const mainLanguage = countries.value.find((country) => country.value === languageCode)
+  if (mainLanguage && !mainLanguage.isOther) return mainLanguage.label
+  const otherLanguage = otherLanguages.find((lang) => lang.code === languageCode)
+  if (otherLanguage) return otherLanguage.name
+  return languageCode
+}
+
+const handleLanguageDialogOpen = () => {
+  const currentContent = editors.value[activeTab.value] ?? ''
+  if (!currentContent || currentContent.trim().length === 0) {
+    toast.error(t('createView.emptyContentError'))
+    return
+  }
+  dialog.value = ''
+  selectedOtherLanguage.value = ''
+  isDialogActive.value = true
+}
+
+// ─── Add language version ──────────────────────────────────────────────────────
+
 const onAdd = async () => {
-  // Note: Adding language versions doesn't consume the resume quota - it adds a ResumeDetail to existing Resume
   const language =
     dialog.value === 'OTHER' && selectedOtherLanguage.value
       ? selectedOtherLanguage.value
@@ -359,54 +475,20 @@ const onAdd = async () => {
         language,
       )
 
-      // Create a clean name by removing any existing language postfix from original name
       let cleanName = originalName
-
-      // Remove common language postfixes if they exist
       const postfixPatterns = [
-        / - EN$/i,
-        / - JA$/i,
-        / - ZH$/i,
-        / - ES$/i,
-        / - FR$/i,
-        / - DE$/i,
-        / - IT$/i,
-        / - PT$/i,
-        / - RU$/i,
-        / - KO$/i,
-        / - TH$/i,
-        / - VI$/i,
-        / - AR$/i,
-        / - HI$/i,
-        / - TR$/i,
-        / \(EN\)$/i,
-        / \(JA\)$/i,
-        / \(ZH\)$/i,
-        / \(ES\)$/i,
-        / \(FR\)$/i,
-        / \(DE\)$/i,
-        / \(IT\)$/i,
-        / \(PT\)$/i,
-        / \(RU\)$/i,
-        / \(KO\)$/i,
-        / \(TH\)$/i,
-        / \(VI\)$/i,
-        / \(AR\)$/i,
-        / \(HI\)$/i,
-        / \(TR\)$/i,
+        / - EN$/i, / - JA$/i, / - ZH$/i, / - ES$/i, / - FR$/i, / - DE$/i,
+        / - IT$/i, / - PT$/i, / - RU$/i, / - KO$/i, / - TH$/i, / - VI$/i,
+        / - AR$/i, / - HI$/i, / - TR$/i,
+        / \(EN\)$/i, / \(JA\)$/i, / \(ZH\)$/i, / \(ES\)$/i, / \(FR\)$/i,
+        / \(DE\)$/i, / \(IT\)$/i, / \(PT\)$/i, / \(RU\)$/i, / \(KO\)$/i,
+        / \(TH\)$/i, / \(VI\)$/i, / \(AR\)$/i, / \(HI\)$/i, / \(TR\)$/i,
       ]
+      postfixPatterns.forEach((pattern) => { cleanName = cleanName.replace(pattern, '') })
 
-      postfixPatterns.forEach((pattern) => {
-        cleanName = cleanName.replace(pattern, '')
-      })
-
-      // Add the language postfix to the clean name
       const nameWithLanguage = `${cleanName} - ${language}`
-
-      // Use the name with language postfix for the new detail
       newDetail.name = nameWithLanguage
 
-      // Update the backend with the new name if it was changed
       if (newDetail.id) {
         await resumeDetailService.updateResumeDetailName(newDetail.id, nameWithLanguage)
       }
@@ -414,28 +496,21 @@ const onAdd = async () => {
       resumeDetails.value.push(newDetail)
       tabs.value.push(newDetail.name)
       editors.value.push(newDetail.content)
-      if (newDetail.resumeId) {
-        currentResumeId.value = newDetail.resumeId
-      }
+      if (newDetail.resumeId) currentResumeId.value = newDetail.resumeId
+
       dialog.value = ''
       selectedOtherLanguage.value = ''
       isDialogActive.value = false
-
-      // Switch to the newly created tab
       activeTab.value = tabs.value.length - 1
 
-      // Show language-specific success message
       const languageDisplayName = getLanguageDisplayName(language)
-      toast.success('toast.success.resumeLanguageAdded', undefined, {
-        language: languageDisplayName,
-      })
+      toast.success('toast.success.resumeLanguageAdded', undefined, { language: languageDisplayName })
     },
-    {
-      id: 'create-language-version',
-      message: commonMessages.creating,
-    },
+    { id: 'create-language-version', message: commonMessages.creating },
   )
 }
+
+// ─── Save ─────────────────────────────────────────────────────────────────────
 
 const onSave = async (index: number) => {
   await withLoading(
@@ -443,14 +518,10 @@ const onSave = async (index: number) => {
       const content = editors.value[index]
       const detail = resumeDetails.value[index]
       if (detail.id) {
-        // Update existing resume detail - always allowed
         await resumeDetailService.updateResumeDetailContent(detail.id, content)
         detail.content = content
-        if (detail.resumeId) {
-          currentResumeId.value = detail.resumeId
-        }
+        if (detail.resumeId) currentResumeId.value = detail.resumeId
       } else {
-        // Create new resume detail - check limit
         if (!authStore.isAuthenticated) {
           await guestStore.checkResumeQuota()
           if (guestStore.hasReachedLimit) {
@@ -461,14 +532,12 @@ const onSave = async (index: number) => {
         const newDetail = await resumeDetailService.createResumeDetail({
           ...detail,
           content,
-          name: tabs.value[index], // Ensure name is passed
+          name: tabs.value[index],
         })
         resumeDetails.value[index] = newDetail
-        // Update the URL with the new resumeId
         if (newDetail.resumeId) {
           currentResumeId.value = newDetail.resumeId
           router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
-          // Reconcile guest quota from backend after successful new resume creation
           if (!authStore.isAuthenticated) {
             await guestStore.checkResumeQuota()
             guestStore.notifyQuotaChanged()
@@ -477,12 +546,11 @@ const onSave = async (index: number) => {
       }
       toast.success('toast.success.resumeSaveSuccess')
     },
-    {
-      id: 'save-resume',
-      message: commonMessages.saving,
-    },
+    { id: 'save-resume', message: commonMessages.saving },
   )
 }
+
+// ─── Delete tab ────────────────────────────────────────────────────────────────
 
 const openDeleteDialog = (index: number) => {
   tabIndexToDelete.value = index
@@ -495,25 +563,17 @@ const deleteTab = async () => {
       async () => {
         const detailId = resumeDetails.value[tabIndexToDelete.value].id
         await resumeDetailService.deleteResumeDetail(detailId)
-
-        // Clear editing state if needed
         cancelEdit()
-
-        // Reload all data to ensure consistency
-        if (currentResumeId.value) {
-          await loadResumeDetails(currentResumeId.value)
-        }
-
+        if (currentResumeId.value) await loadResumeDetails(currentResumeId.value)
         isDeleteDialogActive.value = false
         tabIndexToDelete.value = -1
       },
-      {
-        id: 'delete-tab',
-        message: commonMessages.deleting,
-      },
+      { id: 'delete-tab', message: commonMessages.deleting },
     )
   }
 }
+
+// ─── Sync translations ─────────────────────────────────────────────────────────
 
 const openSyncDialog = () => {
   if (!currentResumeId.value) {
@@ -524,10 +584,7 @@ const openSyncDialog = () => {
 }
 
 const syncTab = async () => {
-  if (!currentResumeId.value) {
-    console.warn('No resume ID available to sync. Save your resume before syncing.')
-    return
-  }
+  if (!currentResumeId.value) return
 
   const activeResumeDetailID = resumeDetails.value[activeTab.value].id
   if (!activeResumeDetailID) {
@@ -543,21 +600,18 @@ const syncTab = async () => {
       await loadResumeDetails(currentResumeId.value!)
       toast.success('toast.success.resumeSyncSuccess')
     },
-    {
-      id: 'sync-translations',
-      message: commonMessages.syncing,
-    },
+    { id: 'sync-translations', message: commonMessages.syncing },
   )
 }
+
+// ─── Tab name editing ──────────────────────────────────────────────────────────
 
 const editTabName = (index: number) => {
   editingTabIndex.value = index
   editingTabName.value = tabs.value[index]
 }
 
-const isEditingTab = (index: number) => {
-  return editingTabIndex.value === index
-}
+const isEditingTab = (index: number) => editingTabIndex.value === index
 
 const cancelEdit = () => {
   editingTabIndex.value = null
@@ -566,10 +620,7 @@ const cancelEdit = () => {
 
 const saveTabName = async (index: number) => {
   const newName = editingTabName.value.trim()
-  if (!newName) {
-    cancelEdit()
-    return
-  }
+  if (!newName) { cancelEdit(); return }
 
   const detail = resumeDetails.value[index]
   if (detail.id && newName !== detail.name) {
@@ -582,13 +633,9 @@ const saveTabName = async (index: number) => {
         editingTabIndex.value = null
         editingTabName.value = ''
       },
-      {
-        id: 'update-tab-name',
-        message: commonMessages.updating,
-      },
+      { id: 'update-tab-name', message: commonMessages.updating },
     )
   } else if (!detail.id) {
-    // For new tabs that haven't been saved yet
     tabs.value[index] = newName
     detail.name = newName
     editingTabIndex.value = null
@@ -598,13 +645,88 @@ const saveTabName = async (index: number) => {
     editingTabName.value = ''
   }
 }
+
+// ─── Preview ───────────────────────────────────────────────────────────────────
+
+const openPreview = () => {
+  isPreviewActive.value = true
+}
+
+// ─── JD Tailoring ──────────────────────────────────────────────────────────────
+
+const openTailorDialog = () => {
+  if (!currentDetailId.value) {
+    toast.warning(t('createView.unsavedBeforeAction'))
+    return
+  }
+  jobDescription.value = ''
+  isTailorDialogActive.value = true
+}
+
+const runTailor = async () => {
+  if (!jobDescription.value.trim()) {
+    toast.error(t('createView.tailorEmptyError'))
+    return
+  }
+
+  isTailorDialogActive.value = false
+
+  await withLoading(
+    async () => {
+      const tailoredContent = await resumeDetailService.tailorResume(
+        currentDetailId.value,
+        jobDescription.value,
+      )
+      editors.value[activeTab.value] = tailoredContent
+      toast.success(t('createView.tailorSuccess'))
+    },
+    { id: 'tailor-resume', message: commonMessages.processing },
+  )
+}
+
+// ─── Export PDF ────────────────────────────────────────────────────────────────
+
+const exportCurrentTabAsPdf = async () => {
+  if (!currentDetailId.value) {
+    toast.warning(t('createView.unsavedBeforeAction'))
+    return
+  }
+
+  await withLoading(
+    async () => {
+      const blob = await resumeDetailService.exportPdf(currentDetailId.value)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${tabs.value[activeTab.value]}_${new Date().toISOString().slice(0, 10)}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
+    },
+    { id: 'export-pdf', message: commonMessages.downloading },
+  )
+}
+
+// ─── Set Default ───────────────────────────────────────────────────────────────
+
+const setCurrentTabAsDefault = async () => {
+  if (!currentDetailId.value) {
+    toast.warning(t('createView.unsavedBeforeAction'))
+    return
+  }
+
+  await withLoading(
+    async () => {
+      await resumeDetailService.setDefault(currentDetailId.value)
+      // Refresh to update isDefault flags across all tabs
+      if (currentResumeId.value) await loadResumeDetails(currentResumeId.value)
+      toast.success(t('createView.setDefaultSuccess'))
+    },
+    { id: 'set-default', message: commonMessages.updating },
+  )
+}
 </script>
 
 <style scoped>
-.full-width {
-  width: 100%;
-}
-
 .tab-editing {
   padding: 0 !important;
 }
@@ -615,29 +737,16 @@ const saveTabName = async (index: number) => {
   max-width: 150px;
 }
 
-/* Ensure the row doesn't wrap */
 .v-row {
   flex-wrap: nowrap !important;
 }
 
-/* Make tabs container responsive */
 .v-tabs {
   overflow-x: auto;
   flex-shrink: 1;
 }
 
-/* Language selection dialog improvements */
-.v-dialog .v-card {
-  overflow: visible;
-}
-
-.v-radio-group .v-radio {
-  margin-bottom: 8px;
-}
-
-.v-radio-group .v-radio:hover {
-  background-color: rgba(var(--v-theme-primary), 0.04);
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
+.gap-1 {
+  gap: 4px;
 }
 </style>

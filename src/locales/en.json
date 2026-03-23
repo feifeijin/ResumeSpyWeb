@@ -118,13 +118,28 @@
     "confirmSync": "Confirm SYNC",
     "currentVersionTitle": "Current language version: {title}",
     "newResume": "New Resume",
-    "emptyContentError": "Please add content to the current resume before creating another language."
+    "emptyContentError": "Please add content to the current resume before creating another language.",
+    "preview": "Preview",
+    "previewTitle": "Resume Preview",
+    "tailorForJD": "Tailor for JD",
+    "tailorDialogTitle": "Tailor Resume for Job Description",
+    "tailorDialogHint": "Paste the job description below. AI will rewrite your resume to better match the role while keeping all facts accurate.",
+    "tailorJobDescriptionLabel": "Job Description",
+    "tailorJobDescriptionPlaceholder": "Paste the full job description here...",
+    "tailorConfirm": "Tailor My Resume",
+    "tailorEmptyError": "Please paste a job description before tailoring.",
+    "tailorSuccess": "Resume tailored successfully! Review the changes before saving.",
+    "exportPdf": "Export PDF",
+    "setDefault": "Set as Default",
+    "setDefaultSuccess": "Set as default version successfully.",
+    "unsavedBeforeAction": "Please save your resume before using this feature."
   },
   "mySpyView": {
     "title": "MySpy",
     "rename": "Rename",
     "clone": "Clone",
-    "delete": "Delete"
+    "delete": "Delete",
+    "exportPdf": "Export PDF"
   },
   "languages": {
     "english": "English",
