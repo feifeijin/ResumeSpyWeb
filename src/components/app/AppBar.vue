@@ -136,7 +136,7 @@ const currentLanguage = computed(() => {
   return current?.name || 'EN'
 })
 
-const accountLabel = computed(() => displayName.value || email.value || t('navigation.login'))
+const accountLabel = computed(() => email.value || t('navigation.login'))
 
 const changeLanguage = (langCode: string) => {
   setLanguage(langCode)
