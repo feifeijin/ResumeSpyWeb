@@ -6,7 +6,7 @@
     <div class="archives-header">
       <div class="archives-header-inner">
         <div>
-          <p class="header-overline">— Case Files —</p>
+          <p class="header-overline">{{ $t('mySpyView.caseFilesLabel') }}</p>
           <h1 class="header-title">{{ $t('mySpyView.title') }}</h1>
         </div>
         <button class="btn-ink" @click="createNew">+ {{ $t('common.create') }}</button>
@@ -16,8 +16,8 @@
     <!-- Empty State -->
     <div v-if="resumes.length === 0" class="empty-state">
       <div class="empty-icon">◫</div>
-      <p class="empty-title">The Archives are Empty</p>
-      <p class="empty-desc">No dossiers on file. Begin your first case.</p>
+      <p class="empty-title">{{ $t('mySpyView.empty.title') }}</p>
+      <p class="empty-desc">{{ $t('mySpyView.empty.description') }}</p>
       <button class="btn-ink" @click="createNew">{{ $t('common.create') }}</button>
     </div>
 
@@ -78,7 +78,7 @@
         </div>
 
         <!-- Date -->
-        <p class="dossier-date">Filed: {{ resume.lastModifyTime }}</p>
+        <p class="dossier-date">{{ $t('mySpyView.card.filed') }} {{ resume.lastModifyTime }}</p>
 
         <!-- Thumbnail -->
         <div class="dossier-thumb" @click="openEditPage(resume.id)">
@@ -90,10 +90,10 @@
           />
           <div v-else class="dossier-img-placeholder">
             <span>◈</span>
-            <span class="placeholder-text">Open Dossier</span>
+            <span class="placeholder-text">{{ $t('mySpyView.card.openDossier') }}</span>
           </div>
           <div class="dossier-thumb-overlay">
-            <span>Open</span>
+            <span>{{ $t('mySpyView.card.open') }}</span>
           </div>
         </div>
       </div>
@@ -104,6 +104,7 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
 import type { Resume } from '@/models/resume.type'
@@ -112,6 +113,7 @@ import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
 
 const resumeService = new ResumeService()
+const { t } = useI18n()
 const { withLoading, commonMessages } = useLoading()
 const toast = useToast()
 
@@ -157,7 +159,7 @@ const createNew = async () => {
   if (!authStore.isAuthenticated) {
     const quota = await guestStore.checkResumeQuota()
     if (quota && guestStore.hasReachedLimit) {
-      toast.error('You have reached the guest resume limit. Please sign in to create more.')
+      toast.error(t('mySpyView.quota.limitReached'))
       return
     }
   }
@@ -186,7 +188,7 @@ const onClone = async (resume: Resume) => {
   if (!authStore.isAuthenticated) {
     const quota = await guestStore.checkResumeQuota()
     if (quota && guestStore.hasReachedLimit) {
-      toast.error('You have reached the guest resume limit. Please sign in to clone resumes.')
+      toast.error(t('mySpyView.quota.cloneLimited'))
       return
     }
   }

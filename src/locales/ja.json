@@ -191,6 +191,15 @@
     },
     "sectionHeading": "中身"
   },
+  "articles": {
+    "notFound": "アーカイブに記事が見つかりません。",
+    "backToArticles": "アーカイブに戻る",
+    "readMore": "ファイルを読む",
+    "notFoundTitle": "ファイルが見つかりません",
+    "notFoundLabel": "— 404 —",
+    "readingRoom": "— 読書室 —",
+    "minRead": "分 読む"
+  },
   "authMagic": {
     "processing": "認証情報を確認中",
     "success": "アクセス許可",

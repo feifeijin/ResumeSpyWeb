@@ -9,8 +9,8 @@
 
     <!-- Not Found -->
     <div v-else-if="article.notFound" class="article-notfound">
-      <p class="nf-overline">— 404 —</p>
-      <h1 class="nf-title">File Not Found</h1>
+      <p class="nf-overline">{{ t('articles.notFoundLabel') }}</p>
+      <h1 class="nf-title">{{ t('articles.notFoundTitle') }}</h1>
       <p class="nf-desc">{{ t('articles.notFound') }}</p>
       <router-link to="/" class="btn-ghost">← {{ t('articles.backToArticles') }}</router-link>
     </div>
@@ -32,7 +32,7 @@
 
         <article>
           <header class="article-header">
-            <p class="article-overline">— Reading Room —</p>
+            <p class="article-overline">{{ t('articles.readingRoom') }}</p>
             <h1 class="article-title">{{ article.title }}</h1>
 
             <!-- Meta row: author · date · read time -->
@@ -41,7 +41,7 @@
               <span class="meta-sep">·</span>
               <time :datetime="article.date">{{ formatDate(article.date) }}</time>
               <span class="meta-sep">·</span>
-              <span>{{ article.readTime }} min read</span>
+              <span>{{ article.readTime }} {{ t('articles.minRead') }}</span>
             </div>
 
             <div class="article-tags">
@@ -54,7 +54,7 @@
 
           <!-- Table of Contents (auto-shown for articles > 800 words) -->
           <nav v-if="toc.length" class="article-toc" aria-label="Table of contents">
-            <p class="toc-title">— Contents —</p>
+            <p class="toc-title">{{ t('articles.contents') }}</p>
             <ol>
               <li
                 v-for="item in toc"

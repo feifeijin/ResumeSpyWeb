@@ -139,10 +139,25 @@
   },
   "mySpyView": {
     "title": "我的简历",
+    "caseFilesLabel": "— 案例文件 —",
     "rename": "重命名",
     "clone": "复制",
     "delete": "删除",
-    "exportPdf": "导出 PDF"
+    "exportPdf": "导出 PDF",
+    "empty": {
+      "title": "档案库为空",
+      "description": "没有档案。开始你的第一个案例。",
+      "cta": "创建"
+    },
+    "card": {
+      "filed": "已提交:",
+      "openDossier": "打开档案",
+      "open": "打开"
+    },
+    "quota": {
+      "limitReached": "你已达到访客简历限制。请登录以创建更多。",
+      "cloneLimited": "你已达到访客简历限制。请登录以克隆简历。"
+    }
   },
   "languages": {
     "english": "英语",
@@ -190,6 +205,15 @@
       "buyCoffee": "☕  给我买杯咖啡"
     },
     "sectionHeading": "内部内容"
+  },
+  "articles": {
+    "notFound": "档案中找不到该文章。",
+    "backToArticles": "返回档案库",
+    "readMore": "阅读文件",
+    "notFoundTitle": "文件未找到",
+    "notFoundLabel": "— 404 —",
+    "readingRoom": "— 阅览室 —",
+    "minRead": "分钟阅读"
   },
   "authMagic": {
     "processing": "验证凭据",
@@ -279,22 +303,5 @@
     "noCached": "没有缓存的版本",
     "tryAgain": "尝试不同的搜索条件",
     "createFirst": "创建你的第一份简历"
-  },
-  "mySpyView": {
-    "empty": "还没有简历",
-    "emptyHint": "创建你的第一份简历来开始",
-    "actions": {
-      "view": "查看",
-      "edit": "编辑",
-      "duplicate": "复制",
-      "rename": "重命名",
-      "download": "下载",
-      "delete": "删除"
-    },
-    "stats": {
-      "versions": "版本",
-      "lastModified": "最后修改",
-      "created": "创建时间"
-    }
   }
 }

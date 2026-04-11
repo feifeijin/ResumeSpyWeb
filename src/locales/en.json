@@ -139,10 +139,25 @@
   },
   "mySpyView": {
     "title": "MySpy",
+    "caseFilesLabel": "— Case Files —",
     "rename": "Rename",
     "clone": "Clone",
     "delete": "Delete",
-    "exportPdf": "Export PDF"
+    "exportPdf": "Export PDF",
+    "empty": {
+      "title": "The Archives are Empty",
+      "description": "No dossiers on file. Begin your first case.",
+      "cta": "Create"
+    },
+    "card": {
+      "filed": "Filed:",
+      "openDossier": "Open Dossier",
+      "open": "Open"
+    },
+    "quota": {
+      "limitReached": "You have reached the guest resume limit. Please sign in to create more.",
+      "cloneLimited": "You have reached the guest resume limit. Please sign in to clone resumes."
+    }
   },
   "languages": {
     "english": "English",
@@ -154,6 +169,11 @@
     "notFound": "Article not found in the archives.",
     "backToArticles": "Return to the Archives",
     "readMore": "Read the File",
+    "notFoundTitle": "File Not Found",
+    "notFoundLabel": "— 404 —",
+    "readingRoom": "— Reading Room —",
+    "minRead": "min read",
+    "contents": "— Contents —",
     "items": [
       {
         "slug": "mastering-resume-writing-best-practices-2025",
@@ -322,22 +342,5 @@
     "noCached": "No cached versions",
     "tryAgain": "Try different search terms",
     "createFirst": "Create your first resume"
-  },
-  "mySpyView": {
-    "empty": "No resumes yet",
-    "emptyHint": "Create your first resume to get started",
-    "actions": {
-      "view": "View",
-      "edit": "Edit",
-      "duplicate": "Duplicate",
-      "rename": "Rename",
-      "download": "Download",
-      "delete": "Delete"
-    },
-    "stats": {
-      "versions": "Versions",
-      "lastModified": "Last modified",
-      "created": "Created"
-    }
   }
 }
