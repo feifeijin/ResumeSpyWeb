@@ -34,7 +34,8 @@
       "resumeRenameSuccess": "Resume renamed successfully",
       "languageVersionRenameSuccess": "Language version renamed successfully",
       "languageVersionCreateSuccess": "Language version created successfully",
-      "resumeLanguageAdded": "{language} resume added successfully"
+      "resumeLanguageAdded": "{language} resume added successfully",
+      "tabRenameSuccess": "Tab renamed successfully"
     },
     "error": {
       "operationFailed": "Operation failed",
@@ -119,7 +120,7 @@
     "confirmDelete": "Confirm Delete",
     "deleteConfirm": "Are you sure you want to delete this language version?",
     "confirmSync": "Confirm SYNC",
-    "currentVersionTitle": "Current language version: {title}",
+    "currentTabTitle": "Current version: {title}",
     "newResume": "New Resume",
     "emptyContentError": "Please add content to the current resume before creating another language.",
     "preview": "Preview",
@@ -135,7 +136,13 @@
     "exportPdf": "Export PDF",
     "setDefault": "Set as Default",
     "setDefaultSuccess": "Set as default version successfully.",
-    "unsavedBeforeAction": "Please save your resume before using this feature."
+    "unsavedBeforeAction": "Please save your resume before using this feature.",
+    "tooltips": {
+      "addLanguage": "Add Language",
+      "sync": "Sync",
+      "preview": "Preview",
+      "tailorForJD": "AI Tailor"
+    }
   },
   "mySpyView": {
     "title": "MySpy",
@@ -164,7 +171,19 @@
     "english": "English",
     "japanese": "Japanese",
     "chinese": "Chinese",
-    "other": "Other"
+    "other": "Other",
+    "es": "Spanish",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "ru": "Russian",
+    "ko": "Korean",
+    "th": "Thai",
+    "vi": "Vietnamese",
+    "ar": "Arabic",
+    "hi": "Hindi",
+    "tr": "Turkish"
   },
   "articles": {
     "notFound": "Article not found in the archives.",
@@ -180,37 +199,55 @@
         "slug": "mastering-resume-writing-best-practices-2025",
         "title": "Mastering Resume Writing: Best Practices for 2025",
         "excerpt": "Your resume is your first impression. Learn how structure, language, and strategy combine to open doors in a competitive market.",
-        "tags": ["Writing", "Best Practices"]
+        "tags": [
+          "Writing",
+          "Best Practices"
+        ]
       },
       {
         "slug": "resume-optimization-seo-for-your-career",
         "title": "Resume Optimization: SEO for Your Career",
         "excerpt": "ATS systems screen you before any human does. Learn the keyword and formatting strategies that get you through the filter.",
-        "tags": ["ATS", "Keywords"]
+        "tags": [
+          "ATS",
+          "Keywords"
+        ]
       },
       {
         "slug": "showcasing-language-skills-on-resume",
         "title": "Showcasing Language Skills on Your Resume",
         "excerpt": "In a global market, multilingual ability is a competitive edge. How to present your language skills with precision and impact.",
-        "tags": ["Languages", "Global"]
+        "tags": [
+          "Languages",
+          "Global"
+        ]
       },
       {
         "slug": "version-control-for-your-resume",
         "title": "Version Control for Your Resume",
         "excerpt": "One resume for every job is a losing strategy. Learn how to maintain a living document that evolves with every application.",
-        "tags": ["Strategy", "Versions"]
+        "tags": [
+          "Strategy",
+          "Versions"
+        ]
       },
       {
         "slug": "creating-job-specific-resumes-efficiently",
         "title": "Creating Job-Specific Resumes Efficiently",
         "excerpt": "Tailoring takes time — unless you have a system. A framework for producing targeted resumes without starting from scratch.",
-        "tags": ["Productivity", "Tailoring"]
+        "tags": [
+          "Productivity",
+          "Tailoring"
+        ]
       },
       {
         "slug": "github-profile-to-professional-resume",
         "title": "From GitHub Profile to Professional Resume",
         "excerpt": "Your commit history tells a story. How to translate open-source contributions and side projects into compelling resume content.",
-        "tags": ["Developers", "GitHub"]
+        "tags": [
+          "Developers",
+          "GitHub"
+        ]
       }
     ]
   },
@@ -301,14 +338,6 @@
       "cancel": "Cancel"
     }
   },
-  "createView": {
-    "tooltips": {
-      "addLanguage": "Add Language",
-      "sync": "Sync",
-      "preview": "Preview",
-      "tailorForJD": "AI Tailor"
-    }
-  },
   "errors": {
     "network": "Network connection error. Please check your internet.",
     "server": "Server error. Please try again later.",
@@ -316,7 +345,8 @@
     "notFound": "Resource not found.",
     "validation": "Please check your input and try again.",
     "timeout": "Request timeout. Please try again.",
-    "generic": "An error occurred. Please try again."
+    "generic": "An error occurred. Please try again.",
+    "guestLimitReached": "You have reached the guest resume limit. Please sign in to create more."
   },
   "validation": {
     "required": "This field is required",

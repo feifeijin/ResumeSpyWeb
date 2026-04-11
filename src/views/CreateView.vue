@@ -306,20 +306,28 @@ const countries = computed(() => [
   { flag: null, label: t('languages.other'), value: 'OTHER', isOther: true },
 ])
 
-const otherLanguages = [
-  { code: 'ES', name: 'Español', flag: 'es' },
-  { code: 'FR', name: 'Français', flag: 'fr' },
-  { code: 'DE', name: 'Deutsch', flag: 'de' },
-  { code: 'IT', name: 'Italiano', flag: 'it' },
-  { code: 'PT', name: 'Português', flag: 'pt' },
-  { code: 'RU', name: 'Русский', flag: 'ru' },
-  { code: 'KO', name: '한국어', flag: 'kr' },
-  { code: 'TH', name: 'ไทย', flag: 'th' },
-  { code: 'VI', name: 'Tiếng Việt', flag: 'vn' },
-  { code: 'AR', name: 'العربية', flag: 'sa' },
-  { code: 'HI', name: 'हिन्दी', flag: 'in' },
-  { code: 'TR', name: 'Türkçe', flag: 'tr' },
+const availableOtherLanguages = [
+  { code: 'ES', flag: 'es', nameKey: 'languages.es' },
+  { code: 'FR', flag: 'fr', nameKey: 'languages.fr' },
+  { code: 'DE', flag: 'de', nameKey: 'languages.de' },
+  { code: 'IT', flag: 'it', nameKey: 'languages.it' },
+  { code: 'PT', flag: 'pt', nameKey: 'languages.pt' },
+  { code: 'RU', flag: 'ru', nameKey: 'languages.ru' },
+  { code: 'KO', flag: 'kr', nameKey: 'languages.ko' },
+  { code: 'TH', flag: 'th', nameKey: 'languages.th' },
+  { code: 'VI', flag: 'vn', nameKey: 'languages.vi' },
+  { code: 'AR', flag: 'sa', nameKey: 'languages.ar' },
+  { code: 'HI', flag: 'in', nameKey: 'languages.hi' },
+  { code: 'TR', flag: 'tr', nameKey: 'languages.tr' },
 ]
+
+const otherLanguages = computed(() =>
+  availableOtherLanguages.map((lang) => ({
+    code: lang.code,
+    flag: lang.flag,
+    name: t(lang.nameKey),
+  })),
+)
 
 const isDialogActive = ref(false)
 const isDeleteDialogActive = ref(false)
@@ -370,7 +378,7 @@ onMounted(() => {
 const getLanguageDisplayName = (languageCode: string): string => {
   const mainLanguage = countries.value.find((country) => country.value === languageCode)
   if (mainLanguage && !mainLanguage.isOther) return mainLanguage.label
-  const otherLanguage = otherLanguages.find((lang) => lang.code === languageCode)
+  const otherLanguage = otherLanguages.value.find((lang) => lang.code === languageCode)
   if (otherLanguage) return otherLanguage.name
   return languageCode
 }
@@ -400,15 +408,14 @@ const onAdd = async () => {
       const newDetail = await resumeDetailService.createResumeDetailFromExisting(existingResumeDetailId, language)
 
       let cleanName = originalName
-      const postfixPatterns = [
-        / - EN$/i, / - JA$/i, / - ZH$/i, / - ES$/i, / - FR$/i, / - DE$/i,
-        / - IT$/i, / - PT$/i, / - RU$/i, / - KO$/i, / - TH$/i, / - VI$/i,
-        / - AR$/i, / - HI$/i, / - TR$/i,
-        / \(EN\)$/i, / \(JA\)$/i, / \(ZH\)$/i, / \(ES\)$/i, / \(FR\)$/i,
-        / \(DE\)$/i, / \(IT\)$/i, / \(PT\)$/i, / \(RU\)$/i, / \(KO\)$/i,
-        / \(TH\)$/i, / \(VI\)$/i, / \(AR\)$/i, / \(HI\)$/i, / \(TR\)$/i,
+      const codes = [
+        'EN', 'JA', 'ZH', 'ES', 'FR', 'DE', 'IT', 'PT', 'RU', 'KO', 'TH', 'VI', 'AR', 'HI', 'TR',
       ]
-      postfixPatterns.forEach((pattern) => { cleanName = cleanName.replace(pattern, '') })
+      codes.forEach((code) => {
+        const patternDash = new RegExp(` - ${code}$`, 'i')
+        const patternParen = new RegExp(` \\(${code}\\)$`, 'i')
+        cleanName = cleanName.replace(patternDash, '').replace(patternParen, '')
+      })
 
       const nameWithLanguage = `${cleanName} - ${language}`
       newDetail.name = nameWithLanguage

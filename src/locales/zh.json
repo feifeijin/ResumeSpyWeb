@@ -34,7 +34,8 @@
       "resumeRenameSuccess": "简历重命名成功",
       "languageVersionRenameSuccess": "语言版本重命名成功",
       "languageVersionCreateSuccess": "语言版本创建成功",
-      "resumeLanguageAdded": "{language}简历添加成功"
+      "resumeLanguageAdded": "{language}简历添加成功",
+      "tabRenameSuccess": "标签重命名成功"
     },
     "error": {
       "operationFailed": "操作失败",
@@ -119,7 +120,7 @@
     "confirmDelete": "确认删除",
     "deleteConfirm": "您确定要删除此语言版本吗？",
     "confirmSync": "确认同步",
-    "currentVersionTitle": "当前语言版本：{title}",
+    "currentTabTitle": "当前版本：{title}",
     "newResume": "新简历",
     "emptyContentError": "请先填写当前简历内容，再创建其他语言版本。",
     "preview": "预览",
@@ -135,7 +136,13 @@
     "exportPdf": "导出 PDF",
     "setDefault": "设为默认",
     "setDefaultSuccess": "已成功设为默认版本。",
-    "unsavedBeforeAction": "请先保存简历再使用此功能。"
+    "unsavedBeforeAction": "请先保存简历再使用此功能。",
+    "tooltips": {
+      "addLanguage": "添加语言",
+      "sync": "同步",
+      "preview": "预览",
+      "tailorForJD": "AI优化"
+    }
   },
   "mySpyView": {
     "title": "我的简历",
@@ -164,7 +171,19 @@
     "english": "英语",
     "japanese": "日语",
     "chinese": "中文",
-    "other": "其他"
+    "other": "其他",
+    "es": "西班牙语",
+    "fr": "法语",
+    "de": "德语",
+    "it": "意大利语",
+    "pt": "葡萄牙语",
+    "ru": "俄语",
+    "ko": "韩语",
+    "th": "泰语",
+    "vi": "越南语",
+    "ar": "阿拉伯语",
+    "hi": "印地语",
+    "tr": "土耳其语"
   },
   "home": {
     "overline": "— 档案编号 001 —",
@@ -262,14 +281,6 @@
       "cancel": "取消"
     }
   },
-  "createView": {
-    "tooltips": {
-      "addLanguage": "添加语言",
-      "sync": "同步",
-      "preview": "预览",
-      "tailorForJD": "AI优化"
-    }
-  },
   "errors": {
     "network": "网络连接错误。请检查你的网络连接。",
     "server": "服务器错误。请稍后再试。",
@@ -277,7 +288,8 @@
     "notFound": "资源未找到。",
     "validation": "请检查你的输入并重试。",
     "timeout": "请求超时。请重试。",
-    "generic": "发生错误。请重试。"
+    "generic": "发生错误。请重试。",
+    "guestLimitReached": "你已达到访客简历限制。请登录以创建更多。"
   },
   "validation": {
     "required": "此字段为必填项",
