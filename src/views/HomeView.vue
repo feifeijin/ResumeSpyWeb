@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import ResumeGuide from '@/components/ResumeGuide.vue'
+import KnowledgeBase from '@/components/KnowledgeBase.vue'
 
 const router = useRouter()
 
@@ -114,6 +116,26 @@ const features = [
         </div>
       </div>
     </section>
+
+    <!-- ── DIVIDER ─────────────────────────────────────────── -->
+    <div class="divider" aria-hidden="true">
+      <span class="divider-line" />
+      <span class="divider-glyph">✦</span>
+      <span class="divider-line" />
+    </div>
+
+    <!-- ── HOW IT WORKS ──────────────────────────────────────── -->
+    <ResumeGuide />
+
+    <!-- ── DIVIDER ─────────────────────────────────────────── -->
+    <div class="divider" aria-hidden="true">
+      <span class="divider-line" />
+      <span class="divider-glyph">✦</span>
+      <span class="divider-line" />
+    </div>
+
+    <!-- ── ARTICLES ───────────────────────────────────────── -->
+    <KnowledgeBase />
 
     <!-- ── DIVIDER ─────────────────────────────────────────── -->
     <div class="divider" aria-hidden="true">

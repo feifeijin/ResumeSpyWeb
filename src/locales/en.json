@@ -146,5 +146,48 @@
     "japanese": "Japanese",
     "chinese": "Chinese",
     "other": "Other"
+  },
+  "articles": {
+    "notFound": "Article not found in the archives.",
+    "backToArticles": "Return to the Archives",
+    "readMore": "Read the File",
+    "items": [
+      {
+        "slug": "mastering-resume-writing-best-practices-2025",
+        "title": "Mastering Resume Writing: Best Practices for 2025",
+        "excerpt": "Your resume is your first impression. Learn how structure, language, and strategy combine to open doors in a competitive market.",
+        "tags": ["Writing", "Best Practices"]
+      },
+      {
+        "slug": "resume-optimization-seo-for-your-career",
+        "title": "Resume Optimization: SEO for Your Career",
+        "excerpt": "ATS systems screen you before any human does. Learn the keyword and formatting strategies that get you through the filter.",
+        "tags": ["ATS", "Keywords"]
+      },
+      {
+        "slug": "showcasing-language-skills-on-resume",
+        "title": "Showcasing Language Skills on Your Resume",
+        "excerpt": "In a global market, multilingual ability is a competitive edge. How to present your language skills with precision and impact.",
+        "tags": ["Languages", "Global"]
+      },
+      {
+        "slug": "version-control-for-your-resume",
+        "title": "Version Control for Your Resume",
+        "excerpt": "One resume for every job is a losing strategy. Learn how to maintain a living document that evolves with every application.",
+        "tags": ["Strategy", "Versions"]
+      },
+      {
+        "slug": "creating-job-specific-resumes-efficiently",
+        "title": "Creating Job-Specific Resumes Efficiently",
+        "excerpt": "Tailoring takes time — unless you have a system. A framework for producing targeted resumes without starting from scratch.",
+        "tags": ["Productivity", "Tailoring"]
+      },
+      {
+        "slug": "github-profile-to-professional-resume",
+        "title": "From GitHub Profile to Professional Resume",
+        "excerpt": "Your commit history tells a story. How to translate open-source contributions and side projects into compelling resume content.",
+        "tags": ["Developers", "GitHub"]
+      }
+    ]
   }
 }
