@@ -6,7 +6,7 @@ import { createI18n } from 'vue-i18n'
  * To add a new language: drop `src/locales/fr.json` (with a `_meta.nativeName` key)
  * and it will be picked up automatically — no code changes required.
  */
-const localeModules = import.meta.glob<Record<string, unknown>>(
+const localeModules = import.meta.glob<{ default: Record<string, unknown> }>(
   './locales/*.json',
   { eager: true },
 )
@@ -15,9 +15,9 @@ const localeModules = import.meta.glob<Record<string, unknown>>(
 const messages = Object.fromEntries(
   Object.entries(localeModules).map(([path, mod]) => {
     const code = path.replace('./locales/', '').replace('.json', '')
-    return [code, mod]
+    return [code, (mod as any).default || mod]
   }),
-)
+) as Record<string, Record<string, unknown>>
 
 /** All locale codes derived from the JSON file names (e.g. ['en', 'ja', 'zh']) */
 export const supportedLocales: string[] = Object.keys(messages).sort()
@@ -51,7 +51,7 @@ export const i18n = createI18n({
   legacy: false,
   locale: detectLocale(),
   fallbackLocale: 'en',
-  messages,
+  messages: messages as any,
   missingWarn: false,
   fallbackWarn: false,
 })
@@ -59,7 +59,7 @@ export const i18n = createI18n({
 /** Switch language, persist the choice, and update the document lang attribute. */
 export function changeLanguage(locale: string): void {
   if (!supportedLocales.includes(locale)) return
-  i18n.global.locale.value = locale
+  i18n.global.locale = locale as any
   localStorage.setItem('app-language', locale)
   document.documentElement.lang = locale
 }
