@@ -1,55 +1,51 @@
 <template>
   <div v-if="showGuestBanner" class="guest-banner">
-    <div class="guest-banner-content">
-      <div class="guest-info">
-        <v-icon icon="mdi-account-circle-outline"></v-icon>
-        <span class="guest-text">
-          You're browsing as a guest ({{ guestStore.resumeCount }}/{{ guestStore.maxResumeCount }}
-          resumes)
-        </span>
-      </div>
-      <div class="guest-actions">
-        <v-btn
-          v-if="!guestStore.hasReachedLimit"
-          size="small"
-          variant="text"
-          color="primary"
-          @click="showUpgradeDialog = true"
-        >
-          Create Account
-        </v-btn>
-        <v-btn v-else size="small" variant="text" color="error" @click="showUpgradeDialog = true">
-          Upgrade to Create More
-        </v-btn>
-        <v-btn size="small" variant="text" icon="mdi-close" @click="dismissGuestBanner"></v-btn>
-      </div>
+    <span class="banner-glyph">◈</span>
+    <span class="banner-text">
+      Browsing as a guest — {{ guestStore.resumeCount }}/{{ guestStore.maxResumeCount }} dossiers on file
+    </span>
+    <div class="banner-actions">
+      <button
+        v-if="!guestStore.hasReachedLimit"
+        class="banner-btn"
+        @click="showUpgradeDialog = true"
+      >
+        Create Account
+      </button>
+      <button
+        v-else
+        class="banner-btn banner-btn--warn"
+        @click="showUpgradeDialog = true"
+      >
+        Sign In to Continue
+      </button>
+      <button class="banner-close" @click="dismissGuestBanner">✕</button>
     </div>
   </div>
 
-  <!-- Registration Prompt Dialog -->
-  <v-dialog v-model="showUpgradeDialog" max-width="500">
-    <v-card>
-      <v-card-title class="text-h6 text-center mb-4">
-        <v-icon icon="mdi-alert-circle" color="warning" size="large" class="mr-2"></v-icon>
-        Create an Account to Continue
-      </v-card-title>
-      <v-card-text>
-        <p class="mb-4">
-          <strong>You've reached your guest resume limit!</strong>
+  <!-- Upgrade Dialog -->
+  <v-dialog v-model="showUpgradeDialog" max-width="460">
+    <div class="noir-dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Open a Permanent File</h3>
+        <button class="dialog-close" @click="showUpgradeDialog = false">✕</button>
+      </div>
+      <div class="dialog-body">
+        <p class="dialog-desc">
+          You've reached your guest limit. Create a free account to unlock:
         </p>
-        <p class="mb-6">Create a free account to:</p>
-        <ul class="features-list">
-          <li>Create unlimited resumes</li>
-          <li>Save your work securely</li>
-          <li>Access all premium features</li>
-          <li>Download and share your resumes</li>
+        <ul class="dialog-list">
+          <li>✦ &nbsp;Unlimited dossiers</li>
+          <li>✦ &nbsp;Secure, permanent storage</li>
+          <li>✦ &nbsp;AI tailoring & translation</li>
+          <li>✦ &nbsp;PDF export</li>
         </ul>
-      </v-card-text>
-      <v-card-actions class="justify-end pa-6">
-        <v-btn variant="text" @click="showUpgradeDialog = false"> Continue as Guest </v-btn>
-        <v-btn color="primary" variant="elevated" @click="goToSignup"> Sign Up Now </v-btn>
-      </v-card-actions>
-    </v-card>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn-ghost" @click="showUpgradeDialog = false">Continue as Guest</button>
+        <button class="btn-ink" @click="goToSignup">Sign Up Now</button>
+      </div>
+    </div>
   </v-dialog>
 </template>
 
@@ -66,15 +62,10 @@ const showUpgradeDialog = ref(false)
 const bannerDismissed = ref(false)
 
 onMounted(async () => {
-  // Initialize guest session if one exists
   await guestStore.initializeGuestSession()
-
-  // Check if guest should be shown the banner
   if (guestStore.isGuest && !bannerDismissed.value) {
     showGuestBanner.value = true
   }
-
-  // Show upgrade dialog if guest has reached limit
   if (guestStore.hasReachedLimit) {
     showUpgradeDialog.value = true
   }
@@ -91,47 +82,164 @@ const goToSignup = () => {
 </script>
 
 <style scoped>
+/* ── Banner ──────────────────────────────────────────────── */
 .guest-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 16px 24px;
-  margin-bottom: 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.guest-banner-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-
-.guest-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
+  background: #0f0d0b;
+  border-bottom: 1px solid #2e2620;
+  padding: 0.6rem 1.5rem;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  position: relative;
+  z-index: 40;
+}
+
+.banner-glyph {
+  color: #7a5f22;
+  flex-shrink: 0;
+}
+
+.banner-text {
+  color: #6a5f52;
   flex: 1;
 }
 
-.guest-text {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.guest-actions {
+.banner-actions {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
-.features-list {
-  padding-left: 24px;
+.banner-btn {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: #c49a38;
+  background: none;
+  border: 1px solid #7a5f22;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.banner-btn:hover { color: #d4a940; border-color: #c49a38; }
+
+.banner-btn--warn { color: #8b3a3a; border-color: #5a2020; }
+.banner-btn--warn:hover { color: #c05050; border-color: #8b3a3a; }
+
+.banner-close {
+  background: none;
+  border: none;
+  color: #3e352a;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: color 0.2s;
+  padding: 0 0.25rem;
+}
+
+.banner-close:hover { color: #6a5f52; }
+
+/* ── Dialog ──────────────────────────────────────────────── */
+.noir-dialog {
+  background: #0f0d0b;
+  border: 1px solid #2e2620;
+  box-shadow: 6px 6px 0 #090807, 12px 12px 0 rgba(0,0,0,0.3);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #2e2620;
+}
+
+.dialog-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2d5bc;
+  letter-spacing: 0.1em;
   margin: 0;
 }
 
-.features-list li {
-  margin-bottom: 8px;
-  font-size: 14px;
+.dialog-close {
+  background: none;
+  border: none;
+  color: #6a5f52;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.2s;
 }
+
+.dialog-close:hover { color: #e2d5bc; }
+
+.dialog-body { padding: 1.5rem; }
+
+.dialog-desc {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  color: #6a5f52;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.dialog-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dialog-list li {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  color: #c49a38;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #2e2620;
+}
+
+.btn-ink {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.82rem;
+  letter-spacing: 0.15em;
+  color: #090807;
+  background: #c49a38;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  transition: background 0.3s;
+}
+
+.btn-ink:hover { background: #d4a940; }
+
+.btn-ghost {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.82rem;
+  letter-spacing: 0.15em;
+  color: #6a5f52;
+  background: transparent;
+  border: 1px solid #2e2620;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.btn-ghost:hover { border-color: #7a5f22; color: #e2d5bc; }
 </style>

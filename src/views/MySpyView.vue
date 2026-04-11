@@ -1,102 +1,104 @@
 <template>
-  <v-container class="px-sm-12">
-    <v-row>
-      <!-- 标题栏 -->
-      <v-col cols="12" class="d-flex align-center justify-space-between">
-        <h2 class="font-weight-bold">{{ $t('mySpyView.title') }}</h2>
-        <v-btn color="primary" class="px-5" @click="createNew">{{ $t('common.create') }}</v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <!-- "Create" 按钮卡片 -->
-      <v-col cols="12" sm="6" md="4" class="d-flex" v-if="resumes.length === 0">
-        <v-card class="pa-4 ma-4 d-flex flex-column align-center justify-center flex-grow-1">
-          <v-card-title class="text-h6 font-weight-bold">&nbsp;</v-card-title>
-          <v-card-subtitle>&nbsp;</v-card-subtitle>
-          <v-card-text>
-            <v-sheet class="d-flex align-center justify-center">
-              <img src="@/assets/discover_bg.png" />
-            </v-sheet>
-          </v-card-text>
-          <v-btn color="primary" class="mt-3" @click="createNew">{{ $t('common.create') }}</v-btn>
-        </v-card>
-      </v-col>
+  <div class="noir-archives">
+    <div class="film-grain" aria-hidden="true" />
 
-      <!-- 生成卡片 -->
-      <v-col v-for="(resume, index) in resumes" :key="index" cols="12" sm="6" md="4">
-        <v-card class="pa-4 ma-4">
-          <v-row class="align-center">
-            <v-text-field
-              v-if="resume.isEditing"
-              :ref="(el) => (titleInputRefs[index] = el)"
-              v-model="resume.title"
-              class="editable-title"
-              single-line
-              dense
-              hide-details
-              autofocus
-              @blur="onRename(resume)"
-              @keydown.enter="onRename(resume)"
-            />
-            <v-tooltip location="bottom" v-else>
-              <template v-slot:activator="{ props }">
-                <span
-                  @dblclick="startEditing(resume, index)"
-                  class="editable-title text-truncate ma-4"
-                  style="max-width: 65%"
-                  v-bind="props"
-                >
-                  {{ resume.title }}
-                </span>
-              </template>
-              <span>{{ resume.title }}</span>
-            </v-tooltip>
-            <v-spacer></v-spacer>
-            <v-card-actions>
-              <!-- 菜单按钮 -->
-              <v-menu
-                v-model="menu[index]"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-              >
-                <template v-slot:activator="{ props }">
-                  <v-btn icon v-bind="props">
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
-                </template>
+    <!-- Header -->
+    <div class="archives-header">
+      <div class="archives-header-inner">
+        <div>
+          <p class="header-overline">— Case Files —</p>
+          <h1 class="header-title">{{ $t('mySpyView.title') }}</h1>
+        </div>
+        <button class="btn-ink" @click="createNew">+ {{ $t('common.create') }}</button>
+      </div>
+    </div>
 
-                <!-- 菜单内容 -->
-                <v-list>
-                  <v-list-item @click="startEditing(resume, index)">
-                    <v-list-item-title>{{ $t('mySpyView.rename') }}</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="onClone(resume)">
-                    <v-list-item-title>{{ $t('mySpyView.clone') }}</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="onDelete(resume)">
-                    <v-list-item-title>{{ $t('mySpyView.delete') }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </v-card-actions>
-          </v-row>
-          <v-row class="mb-3">
-            <v-card-subtitle>{{ resume.lastModifyTime }}</v-card-subtitle>
-          </v-row>
-          <v-card-text>
-            <v-sheet class="d-flex align-center justify-center">
-              <img
-                :src="resume.resumeImgPath"
-                @click="openEditPage(resume.id)"
-                style="max-width: 115%; cursor: pointer"
-              />
-            </v-sheet>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+    <!-- Empty State -->
+    <div v-if="resumes.length === 0" class="empty-state">
+      <div class="empty-icon">◫</div>
+      <p class="empty-title">The Archives are Empty</p>
+      <p class="empty-desc">No dossiers on file. Begin your first case.</p>
+      <button class="btn-ink" @click="createNew">{{ $t('common.create') }}</button>
+    </div>
+
+    <!-- Resume Grid -->
+    <div v-else class="archives-grid">
+      <div
+        v-for="(resume, index) in resumes"
+        :key="index"
+        class="dossier-card"
+      >
+        <!-- Card Header: Title + Menu -->
+        <div class="dossier-header">
+          <v-text-field
+            v-if="resume.isEditing"
+            :ref="(el) => (titleInputRefs[index] = el)"
+            v-model="resume.title"
+            class="dossier-title-input"
+            single-line
+            dense
+            hide-details
+            autofocus
+            variant="plain"
+            @blur="onRename(resume)"
+            @keydown.enter="onRename(resume)"
+          />
+          <v-tooltip location="bottom" v-else>
+            <template v-slot:activator="{ props }">
+              <span
+                class="dossier-title"
+                v-bind="props"
+                @dblclick="startEditing(resume, index)"
+              >{{ resume.title }}</span>
+            </template>
+            <span>{{ resume.title }}</span>
+          </v-tooltip>
+
+          <v-menu
+            v-model="menu[index]"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+          >
+            <template v-slot:activator="{ props }">
+              <button class="dossier-menu-btn" v-bind="props">⋮</button>
+            </template>
+            <div class="noir-menu">
+              <button class="noir-menu-item" @click="startEditing(resume, index); menu[index] = false">
+                {{ $t('mySpyView.rename') }}
+              </button>
+              <button class="noir-menu-item" @click="onClone(resume)">
+                {{ $t('mySpyView.clone') }}
+              </button>
+              <button class="noir-menu-item noir-menu-item--danger" @click="onDelete(resume)">
+                {{ $t('mySpyView.delete') }}
+              </button>
+            </div>
+          </v-menu>
+        </div>
+
+        <!-- Date -->
+        <p class="dossier-date">Filed: {{ resume.lastModifyTime }}</p>
+
+        <!-- Thumbnail -->
+        <div class="dossier-thumb" @click="openEditPage(resume.id)">
+          <img
+            v-if="resume.resumeImgPath"
+            :src="resume.resumeImgPath"
+            class="dossier-img"
+            alt="Resume preview"
+          />
+          <div v-else class="dossier-img-placeholder">
+            <span>◈</span>
+            <span class="placeholder-text">Open Dossier</span>
+          </div>
+          <div class="dossier-thumb-overlay">
+            <span>Open</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -128,9 +130,7 @@ const startEditing = async (resume: Resume, index: number) => {
   const inputComponent = titleInputRefs.value[index]
   if (inputComponent) {
     const inputElement = inputComponent.$el.querySelector('input')
-    if (inputElement) {
-      inputElement.select()
-    }
+    if (inputElement) inputElement.select()
   }
 }
 
@@ -140,23 +140,19 @@ const loadResumes = async () => {
       resumes.value = await resumeService.fetchResumes()
       menu.value = resumes.value.map(() => false)
     },
-    {
-      id: 'load-resumes',
-      message: commonMessages.loading,
-    },
+    { id: 'load-resumes', message: commonMessages.loading },
   )
 }
 
 onMounted(() => {
   loadResumes()
-  if (!authStore.isAuthenticated) {
-    guestStore.checkResumeQuota()
-  }
+  if (!authStore.isAuthenticated) guestStore.checkResumeQuota()
 })
 
 const openEditPage = (id: string) => {
   router.push({ name: 'create', query: { resumeId: id } })
 }
+
 const createNew = async () => {
   if (!authStore.isAuthenticated) {
     const quota = await guestStore.checkResumeQuota()
@@ -165,7 +161,7 @@ const createNew = async () => {
       return
     }
   }
-  router.push('/create') // 进行 Vue Router 路由跳转
+  router.push('/create')
 }
 
 const onRename = async (resume: Resume) => {
@@ -176,10 +172,7 @@ const onRename = async (resume: Resume) => {
         resume.isEditing = false
         toast.success('toast.success.resumeRenameSuccess')
       },
-      {
-        id: 'rename-resume',
-        message: commonMessages.updating,
-      },
+      { id: 'rename-resume', message: commonMessages.updating },
     )
   } else {
     resume.isEditing = false
@@ -203,17 +196,13 @@ const onClone = async (resume: Resume) => {
       const newResume = await resumeService.cloneResume(resume.id)
       resumes.value.unshift(newResume)
       menu.value.unshift(false)
-      // Reconcile guest quota from backend after successful clone
       if (!authStore.isAuthenticated) {
         await guestStore.checkResumeQuota()
         guestStore.notifyQuotaChanged()
       }
       toast.success('toast.success.resumeCloneSuccess')
     },
-    {
-      id: 'clone-resume',
-      message: 'Cloning resume...', // We could also use commonMessages.cloning if we add it
-    },
+    { id: 'clone-resume', message: 'Cloning resume...' },
   )
 }
 
@@ -227,28 +216,315 @@ const onDelete = async (resume: Resume) => {
           resumes.value.splice(index, 1)
           menu.value.splice(index, 1)
         }
-        // Reconcile guest quota from backend after successful delete
         if (!authStore.isAuthenticated) {
           const quota = await guestStore.checkResumeQuota()
-          // Fallback for transient quota API failures: avoid stale lockout in UI.
-          if (!quota) {
-            guestStore.decrementResumeCount()
-          }
+          if (!quota) guestStore.decrementResumeCount()
           guestStore.notifyQuotaChanged()
         }
         toast.success('toast.success.resumeDeleteSuccess')
       },
-      {
-        id: 'delete-resume',
-        message: commonMessages.deleting,
-      },
+      { id: 'delete-resume', message: commonMessages.deleting },
     )
   }
 }
 </script>
 
 <style scoped>
-.editable-title {
+.noir-archives {
+  --bg:       #0c0a08;
+  --surface:  #161210;
+  --border:   #2e2620;
+  --text:     #e2d5bc;
+  --muted:    #6a5f52;
+  --gold:     #c49a38;
+  --gold-dim: #7a5f22;
+  --red:      #6b1a1a;
+  --ink:      #090807;
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IM Fell English', serif;
+  padding-bottom: 4rem;
+}
+
+.film-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.08'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.archives-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 8, 7, 0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  padding: 1.5rem 2.5rem;
+}
+
+.archives-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header-overline {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.7rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.25em;
+  margin-bottom: 0.25rem;
+}
+
+.header-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  margin: 0;
+}
+
+.btn-ink {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  background: var(--gold);
+  border: none;
+  padding: 0.7rem 1.6rem;
+  cursor: pointer;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  transition: background 0.3s, box-shadow 0.3s;
+  white-space: nowrap;
+}
+
+.btn-ink:hover { background: #d4a940; box-shadow: 0 0 16px rgba(196,154,56,0.35); }
+
+/* ── Empty State ─────────────────────────────────────────── */
+.empty-state {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  color: var(--border);
+  line-height: 1;
+}
+
+.empty-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  margin: 0;
+}
+
+.empty-desc {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Grid ────────────────────────────────────────────────── */
+.archives-grid {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem;
+}
+
+/* ── Dossier Card ────────────────────────────────────────── */
+.dossier-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  box-shadow: 3px 3px 0 var(--ink), 5px 5px 0 rgba(0,0,0,0.3);
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.dossier-card:hover {
+  box-shadow: 3px 3px 0 var(--ink), 9px 9px 0 rgba(0,0,0,0.35);
+  transform: translateY(-2px);
+}
+
+.dossier-card::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--border);
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.dossier-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.dossier-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.dossier-title:hover { color: var(--gold); }
+
+:deep(.dossier-title-input .v-field__input) {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.95rem !important;
+  color: var(--text) !important;
+  padding: 0 !important;
+}
+
+:deep(.dossier-title-input .v-field) {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.dossier-menu-btn {
+  font-size: 1.2rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.dossier-menu-btn:hover { color: var(--text); }
+
+.dossier-date {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+/* ── Thumbnail ───────────────────────────────────────────── */
+.dossier-thumb {
+  position: relative;
+  background: var(--ink);
+  border: 1px solid var(--border);
+  aspect-ratio: 3/4;
+  overflow: hidden;
   cursor: pointer;
 }
+
+.dossier-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+  filter: sepia(20%) contrast(1.05);
+}
+
+.dossier-thumb:hover .dossier-img { transform: scale(1.03); }
+
+.dossier-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--border);
+  font-size: 2rem;
+}
+
+.placeholder-text {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+
+.dossier-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 10, 8, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+
+.dossier-thumb:hover .dossier-thumb-overlay { opacity: 1; }
+
+/* ── Noir Menu ───────────────────────────────────────────── */
+.noir-menu {
+  background: #0f0d0b;
+  border: 1px solid var(--border);
+  min-width: 140px;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.noir-menu-item {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.65rem 1rem;
+  text-align: left;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  border-bottom: 1px solid var(--border);
+}
+
+.noir-menu-item:last-child { border-bottom: none; }
+
+.noir-menu-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+
+.noir-menu-item--danger:hover { color: #c0392b; }
 </style>

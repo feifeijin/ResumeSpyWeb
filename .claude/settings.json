@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty'); if [[ -n \"$FILE\" && \"$FILE\" =~ \\.(ts|tsx|vue|js|jsx|css)$ ]]; then cd /Users/ws/Documents/DotCore/ResumeSpyWeb && npx prettier --write \"$FILE\" 2>/dev/null; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

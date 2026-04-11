@@ -18,14 +18,13 @@
   </v-navigation-drawer>
 
   <!-- 顶部应用栏 -->
-  <v-app-bar app>
+  <v-app-bar app class="noir-bar">
     <template #title>
       <div
         @click="router.push('/')"
-        class="cursor-pointer d-inline-flex align-center text-h4 font-weight-bold my-5 text-primary"
+        class="noir-logo"
       >
-        <v-icon icon="$vuetify" start />
-        ResumeSpy
+        RESUME<span class="noir-logo-accent">SPY</span>
       </div>
     </template>
 
@@ -173,4 +172,63 @@ const handleLogout = async () => {
 .hidden-sm-and-down {
   display: block;
 }
+
+/* ── Noir AppBar ─────────────────────────────────────────── */
+:deep(.v-toolbar) {
+  background: rgba(10, 8, 7, 0.92) !important;
+  border-bottom: 1px solid #2e2620 !important;
+  backdrop-filter: blur(10px);
+  box-shadow: none !important;
+}
+
+.noir-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #e2d5bc;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.noir-logo:hover { color: #c49a38; }
+
+.noir-logo-accent { color: #c49a38; }
+
+:deep(.v-btn) {
+  font-family: 'Special Elite', cursive !important;
+  letter-spacing: 0.1em !important;
+  font-size: 0.8rem !important;
+  color: #6a5f52 !important;
+  transition: color 0.25s !important;
+}
+
+:deep(.v-btn:hover) { color: #e2d5bc !important; }
+
+:deep(.v-btn.v-btn--variant-flat) {
+  background: #c49a38 !important;
+  color: #090807 !important;
+  font-family: 'Special Elite', cursive !important;
+  border-radius: 0 !important;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+}
+
+:deep(.v-btn.v-btn--variant-flat:hover) {
+  background: #d4a940 !important;
+  color: #090807 !important;
+}
+
+:deep(.v-navigation-drawer) {
+  background: #0f0d0b !important;
+  border-right: 1px solid #2e2620 !important;
+}
+
+:deep(.v-list-item) {
+  font-family: 'Special Elite', cursive !important;
+  color: #6a5f52 !important;
+  letter-spacing: 0.1em;
+}
+
+:deep(.v-list-item:hover) { color: #e2d5bc !important; }
 </style>

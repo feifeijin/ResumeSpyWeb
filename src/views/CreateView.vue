@@ -1,164 +1,129 @@
 <!-- filepath: /Users/ws/Documents/DotCore/ResumeSpyWeb/src/views/CreateView.vue -->
 <template>
-  <v-container fluid>
-    <!-- Toolbar Row: Tabs + Actions -->
-    <v-row align="center" class="mb-4" no-gutters>
-      <!-- Tabs -->
-      <v-col cols="auto" style="min-width: 0; flex-shrink: 1">
-        <v-tabs v-model="activeTab" background-color="primary" dark style="min-width: 0">
-          <v-tab
-            v-for="(tab, index) in tabs"
-            :key="`tab-${index}`"
-            :class="['d-flex align-center', { 'tab-editing': isEditingTab(index) }]"
-          >
-            <v-tooltip location="bottom" v-if="!isEditingTab(index)">
-              <template v-slot:activator="{ props }">
-                <span
-                  @dblclick="editTabName(index)"
-                  class="text-truncate flex-grow-1 tab-text"
-                  v-bind="props"
-                >{{ tab }}</span>
-              </template>
-              <span>{{ tab }}</span>
-            </v-tooltip>
-            <v-text-field
-              v-else
-              v-model="editingTabName"
-              @blur="saveTabName(index)"
-              @keydown.enter="saveTabName(index)"
-              @keydown.esc="cancelEdit"
-              single-line
-              dense
-              hide-details
-              autofocus
-              style="width: 200px"
-              ref="tabEditor"
-            ></v-text-field>
-            <!-- Star icon for default tab -->
-            <v-icon
-              v-if="!isEditingTab(index) && resumeDetails[index]?.isDefault"
-              size="x-small"
-              icon="mdi-star"
-              color="amber"
-              class="ms-1"
-            ></v-icon>
-            <v-icon
-              v-if="index > 0 && !isEditingTab(index)"
-              size="small"
-              icon="mdi-close"
-              color="red"
-              style="transform: translate(50%, -50%)"
-              @click.stop="openDeleteDialog(index)"
-            ></v-icon>
-          </v-tab>
-        </v-tabs>
-      </v-col>
+  <div class="noir-create">
+    <div class="film-grain" aria-hidden="true" />
 
-      <v-divider vertical class="mx-2"></v-divider>
+    <!-- ── Toolbar ─────────────────────────────────────────── -->
+    <div class="desk-toolbar">
+      <!-- Tabs row -->
+      <div class="tabs-row">
+        <div class="tabs-strip">
+          <v-tabs v-model="activeTab" class="noir-tabs">
+            <v-tab
+              v-for="(tab, index) in tabs"
+              :key="`tab-${index}`"
+              class="noir-tab"
+              :class="{ 'tab-editing': isEditingTab(index) }"
+            >
+              <v-tooltip location="bottom" v-if="!isEditingTab(index)">
+                <template v-slot:activator="{ props }">
+                  <span class="tab-label" v-bind="props" @dblclick="editTabName(index)">
+                    {{ tab }}
+                  </span>
+                </template>
+                <span>{{ tab }}</span>
+              </v-tooltip>
+              <v-text-field
+                v-else
+                v-model="editingTabName"
+                @blur="saveTabName(index)"
+                @keydown.enter="saveTabName(index)"
+                @keydown.esc="cancelEdit"
+                single-line dense hide-details autofocus
+                variant="plain"
+                class="tab-editor"
+                ref="tabEditor"
+              />
+              <v-icon
+                v-if="!isEditingTab(index) && resumeDetails[index]?.isDefault"
+                size="x-small" icon="mdi-star" class="tab-star ms-1"
+              />
+              <v-icon
+                v-if="index > 0 && !isEditingTab(index)"
+                size="small" icon="mdi-close" class="tab-close"
+                @click.stop="openDeleteDialog(index)"
+              />
+            </v-tab>
+          </v-tabs>
+        </div>
 
-      <!-- Action Buttons -->
-      <v-col cols="auto" style="flex-shrink: 0" class="d-flex align-center flex-wrap gap-1">
-        <!-- Add Language -->
-        <v-btn
-          prepend-icon="mdi-file-account"
-          :text="$t('createView.selectLanguage')"
-          variant="outlined"
-          @click="handleLanguageDialogOpen"
-          size="small"
-        ></v-btn>
+        <!-- Action stamps -->
+        <div class="action-stamps">
+          <button class="stamp" @click="handleLanguageDialogOpen" title="Add Language">
+            <v-icon size="14">mdi-file-account</v-icon>
+            <span>{{ $t('createView.selectLanguage') }}</span>
+          </button>
 
-        <!-- Sync -->
-        <v-btn color="secondary" size="small" @click="openSyncDialog" style="white-space: nowrap">
-          {{ $t('common.sync') }}
-        </v-btn>
+          <button class="stamp" @click="openSyncDialog" title="Sync">
+            <v-icon size="14">mdi-translate</v-icon>
+            <span>{{ $t('common.sync') }}</span>
+          </button>
 
-        <!-- Preview -->
-        <v-btn
-          color="info"
-          size="small"
-          prepend-icon="mdi-eye"
-          variant="tonal"
-          @click="openPreview"
-        >
-          {{ $t('createView.preview') }}
-        </v-btn>
+          <button class="stamp stamp--blue" @click="openPreview" title="Preview">
+            <v-icon size="14">mdi-eye</v-icon>
+            <span>{{ $t('createView.preview') }}</span>
+          </button>
 
-        <!-- Tailor for JD -->
-        <v-btn
-          color="purple"
-          size="small"
-          prepend-icon="mdi-magic-staff"
-          variant="tonal"
-          @click="openTailorDialog"
-        >
-          {{ $t('createView.tailorForJD') }}
-        </v-btn>
+          <button class="stamp stamp--gold" @click="openTailorDialog" title="AI Tailor">
+            <v-icon size="14">mdi-magic-staff</v-icon>
+            <span>{{ $t('createView.tailorForJD') }}</span>
+          </button>
 
-        <!-- More Actions Menu -->
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-dots-vertical" variant="text" size="small"></v-btn>
-          </template>
-          <v-list density="compact">
-            <v-list-item
-              prepend-icon="mdi-file-pdf-box"
-              :title="$t('createView.exportPdf')"
-              @click="exportCurrentTabAsPdf"
-            ></v-list-item>
-            <v-list-item
-              prepend-icon="mdi-star-outline"
-              :title="$t('createView.setDefault')"
-              @click="setCurrentTabAsDefault"
-              :disabled="!currentDetailId || resumeDetails[activeTab]?.isDefault"
-            ></v-list-item>
-          </v-list>
-        </v-menu>
-      </v-col>
-    </v-row>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <button class="stamp stamp--icon" v-bind="props">
+                <v-icon size="16">mdi-dots-vertical</v-icon>
+              </button>
+            </template>
+            <div class="noir-menu">
+              <button class="noir-menu-item" @click="exportCurrentTabAsPdf">
+                <v-icon size="14" class="me-2">mdi-file-pdf-box</v-icon>
+                {{ $t('createView.exportPdf') }}
+              </button>
+              <button
+                class="noir-menu-item"
+                @click="setCurrentTabAsDefault"
+                :disabled="!currentDetailId || resumeDetails[activeTab]?.isDefault"
+              >
+                <v-icon size="14" class="me-2">mdi-star-outline</v-icon>
+                {{ $t('createView.setDefault') }}
+              </button>
+            </div>
+          </v-menu>
+        </div>
+      </div>
+    </div>
 
-    <!-- Editor -->
-    <v-row>
-      <v-col>
-        <v-tabs-window v-model="activeTab">
-          <v-tabs-window-item v-for="(tab, index) in tabs" :key="tab">
-            <v-md-editor v-model="editors[index]" @save="onSave(index)" height="800px">{{
-              tab
-            }}</v-md-editor>
-          </v-tabs-window-item>
-        </v-tabs-window>
-      </v-col>
-    </v-row>
+    <!-- ── Editor ─────────────────────────────────────────── -->
+    <div class="editor-wrap">
+      <v-tabs-window v-model="activeTab" class="noir-editor-window">
+        <v-tabs-window-item v-for="(tab, index) in tabs" :key="tab">
+          <v-md-editor
+            v-model="editors[index]"
+            @save="onSave(index)"
+            height="calc(100vh - 110px)"
+          >{{ tab }}</v-md-editor>
+        </v-tabs-window-item>
+      </v-tabs-window>
+    </div>
 
-    <!-- ── Language Selection Dialog ── -->
+    <!-- ── Language Dialog ────────────────────────────────── -->
     <v-dialog v-model="isDialogActive" max-width="500px" persistent>
-      <v-card>
-        <v-card-title class="d-flex align-center pa-6">
-          <v-icon class="me-3" color="primary">mdi-translate</v-icon>
-          <span class="text-h5">{{ $t('createView.selectLanguage') }}</span>
-        </v-card-title>
-
-        <v-divider></v-divider>
-
-        <v-card-text class="pa-6">
-          <p class="text-body-2 text-medium-emphasis mb-4">
-            {{ $t('createView.selectLanguageHint') }}
-          </p>
-          <v-radio-group v-model="dialog" class="mt-2">
+      <div class="noir-dialog">
+        <div class="dialog-header">
+          <h3 class="dialog-title">{{ $t('createView.selectLanguage') }}</h3>
+          <button class="dialog-close" @click="isDialogActive = false">✕</button>
+        </div>
+        <div class="dialog-body">
+          <p class="dialog-hint">{{ $t('createView.selectLanguageHint') }}</p>
+          <v-radio-group v-model="dialog" class="noir-radio-group">
             <template v-for="country in countries" :key="country.value">
-              <v-radio :value="country.value" class="mb-3">
+              <v-radio :value="country.value" class="noir-radio">
                 <template v-slot:label>
-                  <div class="d-flex align-center">
-                    <country-flag
-                      v-if="country.flag"
-                      :country="country.flag"
-                      size="normal"
-                      class="me-4"
-                    />
-                    <v-icon v-else class="me-4" color="primary" size="large">mdi-earth</v-icon>
-                    <div class="d-flex flex-column">
-                      <span class="text-subtitle-1 font-weight-medium">{{ country.label }}</span>
-                      <span class="text-caption text-medium-emphasis">{{ country.value }}</span>
-                    </div>
+                  <div class="radio-label">
+                    <country-flag v-if="country.flag" :country="country.flag" size="normal" class="me-3" />
+                    <v-icon v-else class="me-3" size="large">mdi-earth</v-icon>
+                    <span class="radio-text">{{ country.label }}</span>
                   </div>
                 </template>
               </v-radio>
@@ -166,8 +131,8 @@
           </v-radio-group>
 
           <v-expand-transition>
-            <div v-if="isOtherSelected" class="mt-4 pa-4 bg-grey-lighten-4 rounded">
-              <p class="text-body-2 mb-3">{{ $t('createView.selectOtherLanguage') }}:</p>
+            <div v-if="isOtherSelected" class="other-lang-select">
+              <p class="dialog-hint mb-2">{{ $t('createView.selectOtherLanguage') }}:</p>
               <v-select
                 v-model="selectedOtherLanguage"
                 :items="otherLanguages"
@@ -176,6 +141,7 @@
                 :label="$t('createView.chooseLanguage')"
                 variant="outlined"
                 density="comfortable"
+                class="noir-select"
               >
                 <template v-slot:item="{ props, item }">
                   <v-list-item v-bind="props" class="d-flex align-center">
@@ -195,95 +161,83 @@
               </v-select>
             </div>
           </v-expand-transition>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="pa-4">
-          <v-spacer></v-spacer>
-          <v-btn variant="text" @click="isDialogActive = false" class="me-2" :disabled="isGlobalLoading">
+        </div>
+        <div class="dialog-footer">
+          <button class="stamp" @click="isDialogActive = false" :disabled="isGlobalLoading">
             {{ $t('common.cancel') }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            variant="elevated"
+          </button>
+          <button
+            class="stamp stamp--gold"
             @click="onAdd"
             :disabled="isAddDisabled"
-            :loading="isGlobalLoading"
           >
             {{ $t('common.add') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+        </div>
+      </div>
     </v-dialog>
 
-    <!-- ── Delete Tab Dialog ── -->
+    <!-- ── Delete Tab Dialog ──────────────────────────────── -->
     <v-dialog v-model="isDeleteDialogActive" width="auto">
-      <v-card>
-        <v-card-title class="headline">{{ $t('createView.confirmDelete') }}</v-card-title>
-        <v-card-text>{{ $t('createView.deleteConfirm') }}</v-card-text>
-        <v-card-actions>
-          <v-btn :text="$t('common.cancel')" @click="isDeleteDialogActive = false"></v-btn>
-          <v-btn color="red" :text="$t('common.delete')" @click="deleteTab"></v-btn>
-        </v-card-actions>
-      </v-card>
+      <div class="noir-dialog noir-dialog--sm">
+        <div class="dialog-header">
+          <h3 class="dialog-title">{{ $t('createView.confirmDelete') }}</h3>
+        </div>
+        <div class="dialog-body">
+          <p class="dialog-hint">{{ $t('createView.deleteConfirm') }}</p>
+        </div>
+        <div class="dialog-footer">
+          <button class="stamp" @click="isDeleteDialogActive = false">{{ $t('common.cancel') }}</button>
+          <button class="stamp stamp--danger" @click="deleteTab">{{ $t('common.delete') }}</button>
+        </div>
+      </div>
     </v-dialog>
 
-    <!-- ── Sync Dialog ── -->
+    <!-- ── Sync Dialog ────────────────────────────────────── -->
     <v-dialog v-model="isSyncDialogActive" width="auto">
-      <v-card>
-        <v-card-title class="headline">{{ $t('createView.confirmSync') }}</v-card-title>
-        <v-card-text>{{ $t('createView.currentTabTitle', { title: tabs[activeTab] }) }}</v-card-text>
-        <v-card-actions>
-          <v-btn :text="$t('common.cancel')" @click="isSyncDialogActive = false"></v-btn>
-          <v-btn color="primary" :text="$t('common.sync')" @click="syncTab"></v-btn>
-        </v-card-actions>
-      </v-card>
+      <div class="noir-dialog noir-dialog--sm">
+        <div class="dialog-header">
+          <h3 class="dialog-title">{{ $t('createView.confirmSync') }}</h3>
+        </div>
+        <div class="dialog-body">
+          <p class="dialog-hint">{{ $t('createView.currentTabTitle', { title: tabs[activeTab] }) }}</p>
+        </div>
+        <div class="dialog-footer">
+          <button class="stamp" @click="isSyncDialogActive = false">{{ $t('common.cancel') }}</button>
+          <button class="stamp stamp--gold" @click="syncTab">{{ $t('common.sync') }}</button>
+        </div>
+      </div>
     </v-dialog>
 
-    <!-- ── Preview Dialog ── -->
+    <!-- ── Preview Dialog ─────────────────────────────────── -->
     <v-dialog v-model="isPreviewActive" max-width="860px" scrollable>
-      <v-card>
-        <v-card-title class="d-flex align-center pa-4">
-          <v-icon class="me-2" color="info">mdi-eye</v-icon>
-          <span>{{ $t('createView.previewTitle') }}</span>
-          <v-spacer></v-spacer>
-          <v-btn icon="mdi-close" variant="text" @click="isPreviewActive = false"></v-btn>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-card-text style="max-height: 75vh; overflow-y: auto">
-          <v-md-preview :text="editors[activeTab] || ''" />
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions class="pa-4">
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            prepend-icon="mdi-file-pdf-box"
-            variant="tonal"
-            @click="() => { isPreviewActive = false; exportCurrentTabAsPdf() }"
-          >
+      <div class="noir-dialog">
+        <div class="dialog-header">
+          <h3 class="dialog-title">{{ $t('createView.previewTitle') }}</h3>
+          <button class="dialog-close" @click="isPreviewActive = false">✕</button>
+        </div>
+        <div class="dialog-body preview-body">
+          <v-md-preview :text="editors[activeTab] || ''" class="noir-preview" />
+        </div>
+        <div class="dialog-footer">
+          <button class="stamp stamp--blue" @click="() => { isPreviewActive = false; exportCurrentTabAsPdf() }">
+            <v-icon size="14" class="me-1">mdi-file-pdf-box</v-icon>
             {{ $t('createView.exportPdf') }}
-          </v-btn>
-          <v-btn variant="text" @click="isPreviewActive = false" class="ms-2">
-            {{ $t('common.close') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+          <button class="stamp" @click="isPreviewActive = false">{{ $t('common.close') }}</button>
+        </div>
+      </div>
     </v-dialog>
 
-    <!-- ── JD Tailoring Dialog ── -->
+    <!-- ── Tailor Dialog ──────────────────────────────────── -->
     <v-dialog v-model="isTailorDialogActive" max-width="680px" persistent>
-      <v-card>
-        <v-card-title class="d-flex align-center pa-5">
-          <v-icon class="me-2" color="purple">mdi-magic-staff</v-icon>
-          <span>{{ $t('createView.tailorDialogTitle') }}</span>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-card-text class="pa-5">
-          <p class="text-body-2 text-medium-emphasis mb-4">
-            {{ $t('createView.tailorDialogHint') }}
-          </p>
+      <div class="noir-dialog">
+        <div class="dialog-header">
+          <h3 class="dialog-title">✦ {{ $t('createView.tailorDialogTitle') }}</h3>
+          <button class="dialog-close" @click="isTailorDialogActive = false" :disabled="isGlobalLoading">✕</button>
+        </div>
+        <div class="dialog-body">
+          <p class="dialog-hint">{{ $t('createView.tailorDialogHint') }}</p>
           <v-textarea
             v-model="jobDescription"
             :label="$t('createView.tailorJobDescriptionLabel')"
@@ -292,35 +246,25 @@
             rows="10"
             auto-grow
             :disabled="isGlobalLoading"
-          ></v-textarea>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions class="pa-4">
-          <v-spacer></v-spacer>
-          <v-btn variant="text" @click="isTailorDialogActive = false" :disabled="isGlobalLoading">
+            class="noir-textarea"
+          />
+        </div>
+        <div class="dialog-footer">
+          <button class="stamp" @click="isTailorDialogActive = false" :disabled="isGlobalLoading">
             {{ $t('common.cancel') }}
-          </v-btn>
-          <v-btn
-            color="purple"
-            variant="elevated"
-            prepend-icon="mdi-magic-staff"
+          </button>
+          <button
+            class="stamp stamp--gold"
             @click="runTailor"
             :disabled="!jobDescription.trim() || isGlobalLoading"
-            :loading="isGlobalLoading"
           >
+            <v-icon size="14" class="me-1">mdi-magic-staff</v-icon>
             {{ $t('createView.tailorConfirm') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+        </div>
+      </div>
     </v-dialog>
-
-    <!-- Loading Indicator -->
-    <v-dialog v-model="isGlobalLoading" hide-overlay persistent width="300">
-      <v-card class="d-flex justify-center align-center" height="100">
-        <v-progress-circular indeterminate color="primary"></v-progress-circular>
-      </v-card>
-    </v-dialog>
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -353,7 +297,6 @@ const tabs = ref(resumeDetails.value.map((detail) => detail.name))
 const activeTab = ref(0)
 const editors = ref(resumeDetails.value.map((detail) => detail.content))
 
-// Derived helper
 const currentDetailId = computed(() => resumeDetails.value[activeTab.value]?.id || '')
 
 const countries = computed(() => [
@@ -378,7 +321,6 @@ const otherLanguages = [
   { code: 'TR', name: 'Türkçe', flag: 'tr' },
 ]
 
-// Dialog state
 const isDialogActive = ref(false)
 const isDeleteDialogActive = ref(false)
 const tabIndexToDelete = ref(-1)
@@ -398,8 +340,6 @@ const isAddDisabled = computed(() => {
   if (dialog.value === 'OTHER' && !selectedOtherLanguage.value) return true
   return false
 })
-
-// ─── Load resume details ───────────────────────────────────────────────────────
 
 const loadResumeDetails = async (resumeId: string) => {
   currentResumeId.value = resumeId
@@ -422,21 +362,10 @@ onMounted(() => {
     tabs.value = [newResumeTitle]
     editors.value = ['']
     resumeDetails.value = [
-      {
-        id: '',
-        resumeId: '',
-        name: newResumeTitle,
-        language: '',
-        content: '',
-        isDefault: true,
-        createTime: '',
-        lastModifyTime: '',
-      },
+      { id: '', resumeId: '', name: newResumeTitle, language: '', content: '', isDefault: true, createTime: '', lastModifyTime: '' },
     ]
   }
 })
-
-// ─── Language helpers ──────────────────────────────────────────────────────────
 
 const getLanguageDisplayName = (languageCode: string): string => {
   const mainLanguage = countries.value.find((country) => country.value === languageCode)
@@ -457,8 +386,6 @@ const handleLanguageDialogOpen = () => {
   isDialogActive.value = true
 }
 
-// ─── Add language version ──────────────────────────────────────────────────────
-
 const onAdd = async () => {
   const language =
     dialog.value === 'OTHER' && selectedOtherLanguage.value
@@ -470,10 +397,7 @@ const onAdd = async () => {
 
   await withLoading(
     async () => {
-      const newDetail = await resumeDetailService.createResumeDetailFromExisting(
-        existingResumeDetailId,
-        language,
-      )
+      const newDetail = await resumeDetailService.createResumeDetailFromExisting(existingResumeDetailId, language)
 
       let cleanName = originalName
       const postfixPatterns = [
@@ -510,8 +434,6 @@ const onAdd = async () => {
   )
 }
 
-// ─── Save ─────────────────────────────────────────────────────────────────────
-
 const onSave = async (index: number) => {
   await withLoading(
     async () => {
@@ -529,11 +451,7 @@ const onSave = async (index: number) => {
             return
           }
         }
-        const newDetail = await resumeDetailService.createResumeDetail({
-          ...detail,
-          content,
-          name: tabs.value[index],
-        })
+        const newDetail = await resumeDetailService.createResumeDetail({ ...detail, content, name: tabs.value[index] })
         resumeDetails.value[index] = newDetail
         if (newDetail.resumeId) {
           currentResumeId.value = newDetail.resumeId
@@ -549,8 +467,6 @@ const onSave = async (index: number) => {
     { id: 'save-resume', message: commonMessages.saving },
   )
 }
-
-// ─── Delete tab ────────────────────────────────────────────────────────────────
 
 const openDeleteDialog = (index: number) => {
   tabIndexToDelete.value = index
@@ -573,27 +489,16 @@ const deleteTab = async () => {
   }
 }
 
-// ─── Sync translations ─────────────────────────────────────────────────────────
-
 const openSyncDialog = () => {
-  if (!currentResumeId.value) {
-    console.warn('No resume ID available to sync. Save your resume before syncing.')
-    return
-  }
+  if (!currentResumeId.value) return
   isSyncDialogActive.value = true
 }
 
 const syncTab = async () => {
   if (!currentResumeId.value) return
-
   const activeResumeDetailID = resumeDetails.value[activeTab.value].id
-  if (!activeResumeDetailID) {
-    console.error('Sync aborted: resume detail ID is missing.')
-    return
-  }
-
+  if (!activeResumeDetailID) return
   isSyncDialogActive.value = false
-
   await withLoading(
     async () => {
       await resumeDetailService.syncTranslations(activeResumeDetailID)
@@ -603,8 +508,6 @@ const syncTab = async () => {
     { id: 'sync-translations', message: commonMessages.syncing },
   )
 }
-
-// ─── Tab name editing ──────────────────────────────────────────────────────────
 
 const editTabName = (index: number) => {
   editingTabIndex.value = index
@@ -646,13 +549,7 @@ const saveTabName = async (index: number) => {
   }
 }
 
-// ─── Preview ───────────────────────────────────────────────────────────────────
-
-const openPreview = () => {
-  isPreviewActive.value = true
-}
-
-// ─── JD Tailoring ──────────────────────────────────────────────────────────────
+const openPreview = () => { isPreviewActive.value = true }
 
 const openTailorDialog = () => {
   if (!currentDetailId.value) {
@@ -668,15 +565,10 @@ const runTailor = async () => {
     toast.error(t('createView.tailorEmptyError'))
     return
   }
-
   isTailorDialogActive.value = false
-
   await withLoading(
     async () => {
-      const tailoredContent = await resumeDetailService.tailorResume(
-        currentDetailId.value,
-        jobDescription.value,
-      )
+      const tailoredContent = await resumeDetailService.tailorResume(currentDetailId.value, jobDescription.value)
       editors.value[activeTab.value] = tailoredContent
       toast.success(t('createView.tailorSuccess'))
     },
@@ -684,14 +576,11 @@ const runTailor = async () => {
   )
 }
 
-// ─── Export PDF ────────────────────────────────────────────────────────────────
-
 const exportCurrentTabAsPdf = async () => {
   if (!currentDetailId.value) {
     toast.warning(t('createView.unsavedBeforeAction'))
     return
   }
-
   await withLoading(
     async () => {
       const blob = await resumeDetailService.exportPdf(currentDetailId.value)
@@ -706,18 +595,14 @@ const exportCurrentTabAsPdf = async () => {
   )
 }
 
-// ─── Set Default ───────────────────────────────────────────────────────────────
-
 const setCurrentTabAsDefault = async () => {
   if (!currentDetailId.value) {
     toast.warning(t('createView.unsavedBeforeAction'))
     return
   }
-
   await withLoading(
     async () => {
       await resumeDetailService.setDefault(currentDetailId.value)
-      // Refresh to update isDefault flags across all tabs
       if (currentResumeId.value) await loadResumeDetails(currentResumeId.value)
       toast.success(t('createView.setDefaultSuccess'))
     },
@@ -727,26 +612,368 @@ const setCurrentTabAsDefault = async () => {
 </script>
 
 <style scoped>
-.tab-editing {
+.noir-create {
+  --bg:       #0c0a08;
+  --surface:  #161210;
+  --border:   #2e2620;
+  --text:     #e2d5bc;
+  --muted:    #6a5f52;
+  --gold:     #c49a38;
+  --gold-dim: #7a5f22;
+  --ink:      #090807;
+  --blue:     #1e4a6e;
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IM Fell English', serif;
+}
+
+.film-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.08'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────── */
+.desk-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 8, 7, 0.97);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+
+.tabs-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-height: 48px;
+  overflow-x: auto;
+}
+
+.tabs-strip {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── Noir Tabs ───────────────────────────────────────────── */
+:deep(.noir-tabs) {
+  background: transparent !important;
+  border-bottom: none !important;
+  height: 48px !important;
+}
+
+:deep(.v-tab) {
+  font-family: 'Special Elite', cursive !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.12em !important;
+  color: var(--muted) !important;
+  text-transform: none !important;
+  border-right: 1px solid var(--border) !important;
+  border-bottom: none !important;
+  min-width: 80px !important;
+  padding: 0 12px !important;
+  height: 48px !important;
+  opacity: 1 !important;
+  transition: color 0.2s, background 0.2s !important;
+}
+
+:deep(.v-tab--selected) {
+  color: var(--text) !important;
+  background: rgba(196, 154, 56, 0.05) !important;
+  border-bottom: 2px solid var(--gold) !important;
+}
+
+:deep(.v-tabs__slider) { display: none !important; }
+
+.tab-label {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab-editor {
+  width: 140px;
+}
+
+:deep(.tab-editor .v-field__input) {
+  font-family: 'Special Elite', cursive !important;
+  font-size: 0.75rem !important;
+  color: var(--text) !important;
   padding: 0 !important;
 }
 
-.tab-text {
-  cursor: pointer;
-  min-width: 0;
-  max-width: 150px;
+.tab-star { color: var(--gold) !important; }
+
+.tab-close {
+  color: #5a2020 !important;
+  transition: color 0.2s !important;
+  position: static !important;
+  transform: none !important;
+  margin-left: 4px !important;
 }
 
-.v-row {
-  flex-wrap: nowrap !important;
+.tab-close:hover { color: #c0392b !important; }
+
+/* ── Action Stamps ───────────────────────────────────────── */
+.action-stamps {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  border-left: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
-.v-tabs {
-  overflow-x: auto;
-  flex-shrink: 1;
-}
-
-.gap-1 {
+.stamp {
+  display: inline-flex;
+  align-items: center;
   gap: 4px;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  height: 32px;
+}
+
+.stamp:hover {
+  color: var(--text);
+  border-color: var(--border);
+  background: rgba(255,255,255,0.03);
+}
+
+.stamp--gold { color: var(--gold-dim); }
+.stamp--gold:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+.stamp--blue { color: #4a7fa5; }
+.stamp--blue:hover { color: #6aa5cc; border-color: var(--blue); }
+
+.stamp--danger { color: #7a2020; }
+.stamp--danger:hover { color: #c0392b; border-color: #7a2020; }
+
+.stamp--icon { padding: 0.35rem; }
+
+.stamp:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Editor ──────────────────────────────────────────────── */
+.editor-wrap { position: relative; z-index: 10; }
+
+:deep(.noir-editor-window) { background: var(--bg) !important; }
+
+/* Override v-md-editor to noir theme */
+:deep(.v-md-editor) {
+  background: #111009 !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+:deep(.v-md-editor__toolbar) {
+  background: #0f0d0b !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+:deep(.v-md-editor__toolbar-item) {
+  color: var(--muted) !important;
+}
+
+:deep(.v-md-editor__toolbar-item:hover) {
+  color: var(--text) !important;
+  background: rgba(255,255,255,0.04) !important;
+}
+
+:deep(.v-md-editor__editor-wrapper) {
+  background: #111009 !important;
+}
+
+:deep(.codemirror-wrapper) {
+  background: #111009 !important;
+}
+
+:deep(.CodeMirror) {
+  background: #111009 !important;
+  color: #c8b99a !important;
+  font-family: 'Special Elite', 'Courier New', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.8 !important;
+}
+
+:deep(.CodeMirror-gutters) {
+  background: #0d0b09 !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+:deep(.CodeMirror-linenumber) { color: var(--border) !important; }
+
+:deep(.v-md-editor__preview-wrapper) {
+  background: #13110e !important;
+  border-left: 1px solid var(--border) !important;
+}
+
+/* ── Dialogs ─────────────────────────────────────────────── */
+.noir-dialog {
+  background: #0f0d0b;
+  border: 1px solid var(--border);
+  box-shadow: 6px 6px 0 var(--ink), 12px 12px 0 rgba(0,0,0,0.3);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.noir-dialog--sm { max-width: 400px; }
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.dialog-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.dialog-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.dialog-close:hover { color: var(--text); }
+.dialog-close:disabled { opacity: 0.4; }
+
+.dialog-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.dialog-hint {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.preview-body {
+  max-height: 65vh;
+}
+
+/* Noir radio group */
+:deep(.noir-radio-group .v-radio) {
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 0;
+}
+
+:deep(.v-selection-control__input > .v-icon) {
+  color: var(--gold-dim) !important;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+}
+
+.radio-text {
+  font-family: 'Special Elite', cursive;
+  font-size: 0.85rem;
+  color: var(--text);
+  letter-spacing: 0.08em;
+}
+
+.other-lang-select {
+  border: 1px solid var(--border);
+  padding: 1rem;
+  background: rgba(0,0,0,0.2);
+}
+
+/* Noir select */
+:deep(.noir-select .v-field) {
+  background: var(--ink) !important;
+  border-radius: 0 !important;
+}
+
+:deep(.noir-select .v-field__outline) { color: var(--border) !important; }
+
+:deep(.noir-textarea .v-field) {
+  background: var(--ink) !important;
+  border-radius: 0 !important;
+  font-family: 'Special Elite', cursive !important;
+}
+
+:deep(.noir-textarea .v-field__outline) { color: var(--border) !important; }
+:deep(.noir-textarea .v-field--focused .v-field__outline) { color: var(--gold-dim) !important; }
+:deep(.noir-textarea textarea) { color: var(--text) !important; line-height: 1.7 !important; }
+
+/* Noir menu */
+.noir-menu {
+  background: #0f0d0b;
+  border: 1px solid var(--border);
+  min-width: 160px;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.noir-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.65rem 1rem;
+  text-align: left;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  border-bottom: 1px solid var(--border);
+}
+
+.noir-menu-item:last-child { border-bottom: none; }
+.noir-menu-item:hover:not(:disabled) { color: var(--text); background: rgba(255,255,255,0.03); }
+.noir-menu-item:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* Noir preview */
+:deep(.noir-preview) {
+  background: #13110e !important;
+  color: var(--text) !important;
+  font-family: 'IM Fell English', serif !important;
 }
 </style>
