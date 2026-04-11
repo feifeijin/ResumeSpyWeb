@@ -65,6 +65,7 @@ export const useLoading = () => {
     processing: t('loading.processing'),
     uploading: t('loading.uploading'),
     downloading: t('loading.downloading'),
+    cloning: t('loading.cloning'),
   }
 
   return {

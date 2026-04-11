@@ -86,7 +86,7 @@
             v-if="resume.resumeImgPath"
             :src="resume.resumeImgPath"
             class="dossier-img"
-            alt="Resume preview"
+            :alt="$t('mySpyView.card.previewAlt')"
           />
           <div v-else class="dossier-img-placeholder">
             <span>◈</span>
@@ -204,7 +204,7 @@ const onClone = async (resume: Resume) => {
       }
       toast.success('toast.success.resumeCloneSuccess')
     },
-    { id: 'clone-resume', message: 'Cloning resume...' },
+    { id: 'clone-resume', message: commonMessages.cloning },
   )
 }
 

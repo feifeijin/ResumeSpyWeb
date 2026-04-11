@@ -135,20 +135,108 @@
     "exportPdf": "PDF エクスポート",
     "setDefault": "デフォルトに設定",
     "setDefaultSuccess": "デフォルトバージョンとして設定されました。",
-    "unsavedBeforeAction": "この機能を使用する前に履歴書を保存してください。"
+    "unsavedBeforeAction": "この機能を使用する前に履歴書を保存してください。",
+    "tooltips": {
+      "addLanguage": "言語を追加",
+      "sync": "同期",
+      "preview": "プレビュー",
+      "tailorForJD": "AI最適化"
+    }
   },
   "mySpyView": {
     "title": "マイレジュメ",
+    "caseFilesLabel": "— ケースファイル —",
     "rename": "名前変更",
     "clone": "複製",
     "delete": "削除",
-    "exportPdf": "PDF エクスポート"
+    "exportPdf": "PDF エクスポート",
+    "empty": {
+      "title": "アーカイブは空です",
+      "description": "ファイルに書類がありません。最初のケースを開始してください。",
+      "cta": "作成"
+    },
+    "card": {
+      "filed": "提出済み:",
+      "openDossier": "書類を開く",
+      "open": "開く",
+      "previewAlt": "履歴書のプレビュー"
+    },
+    "quota": {
+      "limitReached": "ゲストの履歴書制限に達しました。さらに作成するにはサインインしてください。",
+      "cloneLimited": "ゲストの履歴書制限に達しました。履歴書を複製するにはサインインしてください。"
+    }
   },
   "languages": {
     "english": "英語",
     "japanese": "日本語",
     "chinese": "中国語",
     "other": "その他"
+  },
+  "articles": {
+    "notFound": "アーカイブに記事が見つかりません。",
+    "backToArticles": "アーカイブに戻る",
+    "readMore": "ファイルを読む",
+    "notFoundTitle": "ファイルが見つかりません",
+    "notFoundLabel": "— 404 —",
+    "readingRoom": "— 読書室 —",
+    "minRead": "分 読む",
+    "contents": "— 目次 —",
+    "items": [
+      {
+        "slug": "mastering-resume-writing-best-practices-2025",
+        "title": "履歴書作成の極意：2025年のベストプラクティス",
+        "excerpt": "履歴書はあなたの第一印象です。構成、言葉遣い、戦略を組み合わせて、競争の激しい市場でチャンスを掴む方法を学びましょう。",
+        "tags": [
+          "作成",
+          "ベストプラクティス"
+        ]
+      },
+      {
+        "slug": "resume-optimization-seo-for-your-career",
+        "title": "履歴書の最適化：キャリアのためのSEO",
+        "excerpt": "採用管理システム（ATS）は、人間よりも先にあなたを審査します。フィルターを通過するためのキーワードとフォーマットの戦略を学びましょう。",
+        "tags": [
+          "ATS",
+          "キーワード"
+        ]
+      },
+      {
+        "slug": "showcasing-language-skills-on-resume",
+        "title": "履歴書での語学力のアピール方法",
+        "excerpt": "グローバル市場において、多言語能力は競争力となります。語学力を正確かつ効果的にアピールする方法をご紹介します。",
+        "tags": [
+          "言語",
+          "グローバル"
+        ]
+      },
+      {
+        "slug": "version-control-for-your-resume",
+        "title": "履歴書のバージョン管理",
+        "excerpt": "すべての仕事に同じ履歴書を使うのは負け戦です。応募のたびに進化する「生きた書類」を維持する方法を学びましょう。",
+        "tags": [
+          "戦略",
+          "バージョン"
+        ]
+      },
+      {
+        "slug": "creating-job-specific-resumes-efficiently",
+        "title": "職種別履歴書の効率的な作成方法",
+        "excerpt": "履歴書の最適化には時間がかかりますが、システムがあれば別です。ゼロから作り直すことなく、ターゲットに合わせた履歴書を作成するためのフレームワークを紹介します。",
+        "tags": [
+          "生産性",
+          "最適化"
+        ]
+      },
+      {
+        "slug": "github-profile-to-professional-resume",
+        "title": "GitHub プロフィールからプロフェッショナルな履歴書へ",
+        "excerpt": "あなたのコミット履歴は物語を語ります。オープンソースへの貢献やサイドプロジェクトを、魅力的な履歴書の内容に変換する方法を解説します。",
+        "tags": [
+          "開発者",
+          "GitHub"
+        ]
+      }
+    ]
   },
   "home": {
     "overline": "— ファイル番号 001 —",
@@ -190,15 +278,6 @@
       "buyCoffee": "☕  コーヒーを買ってください"
     },
     "sectionHeading": "中身"
-  },
-  "articles": {
-    "notFound": "アーカイブに記事が見つかりません。",
-    "backToArticles": "アーカイブに戻る",
-    "readMore": "ファイルを読む",
-    "notFoundTitle": "ファイルが見つかりません",
-    "notFoundLabel": "— 404 —",
-    "readingRoom": "— 読書室 —",
-    "minRead": "分 読む"
   },
   "authMagic": {
     "processing": "認証情報を確認中",
@@ -246,14 +325,6 @@
       "cancel": "キャンセル"
     }
   },
-  "createView": {
-    "tooltips": {
-      "addLanguage": "言語を追加",
-      "sync": "同期",
-      "preview": "プレビュー",
-      "tailorForJD": "AI最適化"
-    }
-  },
   "errors": {
     "network": "ネットワーク接続エラー。インターネット接続を確認してください。",
     "server": "サーバーエラー。後でもう一度お試しください。",
@@ -288,22 +359,5 @@
     "noCached": "キャッシュされたバージョンがありません",
     "tryAgain": "別の検索語を試してください",
     "createFirst": "最初の履歴書を作成してください"
-  },
-  "mySpyView": {
-    "empty": "まだ履歴書がありません",
-    "emptyHint": "開始するには最初の履歴書を作成してください",
-    "actions": {
-      "view": "表示",
-      "edit": "編集",
-      "duplicate": "複製",
-      "rename": "名前変更",
-      "download": "ダウンロード",
-      "delete": "削除"
-    },
-    "stats": {
-      "versions": "バージョン",
-      "lastModified": "最後に変更",
-      "created": "作成日時"
-    }
   }
 }

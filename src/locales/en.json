@@ -152,7 +152,8 @@
     "card": {
       "filed": "Filed:",
       "openDossier": "Open Dossier",
-      "open": "Open"
+      "open": "Open",
+      "previewAlt": "Resume preview"
     },
     "quota": {
       "limitReached": "You have reached the guest resume limit. Please sign in to create more.",

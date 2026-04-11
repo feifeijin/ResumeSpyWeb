@@ -152,7 +152,8 @@
     "card": {
       "filed": "已提交:",
       "openDossier": "打开档案",
-      "open": "打开"
+      "open": "打开",
+      "previewAlt": "简历预览"
     },
     "quota": {
       "limitReached": "你已达到访客简历限制。请登录以创建更多。",
