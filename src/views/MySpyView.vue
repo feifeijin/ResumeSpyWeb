@@ -13,6 +13,18 @@
       </div>
     </div>
 
+    <!-- Floating Action Button (Noir Style) -->
+    <Transition name="fade">
+      <button
+        v-if="showFab"
+        class="noir-fab"
+        @click="createNew"
+        :title="$t('common.create')"
+      >
+        <span class="fab-icon">+</span>
+      </button>
+    </Transition>
+
     <!-- Empty State -->
     <div v-if="resumes.length === 0" class="empty-state">
       <div class="empty-icon">◫</div>
@@ -102,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
@@ -123,8 +135,13 @@ const authStore = useAuthStore()
 
 const resumes = ref<Resume[]>([])
 const menu = ref<boolean[]>([])
+const showFab = ref(false)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const titleInputRefs = ref<any[]>([])
+
+const handleScroll = () => {
+  showFab.value = window.scrollY > 200
+}
 
 const startEditing = async (resume: Resume, index: number) => {
   resume.isEditing = true
@@ -149,6 +166,11 @@ const loadResumes = async () => {
 onMounted(() => {
   loadResumes()
   if (!authStore.isAuthenticated) guestStore.checkResumeQuota()
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 
 const openEditPage = (id: string) => {
@@ -263,12 +285,10 @@ const onDelete = async (resume: Resume) => {
 
 /* ── Header ─────────────────────────────────────────────── */
 .archives-header {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 50;
-  background: rgba(250, 250, 250, 0.95);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(8px);
   padding: 1.5rem 2.5rem;
 }
 
@@ -276,24 +296,30 @@ const onDelete = async (resume: Resume) => {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
 
+@media (max-width: 600px) {
+  .archives-header {
+    padding: 1rem 1.5rem;
+  }
+}
+
 .header-overline {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--gold-dim);
-  letter-spacing: 0.25em;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.1rem;
 }
 
 .header-title {
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   color: var(--text);
   margin: 0;
 }
@@ -301,7 +327,7 @@ const onDelete = async (resume: Resume) => {
 .btn-ink {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   color: #F5F5F5;
   background: #121212;
   border: 1.5px solid #121212;
@@ -317,6 +343,60 @@ const onDelete = async (resume: Resume) => {
   background: #2B2B2B;
   transform: translateY(-2px);
   box-shadow: 5px 5px 0 #AAAAAA;
+}
+
+/* ── Floating Action Button ──────────────────────────────── */
+.noir-fab {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  z-index: 100;
+  width: 56px;
+  height: 56px;
+  background: #121212;
+  border: 2px solid #121212;
+  color: #F5F5F5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 0 #AAAAAA;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  /* Noir signature shape */
+  clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+}
+
+.noir-fab:hover {
+  background: #2B2B2B;
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 6px 6px 0 #AAAAAA;
+}
+
+.fab-icon {
+  font-size: 1.8rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .noir-fab {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ── Transitions ────────────────────────────────────────── */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
 }
 
 /* ── Empty State ─────────────────────────────────────────── */
