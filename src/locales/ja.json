@@ -23,14 +23,14 @@
       "updateSuccess": "履歴書が正常に更新されました",
       "deleteSuccess": "履歴書が正常に削除されました",
       "syncSuccess": "履歴書が正常に同期されました",
-      "cloneSuccess": "履歴書が正常に複製されました",
+      "cloneSuccess": "履歴書が正常にクローンされました",
       "renameSuccess": "履歴書が正常に名前変更されました",
       "resumeSaveSuccess": "履歴書が正常に保存されました",
       "resumeCreateSuccess": "履歴書が正常に作成されました",
       "resumeUpdateSuccess": "履歴書が正常に更新されました",
       "resumeDeleteSuccess": "履歴書が正常に削除されました",
       "resumeSyncSuccess": "履歴書が正常に同期されました",
-      "resumeCloneSuccess": "履歴書が正常に複製されました",
+      "resumeCloneSuccess": "履歴書が正常にクローンされました",
       "resumeRenameSuccess": "履歴書が正常に名前変更されました",
       "languageVersionRenameSuccess": "言語版が正常に名前変更されました",
       "languageVersionCreateSuccess": "言語版が正常に作成されました",
@@ -71,17 +71,17 @@
     "processing": "処理中...",
     "uploading": "アップロード中...",
     "downloading": "ダウンロード中...",
-    "cloning": "複製中..."
+    "cloning": "クローン中..."
   },
   "navigation": {
     "home": "ホーム",
     "create": "作成",
-    "mySpy": "マイレジュメ",
-    "login": "ログイン",
-    "logout": "ログアウト"
+    "mySpy": "MySpy",
+    "login": "サインイン",
+    "logout": "サインアウト"
   },
   "auth": {
-    "title": "メールでサインイン",
+    "title": "メールアドレスでサインイン",
     "subtitle": "ワンタイムのマジックリンクをメールでお送りします。",
     "email": "メールアドレス",
     "sendLink": "マジックリンクを送信",
@@ -89,18 +89,18 @@
     "loginWith": "または以下で続行",
     "google": "Google で続行",
     "github": "GitHub で続行",
-    "loginSuccess": "ログインに成功しました",
-    "linkRequestSuccess": "マジックリンクを送信しました。メールを確認してください。",
-    "rateLimitError": "次のマジックリンクを送信するまで60秒お待ちください。",
-    "logoutSuccess": "ログアウトしました",
+    "loginSuccess": "サインインしました",
+    "linkRequestSuccess": "マジックリンクを送信しました。メールをご確認ください。",
+    "rateLimitError": "次のマジックリンクをリクエストするまで60秒お待ちください。",
+    "logoutSuccess": "サインアウトしました",
     "externalFailure": "外部ログインに失敗しました。もう一度お試しください。",
-    "googleTokenPrompt": "Google サインインから取得した ID トークンを入力してください",
-    "githubTokenPrompt": "OAuth で取得した GitHub アクセストークンを入力してください",
+    "googleTokenPrompt": "Google サインインから取得した ID トークンを貼り付けてください",
+    "githubTokenPrompt": "OAuth で取得した GitHub アクセストークンを貼り付けてください",
     "magicLinkSent": "{email} 宛にサインイン用リンクを送信しました。数分以内に期限が切れます。",
     "magicTitleProcessing": "サインインを確認しています",
     "magicProcessing": "リンクを検証しています。しばらくお待ちください...",
-    "magicTitleSuccess": "サインインが完了しました",
-    "magicSuccess": "ログインに成功しました。まもなく移動します。",
+    "magicTitleSuccess": "準備完了！",
+    "magicSuccess": "サインインしました。まもなく移動します。",
     "magicContinue": "続ける",
     "magicTitleError": "リンクが無効または期限切れです",
     "magicInvalidLink": "このマジックリンクは無効、または既に使用されています。新しいリンクをリクエストしてください。",
@@ -122,7 +122,7 @@
     "confirmSync": "同期の確認",
     "currentTabTitle": "現在のバージョン：{title}",
     "newResume": "新しい履歴書",
-    "emptyContentError": "現在の履歴書に内容を入力してから別の言語を作成してください。",
+    "emptyContentError": "他の言語版を作成する前に、現在の履歴書に内容を入力してください。",
     "preview": "プレビュー",
     "previewTitle": "履歴書プレビュー",
     "tailorForJD": "JD に合わせる",
@@ -145,26 +145,26 @@
     }
   },
   "mySpyView": {
-    "title": "マイレジュメ",
-    "caseFilesLabel": "— ケースファイル —",
+    "title": "MySpy",
+    "caseFilesLabel": "— 案件ファイル —",
     "rename": "名前変更",
-    "clone": "複製",
+    "clone": "クローン",
     "delete": "削除",
     "exportPdf": "PDF エクスポート",
     "empty": {
       "title": "アーカイブは空です",
-      "description": "ファイルに書類がありません。最初のケースを開始してください。",
+      "description": "まだ書類がありません。最初の案件を始めましょう。",
       "cta": "作成"
     },
     "card": {
-      "filed": "提出済み:",
+      "filed": "作成日：",
       "openDossier": "書類を開く",
       "open": "開く",
-      "previewAlt": "履歴書のプレビュー"
+      "previewAlt": "履歴書プレビュー"
     },
     "quota": {
-      "limitReached": "ゲストの履歴書制限に達しました。さらに作成するにはサインインしてください。",
-      "cloneLimited": "ゲストの履歴書制限に達しました。履歴書を複製するにはサインインしてください。"
+      "limitReached": "ゲストの履歴書数の上限に達しました。さらに作成するにはサインインしてください。",
+      "cloneLimited": "ゲストの履歴書数の上限に達しました。クローンするにはサインインしてください。"
     }
   },
   "languages": {
@@ -191,141 +191,85 @@
     "readMore": "ファイルを読む",
     "notFoundTitle": "ファイルが見つかりません",
     "notFoundLabel": "— 404 —",
-    "readingRoom": "— 読書室 —",
-    "minRead": "分 読む",
-    "contents": "— 目次 —",
-    "items": [
-      {
-        "slug": "mastering-resume-writing-best-practices-2025",
-        "title": "履歴書作成の極意：2025年のベストプラクティス",
-        "excerpt": "履歴書はあなたの第一印象です。構成、言葉遣い、戦略を組み合わせて、競争の激しい市場でチャンスを掴む方法を学びましょう。",
-        "tags": [
-          "作成",
-          "ベストプラクティス"
-        ]
-      },
-      {
-        "slug": "resume-optimization-seo-for-your-career",
-        "title": "履歴書の最適化：キャリアのためのSEO",
-        "excerpt": "採用管理システム（ATS）は、人間よりも先にあなたを審査します。フィルターを通過するためのキーワードとフォーマットの戦略を学びましょう。",
-        "tags": [
-          "ATS",
-          "キーワード"
-        ]
-      },
-      {
-        "slug": "showcasing-language-skills-on-resume",
-        "title": "履歴書での語学力のアピール方法",
-        "excerpt": "グローバル市場において、多言語能力は競争力となります。語学力を正確かつ効果的にアピールする方法をご紹介します。",
-        "tags": [
-          "言語",
-          "グローバル"
-        ]
-      },
-      {
-        "slug": "version-control-for-your-resume",
-        "title": "履歴書のバージョン管理",
-        "excerpt": "すべての仕事に同じ履歴書を使うのは負け戦です。応募のたびに進化する「生きた書類」を維持する方法を学びましょう。",
-        "tags": [
-          "戦略",
-          "バージョン"
-        ]
-      },
-      {
-        "slug": "creating-job-specific-resumes-efficiently",
-        "title": "職種別履歴書の効率的な作成方法",
-        "excerpt": "履歴書の最適化には時間がかかりますが、システムがあれば別です。ゼロから作り直すことなく、ターゲットに合わせた履歴書を作成するためのフレームワークを紹介します。",
-        "tags": [
-          "生産性",
-          "最適化"
-        ]
-      },
-      {
-        "slug": "github-profile-to-professional-resume",
-        "title": "GitHub プロフィールからプロフェッショナルな履歴書へ",
-        "excerpt": "あなたのコミット履歴は物語を語ります。オープンソースへの貢献やサイドプロジェクトを、魅力的な履歴書の内容に変換する方法を解説します。",
-        "tags": [
-          "開発者",
-          "GitHub"
-        ]
-      }
-    ]
+    "readingRoom": "— 閲覧室 —",
+    "minRead": "分で読める",
+    "contents": "— 目次 —"
   },
   "home": {
-    "overline": "— ファイル番号 001 —",
+    "overline": "— 案件ファイル No. 001 —",
     "title": "RESUMESPY",
-    "tagline": "あなたのファイル。あなたの物語。あなたの世界。",
-    "description": "現代のプロフェッショナルのためのアトリエ — バージョン管理された履歴書、あらゆるロールに合わせたAI最適化、あなたの筆跡で書かれた。",
-    "cta": "インテリジェンスレポートを探索",
-    "subtitle": "履歴書を古くさせないでください",
+    "tagline": "あなたの書類。あなたの物語。あなたの世界。",
+    "description": "現代のプロフェッショナルのためのアトリエ——バージョン管理された履歴書を、AI があらゆる役割に合わせて最適化。あなたという存在の筆跡で書かれた。",
+    "cta": "諜報レポートを探索する",
+    "subtitle": "履歴書を陳腐化させない",
     "features": {
       "versionControl": "バージョン管理",
-      "versionControlDesc": "すべての下書きが保存されます。すべてのバージョンが復旧可能です。あなたの履歴書は進化し続けます—何も失われません。",
-      "aiTailoring": "AI最適化",
-      "aiTailoringDesc": "職務経歴書を貼り付けてください。あなたの物語が再形成されるのを見てください—正確で、意図的で、あなたのもの。",
+      "versionControlDesc": "すべての草稿を保存。すべてのバージョンを復元可能。履歴書は進化し続ける——何も失われることはない。",
+      "aiTailoring": "AI 最適化",
+      "aiTailoringDesc": "求人票を貼り付けるだけ。あなたの物語が精密かつ意図的に、あなたらしさを保ちながら再構成される。",
       "manyTongues": "多言語対応",
-      "manyTonguesDesc": "英語。中国語。日本語。あなたの言語であなたの物語を伝えてください—機械翻訳ではなく、丁寧に翻訳されたもの。"
+      "manyTonguesDesc": "English。中文。日本語。あなたの物語をあらゆる言語で——機械的ではなく、心を込めた翻訳で。"
     },
     "process": {
       "title": "— プロセス —",
-      "subtitle": "動作原理",
-      "step1Title": "Markdown で記述",
-      "step1Desc": "純粋な Markdown であなたの履歴書を作成してください。クリーン、ポータブル、バージョン管理。あなたの言葉—テンプレートがあなたの手を強制することはありません。",
-      "step2Title": "AI がロールに合わせて最適化",
-      "step2Desc": "職務経歴書を貼り付けてください。AI はあなたのファイルをロールに合わせて書き直します—すべての事実が保護され、すべてのキーワードが強化されます。",
-      "step3Title": "ファイルをエクスポート",
-      "step3Desc": "洗練された PDF をダウンロードしてください。任意の言語で共有してください。英語、中国語、日本語—あなたの物語はどこにでも伝えられます。",
-      "cta": "ファイルの作成を開始"
+      "subtitle": "使い方",
+      "step1Title": "Markdown で書く",
+      "step1Desc": "シンプルな Markdown で履歴書を作成。クリーンで、移植性が高く、バージョン管理も容易。テンプレートに縛られることなく、自分の言葉で。",
+      "step2Title": "AI が役割に合わせて最適化",
+      "step2Desc": "求人票を貼り付けるだけ。AI があなたの書類を役割に合わせて書き直す——すべての事実を保持し、すべてのキーワードを研ぎ澄ます。",
+      "step3Title": "書類をエクスポート",
+      "step3Desc": "洗練された PDF をダウンロード。どの言語でも共有可能。英語、中文、日本語——チャンスの場所で、あなたの物語を伝える。",
+      "cta": "書類を始める"
     },
     "readingRoom": {
-      "title": "— 読書室 —",
-      "subtitle": "アーカイブから",
-      "description": "履歴書の作成、キャリア戦略、および申請の芸術に関するフィールドノート。"
+      "title": "— 閲覧室 —",
+      "subtitle": "アーカイブより",
+      "description": "履歴書の技巧、キャリア戦略、応募の技術に関するフィールドノート。"
     },
     "manifesto": {
-      "label": "— クリエイターのデスクから —",
-      "quote": "これは製品ではありません。これはステージです。テンプレートとチェックボックスではなく、工芸、意図、インクであなたの物語が形成される場所です。",
+      "label": "— 制作者の机より —",
+      "quote": "これはプロダクトではない。これは舞台だ。あなたの物語が形を成す場所——テンプレートやチェックボックスではなく、技巧と意図と筆の跡によって。",
       "author": "— Fei-Fei Jin",
-      "note": "オープンソース · 愛を込めて構築 · 自由に提供",
-      "starGitHub": "★  GitHub でスター",
-      "buyCoffee": "☕  コーヒーを買ってください"
+      "note": "オープンソース · 情熱で制作 · 無償提供",
+      "starGitHub": "★  GitHub でスターを付ける",
+      "buyCoffee": "☕  コーヒーを奢る"
     },
-    "sectionHeading": "中身"
+    "sectionHeading": "内に宿るもの"
   },
   "authMagic": {
     "processing": "認証情報を確認中",
-    "success": "アクセス許可",
-    "error": "アクセス拒否",
-    "processingDesc": "あなたの認証情報を確認中です...",
-    "successDesc": "お帰りなさい！今からリダイレクトします。",
-    "errorDesc": "このリンクは無効であるか、期限切れです。新しいリンクをリクエストしてください。",
-    "continue": "続行",
+    "success": "アクセスが許可されました",
+    "error": "アクセスが拒否されました",
+    "processingDesc": "認証情報を検証しています...",
+    "successDesc": "おかえりなさい！まもなく移動します。",
+    "errorDesc": "リンクが無効または期限切れです。新しいリンクをリクエストしてください。",
+    "continue": "続ける",
     "tryAgain": "もう一度試す"
   },
   "footer": {
     "copyright": "© {year}",
-    "buyMeCoffee": "☕ コーヒーを買ってください",
-    "author": "著者：Fei-Fei Jin",
+    "buyMeCoffee": "☕ コーヒーを奢る",
+    "author": "Fei-Fei Jin 制作",
     "resumeSpy": "RESUMESPY"
   },
   "components": {
     "guestBanner": {
       "title": "ResumeSpy へようこそ",
-      "message": "サインインして履歴書を保存し、すべての機能をアンロックしてください。",
+      "message": "サインインして履歴書を保存し、すべての機能を利用しましょう。",
       "cta": "サインイン",
       "close": "閉じる"
     },
     "guide": {
       "title": "履歴書ガイド",
-      "subtitle": "ResumeSpy の使い方を学ぶ",
+      "subtitle": "ResumeSpy の使い方",
       "step1Title": "作成",
-      "step1Desc": "白紙から始めるか、既存の履歴書からインポートしてください",
+      "step1Desc": "空白のキャンバスから始めるか、既存のものからインポート",
       "step2Title": "編集",
-      "step2Desc": "当社のリッチエディタを使用してあなたの物語を作成してください",
+      "step2Desc": "充実したエディタであなたの物語を書く",
       "step3Title": "最適化",
-      "step3Desc": "各機会に対して AI で最適化してください",
+      "step3Desc": "各求人に合わせて AI で最適化",
       "step4Title": "エクスポート",
-      "step4Desc": "あらゆる申請用に PDF としてダウンロードしてください"
+      "step4Desc": "あらゆる応募に PDF としてダウンロード"
     },
     "knowledgeBase": {
       "title": "ナレッジベース",
@@ -339,39 +283,39 @@
     }
   },
   "errors": {
-    "network": "ネットワーク接続エラー。インターネット接続を確認してください。",
-    "server": "サーバーエラー。後でもう一度お試しください。",
-    "unauthorized": "権限がありません。もう一度サインインしてください。",
+    "network": "ネットワーク接続エラーです。インターネット接続をご確認ください。",
+    "server": "サーバーエラーです。しばらくしてからもう一度お試しください。",
+    "unauthorized": "認証が必要です。再度サインインしてください。",
     "notFound": "リソースが見つかりません。",
     "validation": "入力内容を確認してもう一度お試しください。",
     "timeout": "リクエストがタイムアウトしました。もう一度お試しください。",
     "generic": "エラーが発生しました。もう一度お試しください。",
-    "guestLimitReached": "ゲストの履歴書制限に達しました。さらに作成するにはサインインしてください。"
+    "guestLimitReached": "ゲストの履歴書数の上限に達しました。さらに作成するにはサインインしてください。"
   },
   "validation": {
-    "required": "このフィールドは必須です",
+    "required": "この項目は必須です",
     "email": "有効なメールアドレスを入力してください",
-    "minLength": "最低 {min} 文字必要です",
-    "maxLength": "{max} 文字を超えることはできません",
-    "pattern": "形式が無効です",
-    "match": "フィールドが一致しません",
-    "unique": "この値はすでに使用されています"
+    "minLength": "{min}文字以上で入力してください",
+    "maxLength": "{max}文字以内で入力してください",
+    "pattern": "形式が正しくありません",
+    "match": "値が一致しません",
+    "unique": "この値は既に使用されています"
   },
   "placeholder": {
-    "email": "メールアドレスを入力してください",
-    "jobDescription": "ここに完全な職務経歴書を貼り付けてください...",
+    "email": "メールアドレスを入力",
+    "jobDescription": "求人票の全文をここに貼り付けてください...",
     "resumeTitle": "私の履歴書",
     "search": "検索...",
-    "name": "フルネーム",
+    "name": "氏名",
     "company": "会社名",
-    "position": "職位"
+    "position": "職種"
   },
   "empty": {
-    "noResumes": "まだ履歴書がありません。開始するには 1 つ作成してください！",
+    "noResumes": "まだ履歴書がありません。作成して始めましょう！",
     "noResults": "結果が見つかりません",
     "noArticles": "利用可能な記事がありません",
     "noCached": "キャッシュされたバージョンがありません",
-    "tryAgain": "別の検索語を試してください",
-    "createFirst": "最初の履歴書を作成してください"
+    "tryAgain": "別の検索キーワードを試してください",
+    "createFirst": "最初の履歴書を作成する"
   }
 }

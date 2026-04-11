@@ -58,7 +58,7 @@
       "operationStarted": "操作已开始",
       "syncInProgress": "同步进行中",
       "autoSaved": "自动保存",
-      "updateAvailable": "更新可用"
+      "updateAvailable": "有可用更新"
     }
   },
   "loading": {
@@ -76,13 +76,13 @@
   "navigation": {
     "home": "首页",
     "create": "创建",
-    "mySpy": "我的简历",
+    "mySpy": "MySpy",
     "login": "登录",
     "logout": "退出登录"
   },
   "auth": {
     "title": "使用邮箱登录",
-    "subtitle": "我们会发送一次性魔法链接到你的邮箱。",
+    "subtitle": "我们会发送一次性魔法链接到您的邮箱。",
     "email": "邮箱",
     "sendLink": "发送魔法链接",
     "resendLink": "重新发送链接",
@@ -90,22 +90,22 @@
     "google": "使用 Google 登录",
     "github": "使用 GitHub 登录",
     "loginSuccess": "登录成功",
-    "linkRequestSuccess": "魔法链接已发送，请检查邮箱。",
+    "linkRequestSuccess": "魔法链接已发送，请查收邮件。",
     "rateLimitError": "请等待60秒后再请求新的魔法链接。",
     "logoutSuccess": "已成功退出登录",
-    "externalFailure": "外部登录失败，请重试。",
-    "googleTokenPrompt": "请输入从 Google 登录获取的 ID Token",
-    "githubTokenPrompt": "请输入通过 OAuth 获取的 GitHub Access Token",
+    "externalFailure": "第三方登录失败，请重试。",
+    "googleTokenPrompt": "请粘贴 Google 登录获取的 ID Token",
+    "githubTokenPrompt": "请粘贴通过 OAuth 获取的 GitHub Access Token",
     "magicLinkSent": "我们已向 {email} 发送登录链接，几分钟后将过期。",
     "magicTitleProcessing": "正在确认登录",
     "magicProcessing": "正在验证链接，请稍候...",
-    "magicTitleSuccess": "登录已完成",
-    "magicSuccess": "登录成功，正在为你跳转。",
+    "magicTitleSuccess": "一切就绪！",
+    "magicSuccess": "登录成功，正在为您跳转。",
     "magicContinue": "继续",
     "magicTitleError": "链接无效或已过期",
-    "magicInvalidLink": "该魔法链接无效或已被使用，请重新请求新的链接。",
+    "magicInvalidLink": "该魔法链接无效或已被使用，请重新申请新链接。",
     "magicReturnToSignIn": "返回登录页面",
-    "magicFailed": "无法验证此链接，请重新请求。",
+    "magicFailed": "无法验证此链接，请重新申请。",
     "validation": {
       "required": "此字段为必填项",
       "invalidEmail": "请输入有效的邮箱地址"
@@ -118,7 +118,7 @@
     "chooseLanguage": "选择语言",
     "addingLanguage": "正在创建新语言版本...",
     "confirmDelete": "确认删除",
-    "deleteConfirm": "您确定要删除此语言版本吗？",
+    "deleteConfirm": "确定要删除此语言版本吗？",
     "confirmSync": "确认同步",
     "currentTabTitle": "当前版本：{title}",
     "newResume": "新简历",
@@ -127,7 +127,7 @@
     "previewTitle": "简历预览",
     "tailorForJD": "匹配职位",
     "tailorDialogTitle": "根据职位描述优化简历",
-    "tailorDialogHint": "粘贴职位描述，AI 将在保留真实信息的前提下优化您的简历以更好匹配该职位。",
+    "tailorDialogHint": "粘贴职位描述，AI 将在保留真实信息的前提下，优化您的简历以更好地匹配该职位。",
     "tailorJobDescriptionLabel": "职位描述",
     "tailorJobDescriptionPlaceholder": "请在此粘贴完整的职位描述...",
     "tailorConfirm": "优化我的简历",
@@ -145,26 +145,26 @@
     }
   },
   "mySpyView": {
-    "title": "我的简历",
-    "caseFilesLabel": "— 案例文件 —",
+    "title": "MySpy",
+    "caseFilesLabel": "— 档案文件 —",
     "rename": "重命名",
-    "clone": "复制",
+    "clone": "克隆",
     "delete": "删除",
     "exportPdf": "导出 PDF",
     "empty": {
-      "title": "档案库为空",
-      "description": "没有档案。开始你的第一个案例。",
+      "title": "档案室空无一物",
+      "description": "暂无档案。开始您的第一个案件吧。",
       "cta": "创建"
     },
     "card": {
-      "filed": "已提交:",
+      "filed": "归档日期：",
       "openDossier": "打开档案",
       "open": "打开",
       "previewAlt": "简历预览"
     },
     "quota": {
-      "limitReached": "你已达到访客简历限制。请登录以创建更多。",
-      "cloneLimited": "你已达到访客简历限制。请登录以克隆简历。"
+      "limitReached": "您已达到访客简历数量上限。请登录以创建更多简历。",
+      "cloneLimited": "您已达到访客简历数量上限。请登录以克隆简历。"
     }
   },
   "languages": {
@@ -185,76 +185,77 @@
     "hi": "印地语",
     "tr": "土耳其语"
   },
-  "home": {
-    "overline": "— 档案编号 001 —",
-    "title": "RESUMESPY",
-    "tagline": "你的档案。你的故事。你的世界。",
-    "description": "为现代专业人士打造的工作室 — 版本控制简历，AI优化每一个机会，用你的真实笔迹撰写。",
-    "cta": "浏览情报报告",
-    "subtitle": "不要让你的简历过时",
-    "features": {
-      "versionControl": "版本控制",
-      "versionControlDesc": "每一份草稿都保留。每一个版本都可恢复。你的简历不断进化 — 没有什么会丢失。",
-      "aiTailoring": "AI优化",
-      "aiTailoringDesc": "粘贴职位描述。看你的故事重新塑造 — 精准、有意、属于你。",
-      "manyTongues": "多种语言",
-      "manyTonguesDesc": "英语。中文。日本語。用你的语言讲述你的故事 — 精心翻译，不是机器翻译。"
-    },
-    "process": {
-      "title": "— 流程 —",
-      "subtitle": "它是如何运作的",
-      "step1Title": "用 Markdown 编写",
-      "step1Desc": "用纯 Markdown 撰写你的简历。简洁、便携、版本控制。你的话语 — 没有模板强制你的手。",
-      "step2Title": "AI 针对职位优化",
-      "step2Desc": "粘贴职位描述。AI 将重写你的档案以匹配该职位 — 每个事实都保留，每个关键词都加强。",
-      "step3Title": "导出你的档案",
-      "step3Desc": "下载精美的 PDF。用任何语言分享。英语、中文、日本語— 你的故事在任何地方讲述。",
-      "cta": "开始你的档案"
-    },
-    "readingRoom": {
-      "title": "— 阅览室 —",
-      "subtitle": "从档案中",
-      "description": "关于简历编写、职业策略和申请艺术的现场笔记。"
-    },
-    "manifesto": {
-      "label": "— 来自创作者的办公桌 —",
-      "quote": "这不是一个产品。这是一个舞台。一个你的故事形成的地方 — 不是在模板和复选框中，而是在手工、意图和墨水中。",
-      "author": "— Fei-Fei Jin",
-      "note": "开源 · 出于热爱而构建 · 免费提供",
-      "starGitHub": "★  在 GitHub 上 Star",
-      "buyCoffee": "☕  给我买杯咖啡"
-    },
-    "sectionHeading": "内部内容"
-  },
   "articles": {
-    "notFound": "档案中找不到该文章。",
-    "backToArticles": "返回档案库",
-    "readMore": "阅读文件",
+    "notFound": "档案中未找到该文章。",
+    "backToArticles": "返回档案室",
+    "readMore": "阅读档案",
     "notFoundTitle": "文件未找到",
     "notFoundLabel": "— 404 —",
     "readingRoom": "— 阅览室 —",
-    "minRead": "分钟阅读"
+    "minRead": "分钟阅读",
+    "contents": "— 目录 —"
+  },
+  "home": {
+    "overline": "— 案件档案 No. 001 —",
+    "title": "RESUMESPY",
+    "tagline": "你的档案。你的故事。你的世界。",
+    "description": "面向现代职场人的精品工坊——版本控制的简历，经 AI 为每个职位量身定制，以你自己的笔墨书写。",
+    "cta": "探索情报报告",
+    "subtitle": "让简历永不过时",
+    "features": {
+      "versionControl": "版本控制",
+      "versionControlDesc": "每一稿都被保存。每个版本都可恢复。你的简历持续进化——没有任何内容会丢失。",
+      "aiTailoring": "AI 量身定制",
+      "aiTailoringDesc": "粘贴职位描述，看你的故事重塑自身——精准、有意图、依然是你。",
+      "manyTongues": "多语言支持",
+      "manyTonguesDesc": "English。中文。日本語。你的故事用每一种语言讲述——精心翻译，而非机器转换。"
+    },
+    "process": {
+      "title": "— 工作流程 —",
+      "subtitle": "使用方法",
+      "step1Title": "用 Markdown 书写",
+      "step1Desc": "用纯 Markdown 撰写简历。简洁、可移植、便于版本控制。用你自己的话——不受模板束缚。",
+      "step2Title": "AI 为职位量身定制",
+      "step2Desc": "粘贴职位描述，AI 重新编写你的档案以匹配职位——每个事实保留，每个关键词优化。",
+      "step3Title": "导出你的档案",
+      "step3Desc": "下载精致的 PDF。以任何语言分享。英文、中文、日文——你的故事在机会所在之处娓娓道来。",
+      "cta": "开始建立档案"
+    },
+    "readingRoom": {
+      "title": "— 阅览室 —",
+      "subtitle": "来自档案室",
+      "description": "关于简历写作技巧、职业策略和求职艺术的实战笔记。"
+    },
+    "manifesto": {
+      "label": "— 来自创作者的案头 —",
+      "quote": "这不是一款产品，这是一个舞台。你的故事在这里成形——不靠模板与复选框，而靠匠心、意图与笔墨。",
+      "author": "— Fei-Fei Jin",
+      "note": "开源 · 用心打造 · 免费提供",
+      "starGitHub": "★  在 GitHub 上加星",
+      "buyCoffee": "☕  请我喝杯咖啡"
+    },
+    "sectionHeading": "内藏乾坤"
   },
   "authMagic": {
-    "processing": "验证凭据",
-    "success": "访问已授予",
+    "processing": "正在验证身份",
+    "success": "访问已授权",
     "error": "访问被拒绝",
-    "processingDesc": "正在验证你的凭据...",
-    "successDesc": "欢迎回来！正在为你跳转。",
-    "errorDesc": "该链接无效或已过期。请申请新的链接。",
+    "processingDesc": "正在验证您的凭据...",
+    "successDesc": "欢迎回来！正在为您跳转。",
+    "errorDesc": "链接无效或已过期，请申请新的链接。",
     "continue": "继续",
     "tryAgain": "重试"
   },
   "footer": {
     "copyright": "© {year}",
-    "buyMeCoffee": "☕ 给我买杯咖啡",
-    "author": "作者：Fei-Fei Jin",
+    "buyMeCoffee": "☕ 请我喝杯咖啡",
+    "author": "由 Fei-Fei Jin 制作",
     "resumeSpy": "RESUMESPY"
   },
   "components": {
     "guestBanner": {
-      "title": "欢迎来到 ResumeSpy",
-      "message": "登录以保存你的简历并解锁所有功能。",
+      "title": "欢迎使用 ResumeSpy",
+      "message": "登录以保存简历并解锁所有功能。",
       "cta": "登录",
       "close": "关闭"
     },
@@ -262,13 +263,13 @@
       "title": "简历指南",
       "subtitle": "学习如何使用 ResumeSpy",
       "step1Title": "创建",
-      "step1Desc": "从空白画布开始或从现有简历导入",
+      "step1Desc": "从空白画布开始或从现有内容导入",
       "step2Title": "编辑",
-      "step2Desc": "使用我们的富文本编辑器打造你的故事",
+      "step2Desc": "用富文本编辑器打磨你的故事",
       "step3Title": "优化",
-      "step3Desc": "用 AI 针对每个机会进行优化",
+      "step3Desc": "针对每个职位进行 AI 优化",
       "step4Title": "导出",
-      "step4Desc": "下载为 PDF 用于任何申请"
+      "step4Desc": "作为 PDF 下载以供投递"
     },
     "knowledgeBase": {
       "title": "知识库",
@@ -277,44 +278,44 @@
     },
     "loading": {
       "processing": "处理中...",
-      "pleaseWait": "这可能需要一些时间",
+      "pleaseWait": "请稍候",
       "cancel": "取消"
     }
   },
   "errors": {
-    "network": "网络连接错误。请检查你的网络连接。",
-    "server": "服务器错误。请稍后再试。",
-    "unauthorized": "未授权。请重新登录。",
+    "network": "网络连接错误，请检查您的网络。",
+    "server": "服务器错误，请稍后重试。",
+    "unauthorized": "未授权，请重新登录。",
     "notFound": "资源未找到。",
-    "validation": "请检查你的输入并重试。",
-    "timeout": "请求超时。请重试。",
-    "generic": "发生错误。请重试。",
-    "guestLimitReached": "你已达到访客简历限制。请登录以创建更多。"
+    "validation": "请检查您的输入并重试。",
+    "timeout": "请求超时，请重试。",
+    "generic": "发生错误，请重试。",
+    "guestLimitReached": "您已达到访客简历数量上限。请登录以创建更多简历。"
   },
   "validation": {
     "required": "此字段为必填项",
     "email": "请输入有效的邮箱地址",
     "minLength": "至少需要 {min} 个字符",
-    "maxLength": "不能超过 {max} 个字符",
+    "maxLength": "不得超过 {max} 个字符",
     "pattern": "格式无效",
     "match": "字段不匹配",
-    "unique": "此值已被使用"
+    "unique": "此值已被占用"
   },
   "placeholder": {
-    "email": "输入你的邮箱地址",
-    "jobDescription": "在此粘贴完整的职位描述...",
+    "email": "输入您的邮箱地址",
+    "jobDescription": "请在此粘贴完整的职位描述...",
     "resumeTitle": "我的简历",
     "search": "搜索...",
-    "name": "全名",
+    "name": "姓名",
     "company": "公司名称",
     "position": "职位"
   },
   "empty": {
-    "noResumes": "还没有简历。创建一个开始吧！",
+    "noResumes": "暂无简历，创建一份开始吧！",
     "noResults": "未找到结果",
-    "noArticles": "没有可用的文章",
-    "noCached": "没有缓存的版本",
-    "tryAgain": "尝试不同的搜索条件",
-    "createFirst": "创建你的第一份简历"
+    "noArticles": "暂无文章",
+    "noCached": "无缓存版本",
+    "tryAgain": "尝试不同的搜索词",
+    "createFirst": "创建您的第一份简历"
   }
 }
