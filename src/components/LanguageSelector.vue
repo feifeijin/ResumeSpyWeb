@@ -31,9 +31,10 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CountryFlag from 'vue-country-flag-next'
-import { changeLanguage as setLanguage } from '@/i18n'
+import { useLanguageSwitch } from '@/composables/useLanguageSwitch'
 
 const { locale, t } = useI18n()
+const { changeLanguage: updateLanguage } = useLanguageSwitch()
 
 const languages = [
   { code: 'en', name: computed(() => t('languages.english')), flag: 'us' },
@@ -54,7 +55,7 @@ const currentFlag = computed(() => {
 })
 
 const changeLanguage = (langCode: string) => {
-  setLanguage(langCode)
+  updateLanguage(langCode)
 }
 </script>
 

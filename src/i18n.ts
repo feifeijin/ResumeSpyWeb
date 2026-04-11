@@ -15,7 +15,7 @@ const localeModules = import.meta.glob<{ default: Record<string, unknown> }>(
 const messages = Object.fromEntries(
   Object.entries(localeModules).map(([path, mod]) => {
     const code = path.replace('./locales/', '').replace('.json', '')
-    return [code, (mod as any).default || mod]
+    return [code, mod.default]
   }),
 ) as Record<string, Record<string, unknown>>
 
@@ -30,7 +30,7 @@ export const supportedLocales: string[] = Object.keys(messages).sort()
 export const localeDisplayNames: Record<string, string> = Object.fromEntries(
   Object.entries(messages).map(([code, mod]) => [
     code,
-    (mod as any)._meta?.nativeName ?? code.toUpperCase(),
+    (mod._meta as Record<string, string> | undefined)?.nativeName ?? code.toUpperCase(),
   ]),
 )
 
@@ -51,6 +51,7 @@ export const i18n = createI18n({
   legacy: false,
   locale: detectLocale(),
   fallbackLocale: 'en',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messages: messages as any,
   missingWarn: false,
   fallbackWarn: false,
@@ -59,6 +60,7 @@ export const i18n = createI18n({
 /** Switch language, persist the choice, and update the document lang attribute. */
 export function changeLanguage(locale: string): void {
   if (!supportedLocales.includes(locale)) return
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   i18n.global.locale = locale as any
   localStorage.setItem('app-language', locale)
   document.documentElement.lang = locale

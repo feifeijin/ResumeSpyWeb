@@ -103,26 +103,31 @@ import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { changeLanguage as setLanguage, supportedLocales, localeDisplayNames } from '@/i18n'
+import { useLanguageSwitch } from '@/composables/useLanguageSwitch'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
 const drawer = ref(false)
 const { t, locale } = useI18n()
+const { changeLanguage, supportedLocales, localeDisplayNames } = useLanguageSwitch()
 const authStore = useAuthStore()
 const toast = useToast()
-const { isAuthenticated, displayName, email } = storeToRefs(authStore)
+const { isAuthenticated, email } = storeToRefs(authStore)
 
-const menu = computed(() => [
-  { name: t('navigation.create'), link: '/create', icon: 'mdi-note-plus' },
-  {
-    name: 'GitHub',
-    link: 'https://github.com/feifeijin/ResumeSpyWeb',
-    icon: 'mdi-github',
-  },
-  { name: t('navigation.mySpy'), link: '/myspy', icon: 'mdi-account' },
-])
+const menu = computed(() => {
+  // Add locale as a dependency to reactively update menu translations
+  void locale.value
+  return [
+    { name: t('navigation.create'), link: '/create', icon: 'mdi-note-plus' },
+    {
+      name: 'GitHub',
+      link: 'https://github.com/feifeijin/ResumeSpyWeb',
+      icon: 'mdi-github',
+    },
+    { name: t('navigation.mySpy'), link: '/myspy', icon: 'mdi-account' },
+  ]
+})
 
 // Derived automatically from src/locales/*.json — no code change needed to add a language
 const languages = computed(() =>
@@ -132,10 +137,6 @@ const languages = computed(() =>
 const currentLanguage = computed(() => localeDisplayNames[locale.value] ?? locale.value.toUpperCase())
 
 const accountLabel = computed(() => email.value || t('navigation.login'))
-
-const changeLanguage = (langCode: string) => {
-  setLanguage(langCode)
-}
 
 const onClick = (item: { name: string; link: string }) => {
   if (item.name === 'GitHub') {
