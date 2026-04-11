@@ -120,14 +120,14 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 
 <style scoped>
 .noir-auth {
-  --bg:       #0c0a08;
-  --surface:  #161210;
-  --border:   #2e2620;
-  --text:     #e2d5bc;
-  --muted:    #6a5f52;
-  --gold:     #c49a38;
-  --gold-dim: #7a5f22;
-  --ink:      #090807;
+  --bg:       #FAFAFA;
+  --surface:  #F0F0F0;
+  --border:   #D4D4D4;
+  --text:     #121212;
+  --muted:    #666666;
+  --gold:     #121212;
+  --gold-dim: #888888;
+  --ink:      #FFFFFF;
 
   position: relative;
   min-height: 100vh;
@@ -136,7 +136,7 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .film-grain {
@@ -155,10 +155,10 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
   width: 100%;
   max-width: 440px;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   padding: 3rem 2.5rem;
   text-align: center;
-  box-shadow: 4px 4px 0 #090807, 8px 8px 0 rgba(0,0,0,0.3);
+  box-shadow: 6px 6px 0 #AAAAAA;
 }
 
 /* Double border frame */
@@ -172,7 +172,7 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 }
 
 .auth-overline {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.75rem;
   color: var(--gold-dim);
   letter-spacing: 0.25em;
@@ -180,7 +180,7 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 }
 
 .auth-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
   color: var(--text);
@@ -204,7 +204,7 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 
 .field-label {
   display: block;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.75rem;
   color: var(--muted);
   letter-spacing: 0.18em;
@@ -221,11 +221,11 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 }
 
 :deep(.v-field--focused .v-field__outline) {
-  color: var(--gold-dim) !important;
+  color: #888888 !important;
 }
 
 :deep(.v-field__input) {
-  font-family: 'Special Elite', cursive !important;
+  font-family: 'IBM Plex Mono', monospace !important;
   color: var(--text) !important;
   font-size: 0.9rem !important;
   letter-spacing: 0.05em !important;
@@ -233,22 +233,24 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 
 .btn-ink {
   width: 100%;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.9rem;
   letter-spacing: 0.2em;
-  color: var(--ink);
-  background: var(--gold);
-  border: none;
+  color: #F5F5F5;
+  background: #121212;
+  border: 1.5px solid #121212;
   padding: 0.9rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
   margin-top: 0.5rem;
+  box-shadow: 3px 3px 0 #AAAAAA;
 }
 
 .btn-ink:hover:not(:disabled) {
-  background: #d4a940;
-  box-shadow: 0 0 20px rgba(196, 154, 56, 0.35);
+  background: #2B2B2B;
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 #AAAAAA;
 }
 
 .btn-ink:disabled {
@@ -257,11 +259,11 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 }
 
 .link-sent-notice {
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-style: italic;
   font-size: 0.85rem;
-  color: var(--gold);
-  border: 1px solid var(--gold-dim);
+  color: #F5F5F5;
+  border: 1px solid #2B2B2B;
   padding: 0.75rem 1rem;
   display: flex;
   gap: 0.5rem;

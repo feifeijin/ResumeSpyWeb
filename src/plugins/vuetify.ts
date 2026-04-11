@@ -7,15 +7,15 @@ export default createVuetify({
     defaultTheme: 'noir',
     themes: {
       noir: {
-        dark: true,
+        dark: false,
         colors: {
-          background:      '#0c0a08',
-          surface:         '#161210',
-          primary:         '#c49a38',
-          secondary:       '#2e2620',
-          accent:          '#7a1a1a',
-          'on-background': '#e2d5bc',
-          'on-surface':    '#e2d5bc',
+          background:      '#FAFAFA',
+          surface:         '#F0F0F0',
+          primary:         '#121212',
+          secondary:       '#D4D4D4',
+          accent:          '#2B2B2B',
+          'on-background': '#121212',
+          'on-surface':    '#121212',
         },
       },
     },

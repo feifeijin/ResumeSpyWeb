@@ -103,7 +103,7 @@ import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { changeLanguage as setLanguage } from '@/i18n'
+import { changeLanguage as setLanguage, supportedLocales, localeDisplayNames } from '@/i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 
@@ -124,16 +124,12 @@ const menu = computed(() => [
   { name: t('navigation.mySpy'), link: '/myspy', icon: 'mdi-account' },
 ])
 
-const languages = [
-  { code: 'en', name: 'English' },
-  { code: 'zh', name: '中文' },
-  { code: 'ja', name: '日本語' },
-]
+// Derived automatically from src/locales/*.json — no code change needed to add a language
+const languages = computed(() =>
+  supportedLocales.map(code => ({ code, name: localeDisplayNames[code] ?? code.toUpperCase() }))
+)
 
-const currentLanguage = computed(() => {
-  const current = languages.find((lang) => lang.code === locale.value)
-  return current?.name || 'EN'
-})
+const currentLanguage = computed(() => localeDisplayNames[locale.value] ?? locale.value.toUpperCase())
 
 const accountLabel = computed(() => email.value || t('navigation.login'))
 
@@ -175,60 +171,60 @@ const handleLogout = async () => {
 
 /* ── Noir AppBar ─────────────────────────────────────────── */
 :deep(.v-toolbar) {
-  background: rgba(10, 8, 7, 0.92) !important;
-  border-bottom: 1px solid #2e2620 !important;
+  background: rgba(250, 250, 250, 0.96) !important;
+  border-bottom: 1px solid #D4D4D4 !important;
   backdrop-filter: blur(10px);
   box-shadow: none !important;
 }
 
 .noir-logo {
-  font-family: 'Cinzel', serif;
-  font-size: 1.3rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
-  color: #e2d5bc;
+  letter-spacing: 0.1em;
+  color: #121212;
   cursor: pointer;
   user-select: none;
   transition: color 0.2s;
 }
 
-.noir-logo:hover { color: #c49a38; }
+.noir-logo:hover { color: #2B2B2B; }
 
-.noir-logo-accent { color: #c49a38; }
+.noir-logo-accent { color: #888888; }
 
 :deep(.v-btn) {
-  font-family: 'Special Elite', cursive !important;
-  letter-spacing: 0.1em !important;
-  font-size: 0.8rem !important;
-  color: #6a5f52 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  letter-spacing: 0.08em !important;
+  font-size: 0.75rem !important;
+  color: #888888 !important;
   transition: color 0.25s !important;
 }
 
-:deep(.v-btn:hover) { color: #e2d5bc !important; }
+:deep(.v-btn:hover) { color: #121212 !important; }
 
 :deep(.v-btn.v-btn--variant-flat) {
-  background: #c49a38 !important;
-  color: #090807 !important;
-  font-family: 'Special Elite', cursive !important;
+  background: #121212 !important;
+  color: #F5F5F5 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
   border-radius: 0 !important;
   clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
 }
 
 :deep(.v-btn.v-btn--variant-flat:hover) {
-  background: #d4a940 !important;
-  color: #090807 !important;
+  background: #2B2B2B !important;
+  color: #F5F5F5 !important;
 }
 
 :deep(.v-navigation-drawer) {
-  background: #0f0d0b !important;
-  border-right: 1px solid #2e2620 !important;
+  background: #FAFAFA !important;
+  border-right: 1px solid #D4D4D4 !important;
 }
 
 :deep(.v-list-item) {
-  font-family: 'Special Elite', cursive !important;
-  color: #6a5f52 !important;
-  letter-spacing: 0.1em;
+  font-family: 'IBM Plex Mono', monospace !important;
+  color: #888888 !important;
+  letter-spacing: 0.08em;
 }
 
-:deep(.v-list-item:hover) { color: #e2d5bc !important; }
+:deep(.v-list-item:hover) { color: #121212 !important; }
 </style>

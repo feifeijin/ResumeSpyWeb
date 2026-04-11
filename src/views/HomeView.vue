@@ -183,18 +183,18 @@ const features = [
 <style scoped>
 /* ── Tokens ──────────────────────────────────────────────── */
 .noir-home {
-  --bg:        #0c0a08;
-  --surface:   #161210;
-  --border:    #2e2620;
-  --text:      #e2d5bc;
-  --muted:     #6a5f52;
-  --gold:      #c49a38;
-  --gold-dim:  #7a5f22;
-  --ink:       #090807;
+  --bg:        #FAFAFA;
+  --surface:   #F0F0F0;
+  --border:    #D4D4D4;
+  --text:      #121212;
+  --muted:     #666666;
+  --gold:      #121212;
+  --gold-dim:  #888888;
+  --ink:       #FFFFFF;
 
-  --f-title:  'Cinzel', serif;
-  --f-body:   'IM Fell English', serif;
-  --f-stamp:  'Special Elite', cursive;
+  --f-title:  'Inter', system-ui, sans-serif;
+  --f-body:   'Inter', system-ui, sans-serif;
+  --f-stamp:  'IBM Plex Mono', monospace;
 
   position: relative;
   background: var(--bg);
@@ -228,7 +228,7 @@ const features = [
   position: absolute;
   top: -100px;
   width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(196, 170, 110, 0.22));
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.07));
   animation: rain-fall linear infinite;
 }
 
@@ -246,9 +246,7 @@ const features = [
   justify-content: center;
   text-align: center;
   padding: 7rem 2rem 5rem;
-  background:
-    radial-gradient(ellipse 55% 45% at 50% 38%, rgba(196, 154, 56, 0.07) 0%, transparent 65%),
-    linear-gradient(to bottom, #0c0a08 0%, #110e0b 60%, #0c0a08 100%);
+  background: var(--bg);
 }
 
 .hero-inner { max-width: 680px; }
@@ -275,13 +273,10 @@ const features = [
   font-family: var(--f-title);
   font-size: clamp(3.2rem, 10vw, 7.5rem);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   color: var(--text);
   line-height: 1;
   margin: 0 0 1.5rem;
-  text-shadow:
-    0 0 80px rgba(196, 154, 56, 0.12),
-    0 2px 4px rgba(0,0,0,0.8);
 }
 
 .title-gold { color: var(--gold); }
@@ -312,63 +307,63 @@ const features = [
 /* ── Buttons ─────────────────────────────────────────────── */
 .btn-ink {
   font-family: var(--f-stamp);
-  font-size: 0.9rem;
-  letter-spacing: 0.18em;
-  color: var(--ink);
-  background: var(--gold);
-  border: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  color: #F5F5F5;
+  background: #121212;
+  border: 1.5px solid #121212;
   padding: 0.85rem 2.2rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
-  transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
   text-decoration: none;
   display: inline-block;
+  box-shadow: 3px 3px 0 #AAAAAA;
 }
 
 .btn-ink:hover {
-  background: #d4a940;
-  box-shadow: 0 0 24px rgba(196, 154, 56, 0.45);
+  background: #2B2B2B;
   transform: translateY(-2px);
+  box-shadow: 5px 5px 0 #AAAAAA;
 }
 
 .btn-ghost {
   font-family: var(--f-stamp);
-  font-size: 0.9rem;
-  letter-spacing: 0.18em;
-  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  color: #666666;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1.5px solid #D4D4D4;
   padding: 0.85rem 2.2rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
-  transition: border-color 0.3s, color 0.3s;
+  transition: border-color 0.2s, color 0.2s;
   text-decoration: none;
   display: inline-block;
 }
 
 .btn-ghost:hover {
-  border-color: var(--gold-dim);
-  color: var(--text);
+  border-color: #888888;
+  color: #121212;
 }
 
 .btn-coffee {
   font-family: var(--f-stamp);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   letter-spacing: 0.12em;
-  color: var(--text);
+  color: #666666;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1.5px solid #D4D4D4;
   padding: 0.85rem 2.2rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   text-decoration: none;
   display: inline-block;
 }
 
 .btn-coffee:hover {
-  border-color: var(--gold-dim);
-  color: var(--gold);
-  background: rgba(196, 154, 56, 0.05);
+  border-color: #888888;
+  color: #121212;
 }
 
 /* ── Divider ─────────────────────────────────────────────── */
@@ -422,29 +417,28 @@ const features = [
 .case-card {
   position: relative;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1.5px solid #D4D4D4;
   padding: 2.5rem 2rem 2.25rem;
   text-align: left;
   transform: rotate(var(--tilt, 0deg));
-  box-shadow: 3px 3px 0 var(--ink), 5px 5px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: 4px 4px 0 #AAAAAA;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               box-shadow 0.4s ease;
 }
 
-/* Inner double border — aged paper feel */
+/* Inner sketch border */
 .case-card::before {
   content: '';
   position: absolute;
   inset: 7px;
-  border: 1px solid var(--border);
+  border: 1px dashed #D4D4D4;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.4;
 }
 
 .case-card:hover {
   transform: rotate(0deg) translateY(-5px);
-  box-shadow: 3px 3px 0 var(--ink), 10px 10px 0 rgba(0, 0, 0, 0.4),
-              0 0 40px rgba(196, 154, 56, 0.07);
+  box-shadow: 6px 6px 0 #AAAAAA;
 }
 
 .card-num {
@@ -486,7 +480,7 @@ const features = [
   z-index: 10;
   padding: 6rem 2rem 7rem;
   text-align: center;
-  background: linear-gradient(to bottom, transparent, rgba(196, 154, 56, 0.025), transparent);
+  background: transparent;
 }
 
 .manifesto-label {
@@ -511,7 +505,7 @@ const features = [
 .manifesto-sig {
   font-family: var(--f-stamp);
   font-size: 1rem;
-  color: var(--gold);
+  color: var(--text);
   margin-bottom: 0.5rem;
 }
 

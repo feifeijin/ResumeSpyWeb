@@ -18,16 +18,53 @@
     <!-- Article -->
     <div v-else class="article-page">
       <div class="article-inner">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="breadcrumb">
+          <router-link to="/">{{ t('navigation.home') }}</router-link>
+          <span class="breadcrumb-sep">›</span>
+          <span>{{ t('articles.backToArticles') }}</span>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">{{ article.title }}</span>
+        </nav>
+
         <router-link to="/" class="back-link">← {{ t('articles.backToArticles') }}</router-link>
 
         <article>
           <header class="article-header">
             <p class="article-overline">— Reading Room —</p>
             <h1 class="article-title">{{ article.title }}</h1>
+
+            <!-- Meta row: author · date · read time -->
+            <div class="article-meta">
+              <span class="meta-author">{{ article.author }}</span>
+              <span class="meta-sep">·</span>
+              <time :datetime="article.date">{{ formatDate(article.date) }}</time>
+              <span class="meta-sep">·</span>
+              <span>{{ article.readTime }} min read</span>
+            </div>
+
             <div class="article-tags">
               <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
             </div>
+
+            <!-- Excerpt / summary -->
+            <p class="article-excerpt">{{ article.excerpt }}</p>
           </header>
+
+          <!-- Table of Contents (auto-shown for articles > 800 words) -->
+          <nav v-if="toc.length" class="article-toc" aria-label="Table of contents">
+            <p class="toc-title">— Contents —</p>
+            <ol>
+              <li
+                v-for="item in toc"
+                :key="item.id"
+                :class="{ 'toc-h3': item.level === 3 }"
+              >
+                <a :href="`#${item.id}`">{{ item.text }}</a>
+              </li>
+            </ol>
+          </nav>
 
           <div class="article-body" v-html="article.content" />
         </article>
@@ -44,11 +81,12 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
+import { computed, watch, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticleContent } from '@/composables/useArticleContent'
+import { getArticleMetaBySlug } from '@/articles/articles'
 
-const { t, tm } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
@@ -59,6 +97,10 @@ interface ArticleMeta {
   title: string
   excerpt: string
   tags: string[]
+  author: string
+  date: string
+  readTime: number
+  metaDescription: string
 }
 
 interface ArticleWithContent extends ArticleMeta {
@@ -72,53 +114,117 @@ interface ArticleNotFound {
 
 type ArticleData = ArticleWithContent | ArticleNotFound
 
-function isArticleMeta(value: unknown): value is ArticleMeta {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'slug' in value &&
-    'title' in value &&
-    'excerpt' in value &&
-    'tags' in value &&
-    typeof (value as ArticleMeta).slug === 'string' &&
-    typeof (value as ArticleMeta).title === 'string' &&
-    typeof (value as ArticleMeta).excerpt === 'string' &&
-    Array.isArray((value as ArticleMeta).tags)
-  )
-}
+const articleMeta = computed<ArticleMeta | undefined>(() =>
+  getArticleMetaBySlug(slug.value, locale.value),
+)
 
-const articleMeta = computed<ArticleMeta | undefined>(() => {
-  const items = tm('articles.items') as unknown
-  if (!Array.isArray(items)) return undefined
-  const found = items.find((item: unknown) => isArticleMeta(item) && (item as ArticleMeta).slug === slug.value)
-  return found && isArticleMeta(found) ? (found as ArticleMeta) : undefined
-})
+const articleContent = computed(() => getArticleBySlug(slug.value))
 
 const article = computed<ArticleData | null>(() => {
   const meta = articleMeta.value
   if (!meta) return { notFound: true }
-  const content = getArticleBySlug(slug.value)
+  const content = articleContent.value
   if (!content) return { notFound: true }
   return { ...meta, content, notFound: false }
 })
+
+// ── Table of contents (auto-generated for long articles) ──────────────────
+interface TocItem { id: string; text: string; level: number }
+
+const toc = computed<TocItem[]>(() => {
+  if (article.value === null || (article.value as ArticleNotFound).notFound) return []
+  const a = article.value as ArticleWithContent
+  const wordCount = a.content.replace(/<[^>]+>/g, ' ').split(/\s+/).length
+  if (wordCount < 800) return []
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(a.content, 'text/html')
+  const headings = Array.from(doc.querySelectorAll('h2, h3'))
+  return headings.map((h, i) => ({
+    id: `section-${i}`,
+    text: h.textContent ?? '',
+    level: parseInt(h.tagName[1]),
+  }))
+})
+
+// ── SEO: dynamic <title>, <meta description>, Schema.org JSON-LD ──────────
+let injectedMeta: HTMLMetaElement | null = null
+let injectedJsonLd: HTMLScriptElement | null = null
+
+function injectSeo(a: ArticleWithContent) {
+  document.title = `${a.title} — ResumeSpy`
+
+  // meta description
+  injectedMeta?.remove()
+  injectedMeta = document.createElement('meta')
+  injectedMeta.setAttribute('name', 'description')
+  injectedMeta.setAttribute('content', a.metaDescription)
+  document.head.appendChild(injectedMeta)
+
+  // Schema.org Article JSON-LD
+  injectedJsonLd?.remove()
+  injectedJsonLd = document.createElement('script')
+  injectedJsonLd.type = 'application/ld+json'
+  injectedJsonLd.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: a.title,
+    description: a.metaDescription,
+    author: { '@type': 'Organization', name: a.author },
+    datePublished: a.date,
+    publisher: {
+      '@type': 'Organization',
+      name: 'ResumeSpy',
+      logo: { '@type': 'ImageObject', url: `${window.location.origin}/favicon.ico` },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': window.location.href },
+  })
+  document.head.appendChild(injectedJsonLd)
+}
+
+function cleanupSeo() {
+  document.title = 'ResumeSpy — Your Dossier. Your Story.'
+  injectedMeta?.remove()
+  injectedJsonLd?.remove()
+  injectedMeta = null
+  injectedJsonLd = null
+}
+
+watch(
+  article,
+  (a) => {
+    if (a && !(a as ArticleNotFound).notFound) injectSeo(a as ArticleWithContent)
+    else cleanupSeo()
+  },
+  { immediate: true },
+)
+
+onUnmounted(cleanupSeo)
+
+// ── Formatted date ────────────────────────────────────────────────────────
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString(locale.value === 'ja' ? 'ja-JP' : locale.value === 'zh' ? 'zh-CN' : 'en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  })
+}
 </script>
 
 <style scoped>
 .noir-article-wrap {
-  --bg:       #0c0a08;
-  --surface:  #161210;
-  --border:   #2e2620;
-  --text:     #e2d5bc;
-  --muted:    #6a5f52;
-  --gold:     #c49a38;
-  --gold-dim: #7a5f22;
-  --ink:      #090807;
+  --bg:       #FAFAFA;
+  --surface:  #F0F0F0;
+  --border:   #D4D4D4;
+  --text:     #121212;
+  --muted:    #666666;
+  --gold:     #121212;
+  --gold-dim: #888888;
+  --ink:      #FFFFFF;
 
   position: relative;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .film-grain {
@@ -177,14 +283,14 @@ const article = computed<ArticleData | null>(() => {
 }
 
 .nf-overline {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.8rem;
   color: var(--gold-dim);
   letter-spacing: 0.25em;
 }
 
 .nf-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 2rem;
   color: var(--text);
   letter-spacing: 0.15em;
@@ -209,7 +315,7 @@ const article = computed<ArticleData | null>(() => {
 
 .back-link {
   display: inline-block;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.75rem;
   letter-spacing: 0.18em;
   color: var(--muted);
@@ -220,6 +326,23 @@ const article = computed<ArticleData | null>(() => {
 
 .back-link:hover { color: var(--gold); }
 
+/* ── Breadcrumb ──────────────────────────────────────────── */
+.breadcrumb {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--gold); }
+.breadcrumb-sep { color: var(--gold-dim); }
+.breadcrumb-current { color: var(--gold-dim); }
+
 /* ── Article Header ──────────────────────────────────────── */
 .article-header {
   margin-bottom: 3rem;
@@ -228,7 +351,7 @@ const article = computed<ArticleData | null>(() => {
 }
 
 .article-overline {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.75rem;
   color: var(--gold-dim);
   letter-spacing: 0.25em;
@@ -236,29 +359,79 @@ const article = computed<ArticleData | null>(() => {
 }
 
 .article-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(1.6rem, 4vw, 2.5rem);
   font-weight: 700;
   color: var(--text);
   letter-spacing: 0.05em;
   line-height: 1.3;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
+
+.article-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+.meta-sep { color: var(--gold-dim); }
 
 .article-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .tag {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
   letter-spacing: 0.15em;
   color: var(--gold-dim);
   border: 1px solid var(--border);
   padding: 0.2rem 0.65rem;
 }
+
+.article-excerpt {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 1rem;
+  margin: 0;
+}
+
+/* ── Table of Contents ───────────────────────────────────── */
+.article-toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2.5rem;
+}
+.toc-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--gold-dim);
+  margin-bottom: 1rem;
+}
+.article-toc ol { list-style: decimal; padding-left: 1.25rem; margin: 0; }
+.article-toc li {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.article-toc li.toc-h3 { padding-left: 1rem; font-size: 0.85rem; }
+.article-toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.article-toc a:hover { color: var(--gold); }
 
 /* ── Article Body ────────────────────────────────────────── */
 .article-body {
@@ -271,7 +444,7 @@ const article = computed<ArticleData | null>(() => {
 .article-body :deep(h2),
 .article-body :deep(h3),
 .article-body :deep(h4) {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   color: var(--text);
   letter-spacing: 0.08em;
   margin-top: 2.5rem;
@@ -293,7 +466,7 @@ const article = computed<ArticleData | null>(() => {
 }
 
 .article-body :deep(code) {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85em;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -357,12 +530,12 @@ const article = computed<ArticleData | null>(() => {
 /* ── Buttons ─────────────────────────────────────────────── */
 .btn-ghost {
   display: inline-block;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.8rem;
   letter-spacing: 0.18em;
   color: var(--muted);
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   padding: 0.7rem 1.6rem;
   cursor: pointer;
   text-decoration: none;
@@ -371,7 +544,7 @@ const article = computed<ArticleData | null>(() => {
 }
 
 .btn-ghost:hover {
-  border-color: var(--gold-dim);
+  border-color: #888888;
   color: var(--text);
 }
 </style>

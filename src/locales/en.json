@@ -1,4 +1,7 @@
 {
+  "_meta": {
+    "nativeName": "English"
+  },
   "common": {
     "close": "Close",
     "cancel": "Cancel",

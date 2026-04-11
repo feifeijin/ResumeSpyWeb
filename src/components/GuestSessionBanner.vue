@@ -87,10 +87,10 @@ const goToSignup = () => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: #0f0d0b;
-  border-bottom: 1px solid #2e2620;
+  background: #F5F5F5;
+  border-bottom: 1px solid #D4D4D4;
   padding: 0.6rem 1.5rem;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   position: relative;
@@ -98,12 +98,12 @@ const goToSignup = () => {
 }
 
 .banner-glyph {
-  color: #7a5f22;
+  color: #888888;
   flex-shrink: 0;
 }
 
 .banner-text {
-  color: #6a5f52;
+  color: #666666;
   flex: 1;
 }
 
@@ -115,39 +115,39 @@ const goToSignup = () => {
 }
 
 .banner-btn {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
   letter-spacing: 0.12em;
-  color: #c49a38;
+  color: #121212;
   background: none;
-  border: 1px solid #7a5f22;
+  border: 1px solid #D4D4D4;
   padding: 0.25rem 0.75rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.banner-btn:hover { color: #d4a940; border-color: #c49a38; }
+.banner-btn:hover { color: #2B2B2B; border-color: #888888; }
 
-.banner-btn--warn { color: #8b3a3a; border-color: #5a2020; }
-.banner-btn--warn:hover { color: #c05050; border-color: #8b3a3a; }
+.banner-btn--warn { color: #666666; border-color: #D4D4D4; }
+.banner-btn--warn:hover { color: #121212; border-color: #888888; }
 
 .banner-close {
   background: none;
   border: none;
-  color: #3e352a;
+  color: #AAAAAA;
   cursor: pointer;
   font-size: 0.75rem;
   transition: color 0.2s;
   padding: 0 0.25rem;
 }
 
-.banner-close:hover { color: #6a5f52; }
+.banner-close:hover { color: #666666; }
 
 /* ── Dialog ──────────────────────────────────────────────── */
 .noir-dialog {
-  background: #0f0d0b;
-  border: 1px solid #2e2620;
-  box-shadow: 6px 6px 0 #090807, 12px 12px 0 rgba(0,0,0,0.3);
+  background: #F0F0F0;
+  border: 1.5px solid #D4D4D4;
+  box-shadow: 6px 6px 0 #AAAAAA;
 }
 
 .dialog-header {
@@ -155,14 +155,14 @@ const goToSignup = () => {
   align-items: center;
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #2e2620;
+  border-bottom: 1px solid #D4D4D4;
 }
 
 .dialog-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1rem;
   font-weight: 700;
-  color: #e2d5bc;
+  color: #121212;
   letter-spacing: 0.1em;
   margin: 0;
 }
@@ -170,20 +170,20 @@ const goToSignup = () => {
 .dialog-close {
   background: none;
   border: none;
-  color: #6a5f52;
+  color: #888888;
   cursor: pointer;
   font-size: 1rem;
   transition: color 0.2s;
 }
 
-.dialog-close:hover { color: #e2d5bc; }
+.dialog-close:hover { color: #121212; }
 
 .dialog-body { padding: 1.5rem; }
 
 .dialog-desc {
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-style: italic;
-  color: #6a5f52;
+  color: #666666;
   font-size: 0.9rem;
   line-height: 1.6;
   margin-bottom: 1.25rem;
@@ -199,10 +199,10 @@ const goToSignup = () => {
 }
 
 .dialog-list li {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.82rem;
   letter-spacing: 0.08em;
-  color: #c49a38;
+  color: #121212;
 }
 
 .dialog-footer {
@@ -210,36 +210,41 @@ const goToSignup = () => {
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid #2e2620;
+  border-top: 1px solid #D4D4D4;
 }
 
 .btn-ink {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.82rem;
   letter-spacing: 0.15em;
-  color: #090807;
-  background: #c49a38;
-  border: none;
+  color: #F5F5F5;
+  background: #121212;
+  border: 1.5px solid #121212;
   padding: 0.7rem 1.5rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
-  transition: background 0.3s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 3px 3px 0 #AAAAAA;
 }
 
-.btn-ink:hover { background: #d4a940; }
+.btn-ink:hover {
+  background: #2B2B2B;
+  transform: translateY(-1px);
+  box-shadow: 4px 4px 0 #AAAAAA;
+}
 
 .btn-ghost {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.82rem;
   letter-spacing: 0.15em;
-  color: #6a5f52;
+  color: #666666;
   background: transparent;
-  border: 1px solid #2e2620;
+  border: 1.5px solid #D4D4D4;
   padding: 0.7rem 1.5rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
   transition: border-color 0.3s, color 0.3s;
 }
 
-.btn-ghost:hover { border-color: #7a5f22; color: #e2d5bc; }
+.btn-ghost:hover { border-color: #888888; color: #121212; }
 </style>

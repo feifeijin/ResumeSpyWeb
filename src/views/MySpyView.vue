@@ -231,21 +231,21 @@ const onDelete = async (resume: Resume) => {
 
 <style scoped>
 .noir-archives {
-  --bg:       #0c0a08;
-  --surface:  #161210;
-  --border:   #2e2620;
-  --text:     #e2d5bc;
-  --muted:    #6a5f52;
-  --gold:     #c49a38;
-  --gold-dim: #7a5f22;
-  --red:      #6b1a1a;
-  --ink:      #090807;
+  --bg:       #FAFAFA;
+  --surface:  #F0F0F0;
+  --border:   #D4D4D4;
+  --text:     #121212;
+  --muted:    #666666;
+  --gold:     #121212;
+  --gold-dim: #888888;
+  --red:      #8b2020;
+  --ink:      #FFFFFF;
 
   position: relative;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   padding-bottom: 4rem;
 }
 
@@ -264,7 +264,7 @@ const onDelete = async (resume: Resume) => {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(10, 8, 7, 0.95);
+  background: rgba(250, 250, 250, 0.95);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(8px);
   padding: 1.5rem 2.5rem;
@@ -280,7 +280,7 @@ const onDelete = async (resume: Resume) => {
 }
 
 .header-overline {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
   color: var(--gold-dim);
   letter-spacing: 0.25em;
@@ -288,7 +288,7 @@ const onDelete = async (resume: Resume) => {
 }
 
 .header-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -297,20 +297,25 @@ const onDelete = async (resume: Resume) => {
 }
 
 .btn-ink {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85rem;
   letter-spacing: 0.15em;
-  color: var(--ink);
-  background: var(--gold);
-  border: none;
+  color: #F5F5F5;
+  background: #121212;
+  border: 1.5px solid #121212;
   padding: 0.7rem 1.6rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
   white-space: nowrap;
+  box-shadow: 3px 3px 0 #AAAAAA;
 }
 
-.btn-ink:hover { background: #d4a940; box-shadow: 0 0 16px rgba(196,154,56,0.35); }
+.btn-ink:hover {
+  background: #2B2B2B;
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 #AAAAAA;
+}
 
 /* ── Empty State ─────────────────────────────────────────── */
 .empty-state {
@@ -333,7 +338,7 @@ const onDelete = async (resume: Resume) => {
 }
 
 .empty-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.2rem;
   color: var(--muted);
   letter-spacing: 0.15em;
@@ -363,14 +368,14 @@ const onDelete = async (resume: Resume) => {
 .dossier-card {
   position: relative;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   padding: 1.5rem;
-  box-shadow: 3px 3px 0 var(--ink), 5px 5px 0 rgba(0,0,0,0.3);
+  box-shadow: 4px 4px 0 #AAAAAA;
   transition: box-shadow 0.3s, transform 0.3s;
 }
 
 .dossier-card:hover {
-  box-shadow: 3px 3px 0 var(--ink), 9px 9px 0 rgba(0,0,0,0.35);
+  box-shadow: 6px 6px 0 #AAAAAA;
   transform: translateY(-2px);
 }
 
@@ -392,7 +397,7 @@ const onDelete = async (resume: Resume) => {
 }
 
 .dossier-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text);
@@ -408,7 +413,7 @@ const onDelete = async (resume: Resume) => {
 .dossier-title:hover { color: var(--gold); }
 
 :deep(.dossier-title-input .v-field__input) {
-  font-family: 'Cinzel', serif !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
   font-size: 0.95rem !important;
   color: var(--text) !important;
   padding: 0 !important;
@@ -434,7 +439,7 @@ const onDelete = async (resume: Resume) => {
 .dossier-menu-btn:hover { color: var(--text); }
 
 .dossier-date {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
   color: var(--muted);
   letter-spacing: 0.1em;
@@ -457,7 +462,7 @@ const onDelete = async (resume: Resume) => {
   object-fit: cover;
   display: block;
   transition: transform 0.4s ease;
-  filter: sepia(20%) contrast(1.05);
+  filter: grayscale(10%) contrast(1.02);
 }
 
 .dossier-thumb:hover .dossier-img { transform: scale(1.03); }
@@ -475,7 +480,7 @@ const onDelete = async (resume: Resume) => {
 }
 
 .placeholder-text {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   color: var(--muted);
@@ -484,13 +489,13 @@ const onDelete = async (resume: Resume) => {
 .dossier-thumb-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(12, 10, 8, 0.75);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   color: var(--gold);
@@ -500,10 +505,10 @@ const onDelete = async (resume: Resume) => {
 
 /* ── Noir Menu ───────────────────────────────────────────── */
 .noir-menu {
-  background: #0f0d0b;
-  border: 1px solid var(--border);
+  background: #F0F0F0;
+  border: 1.5px solid var(--border);
   min-width: 140px;
-  box-shadow: 4px 4px 0 var(--ink);
+  box-shadow: 4px 4px 0 #AAAAAA;
 }
 
 .noir-menu-item {
@@ -513,7 +518,7 @@ const onDelete = async (resume: Resume) => {
   border: none;
   padding: 0.65rem 1rem;
   text-align: left;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   color: var(--muted);

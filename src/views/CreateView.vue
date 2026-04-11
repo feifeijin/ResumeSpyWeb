@@ -613,21 +613,21 @@ const setCurrentTabAsDefault = async () => {
 
 <style scoped>
 .noir-create {
-  --bg:       #0c0a08;
-  --surface:  #161210;
-  --border:   #2e2620;
-  --text:     #e2d5bc;
-  --muted:    #6a5f52;
-  --gold:     #c49a38;
-  --gold-dim: #7a5f22;
-  --ink:      #090807;
+  --bg:       #FAFAFA;
+  --surface:  #F0F0F0;
+  --border:   #D4D4D4;
+  --text:     #121212;
+  --muted:    #666666;
+  --gold:     #121212;
+  --gold-dim: #888888;
+  --ink:      #FFFFFF;
   --blue:     #1e4a6e;
 
   position: relative;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .film-grain {
@@ -645,7 +645,7 @@ const setCurrentTabAsDefault = async () => {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(10, 8, 7, 0.97);
+  background: rgba(250, 250, 250, 0.97);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(8px);
 }
@@ -672,7 +672,7 @@ const setCurrentTabAsDefault = async () => {
 }
 
 :deep(.v-tab) {
-  font-family: 'Special Elite', cursive !important;
+  font-family: 'IBM Plex Mono', monospace !important;
   font-size: 0.75rem !important;
   letter-spacing: 0.12em !important;
   color: var(--muted) !important;
@@ -688,7 +688,7 @@ const setCurrentTabAsDefault = async () => {
 
 :deep(.v-tab--selected) {
   color: var(--text) !important;
-  background: rgba(196, 154, 56, 0.05) !important;
+  background: rgba(245, 245, 245, 0.05) !important;
   border-bottom: 2px solid var(--gold) !important;
 }
 
@@ -707,7 +707,7 @@ const setCurrentTabAsDefault = async () => {
 }
 
 :deep(.tab-editor .v-field__input) {
-  font-family: 'Special Elite', cursive !important;
+  font-family: 'IBM Plex Mono', monospace !important;
   font-size: 0.75rem !important;
   color: var(--text) !important;
   padding: 0 !important;
@@ -716,14 +716,14 @@ const setCurrentTabAsDefault = async () => {
 .tab-star { color: var(--gold) !important; }
 
 .tab-close {
-  color: #5a2020 !important;
+  color: #444444 !important;
   transition: color 0.2s !important;
   position: static !important;
   transform: none !important;
   margin-left: 4px !important;
 }
 
-.tab-close:hover { color: #c0392b !important; }
+.tab-close:hover { color: #888888 !important; }
 
 /* ── Action Stamps ───────────────────────────────────────── */
 .action-stamps {
@@ -739,7 +739,7 @@ const setCurrentTabAsDefault = async () => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   color: var(--muted);
@@ -764,8 +764,8 @@ const setCurrentTabAsDefault = async () => {
 .stamp--blue { color: #4a7fa5; }
 .stamp--blue:hover { color: #6aa5cc; border-color: var(--blue); }
 
-.stamp--danger { color: #7a2020; }
-.stamp--danger:hover { color: #c0392b; border-color: #7a2020; }
+.stamp--danger { color: #888888; }
+.stamp--danger:hover { color: #F5F5F5; border-color: #666666; }
 
 .stamp--icon { padding: 0.35rem; }
 
@@ -776,15 +776,15 @@ const setCurrentTabAsDefault = async () => {
 
 :deep(.noir-editor-window) { background: var(--bg) !important; }
 
-/* Override v-md-editor to noir theme */
+/* Override v-md-editor to light theme */
 :deep(.v-md-editor) {
-  background: #111009 !important;
+  background: #FAFAFA !important;
   border: none !important;
   border-radius: 0 !important;
 }
 
 :deep(.v-md-editor__toolbar) {
-  background: #0f0d0b !important;
+  background: #F0F0F0 !important;
   border-bottom: 1px solid var(--border) !important;
 }
 
@@ -794,42 +794,42 @@ const setCurrentTabAsDefault = async () => {
 
 :deep(.v-md-editor__toolbar-item:hover) {
   color: var(--text) !important;
-  background: rgba(255,255,255,0.04) !important;
+  background: rgba(0,0,0,0.04) !important;
 }
 
 :deep(.v-md-editor__editor-wrapper) {
-  background: #111009 !important;
+  background: #FAFAFA !important;
 }
 
 :deep(.codemirror-wrapper) {
-  background: #111009 !important;
+  background: #FAFAFA !important;
 }
 
 :deep(.CodeMirror) {
-  background: #111009 !important;
-  color: #c8b99a !important;
-  font-family: 'Special Elite', 'Courier New', monospace !important;
+  background: #FAFAFA !important;
+  color: #121212 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
   font-size: 14px !important;
   line-height: 1.8 !important;
 }
 
 :deep(.CodeMirror-gutters) {
-  background: #0d0b09 !important;
+  background: #F0F0F0 !important;
   border-right: 1px solid var(--border) !important;
 }
 
-:deep(.CodeMirror-linenumber) { color: var(--border) !important; }
+:deep(.CodeMirror-linenumber) { color: var(--muted) !important; }
 
 :deep(.v-md-editor__preview-wrapper) {
-  background: #13110e !important;
+  background: #F5F5F5 !important;
   border-left: 1px solid var(--border) !important;
 }
 
 /* ── Dialogs ─────────────────────────────────────────────── */
 .noir-dialog {
-  background: #0f0d0b;
-  border: 1px solid var(--border);
-  box-shadow: 6px 6px 0 var(--ink), 12px 12px 0 rgba(0,0,0,0.3);
+  background: #F0F0F0;
+  border: 1.5px solid var(--border);
+  box-shadow: 6px 6px 0 #AAAAAA;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -847,7 +847,7 @@ const setCurrentTabAsDefault = async () => {
 }
 
 .dialog-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1rem;
   font-weight: 700;
   color: var(--text);
@@ -911,7 +911,7 @@ const setCurrentTabAsDefault = async () => {
 }
 
 .radio-text {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85rem;
   color: var(--text);
   letter-spacing: 0.08em;
@@ -934,7 +934,7 @@ const setCurrentTabAsDefault = async () => {
 :deep(.noir-textarea .v-field) {
   background: var(--ink) !important;
   border-radius: 0 !important;
-  font-family: 'Special Elite', cursive !important;
+  font-family: 'IBM Plex Mono', monospace !important;
 }
 
 :deep(.noir-textarea .v-field__outline) { color: var(--border) !important; }
@@ -943,10 +943,10 @@ const setCurrentTabAsDefault = async () => {
 
 /* Noir menu */
 .noir-menu {
-  background: #0f0d0b;
-  border: 1px solid var(--border);
+  background: #F0F0F0;
+  border: 1.5px solid var(--border);
   min-width: 160px;
-  box-shadow: 4px 4px 0 var(--ink);
+  box-shadow: 4px 4px 0 #AAAAAA;
 }
 
 .noir-menu-item {
@@ -957,7 +957,7 @@ const setCurrentTabAsDefault = async () => {
   border: none;
   padding: 0.65rem 1rem;
   text-align: left;
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.78rem;
   letter-spacing: 0.1em;
   color: var(--muted);
@@ -967,13 +967,13 @@ const setCurrentTabAsDefault = async () => {
 }
 
 .noir-menu-item:last-child { border-bottom: none; }
-.noir-menu-item:hover:not(:disabled) { color: var(--text); background: rgba(255,255,255,0.03); }
+.noir-menu-item:hover:not(:disabled) { color: var(--text); background: rgba(0,0,0,0.04); }
 .noir-menu-item:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* Noir preview */
 :deep(.noir-preview) {
-  background: #13110e !important;
+  background: #F5F5F5 !important;
   color: var(--text) !important;
-  font-family: 'IM Fell English', serif !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
 }
 </style>

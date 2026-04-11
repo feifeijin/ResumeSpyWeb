@@ -90,15 +90,15 @@ onMounted(async () => {
 
 <style scoped>
 .noir-auth {
-  --bg:       #0c0a08;
-  --surface:  #161210;
-  --border:   #2e2620;
-  --text:     #e2d5bc;
-  --muted:    #6a5f52;
-  --gold:     #c49a38;
-  --gold-dim: #7a5f22;
-  --red:      #7a1a1a;
-  --ink:      #090807;
+  --bg:       #FAFAFA;
+  --surface:  #F0F0F0;
+  --border:   #D4D4D4;
+  --text:     #121212;
+  --muted:    #666666;
+  --gold:     #121212;
+  --gold-dim: #888888;
+  --red:      #8b2020;
+  --ink:      #FFFFFF;
 
   position: relative;
   min-height: 100vh;
@@ -107,7 +107,7 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .film-grain {
@@ -126,10 +126,10 @@ onMounted(async () => {
   width: 100%;
   max-width: 400px;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   padding: 3.5rem 2.5rem;
   text-align: center;
-  box-shadow: 4px 4px 0 #090807, 8px 8px 0 rgba(0,0,0,0.3);
+  box-shadow: 6px 6px 0 #AAAAAA;
 }
 
 .auth-card::before {
@@ -163,7 +163,7 @@ onMounted(async () => {
 .stamp-ring--red  { border-color: var(--red); }
 
 .stamp-glyph {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.8rem;
   color: var(--gold);
 }
@@ -194,7 +194,7 @@ onMounted(async () => {
 }
 
 .state-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--text);
@@ -211,29 +211,34 @@ onMounted(async () => {
 }
 
 .btn-ink {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85rem;
   letter-spacing: 0.18em;
-  color: var(--ink);
-  background: var(--gold);
-  border: none;
+  color: #F5F5F5;
+  background: #121212;
+  border: 1.5px solid #121212;
   padding: 0.8rem 2rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
-  transition: background 0.3s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
   margin-top: 0.25rem;
+  box-shadow: 3px 3px 0 #AAAAAA;
 }
 
-.btn-ink:hover:not(:disabled) { background: #d4a940; }
+.btn-ink:hover:not(:disabled) {
+  background: #2B2B2B;
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 #AAAAAA;
+}
 .btn-ink:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-ghost {
-  font-family: 'Special Elite', cursive;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85rem;
   letter-spacing: 0.18em;
   color: var(--muted);
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   padding: 0.8rem 2rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
@@ -242,7 +247,7 @@ onMounted(async () => {
 }
 
 .btn-ghost:hover {
-  border-color: var(--gold-dim);
+  border-color: #666666;
   color: var(--text);
 }
 </style>

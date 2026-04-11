@@ -23,8 +23,8 @@
 .noir-footer {
   position: relative;
   z-index: 10;
-  background: #090807;
-  border-top: 1px solid #2e2620;
+  background: #F5F5F5;
+  border-top: 1px solid #D4D4D4;
   padding: 1.25rem 2rem;
 }
 
@@ -40,27 +40,27 @@
 
 .footer-left,
 .footer-right {
-  font-family: 'Special Elite', cursive;
-  font-size: 0.75rem;
-  color: #3e352a;
-  letter-spacing: 0.18em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: #888888;
+  letter-spacing: 0.1em;
 }
 
-.gold { color: #7a5f22; }
+.gold { color: #888888; }
 
 .footer-coffee {
-  font-family: 'Special Elite', cursive;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  color: #6a5f52;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: #888888;
   text-decoration: none;
-  border: 1px solid #2e2620;
+  border: 1px solid #D4D4D4;
   padding: 0.4rem 1rem;
-  transition: color 0.3s, border-color 0.3s;
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .footer-coffee:hover {
-  color: #c49a38;
-  border-color: #7a5f22;
+  color: #121212;
+  border-color: #888888;
 }
 </style>

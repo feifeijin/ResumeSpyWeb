@@ -50,7 +50,7 @@ const steps = [
   position: relative;
   z-index: 10;
   padding: 6rem 2rem;
-  background: linear-gradient(to bottom, transparent, rgba(196, 154, 56, 0.02), transparent);
+  background: transparent;
 }
 
 .how-inner {
@@ -60,19 +60,19 @@ const steps = [
 }
 
 .section-overline {
-  font-family: 'Special Elite', cursive;
-  font-size: 0.78rem;
-  color: #7a5f22;
-  letter-spacing: 0.28em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: #888888;
+  letter-spacing: 0.2em;
   margin-bottom: 1rem;
 }
 
 .section-title {
-  font-family: 'Cinzel', serif;
-  font-size: 1.6rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #e2d5bc;
-  letter-spacing: 0.2em;
+  color: #121212;
+  letter-spacing: 0.05em;
   margin-bottom: 4rem;
 }
 
@@ -89,14 +89,14 @@ const steps = [
   position: relative;
   padding: 2rem 2rem 2rem;
   text-align: center;
-  border: 1px solid #2e2620;
-  background: #161210;
+  border: 1.5px solid #D4D4D4;
+  background: #F0F0F0;
   margin: 0 -1px -1px 0;
-  transition: background 0.3s;
+  transition: background 0.2s;
 }
 
 .step:hover {
-  background: #1c1814;
+  background: #E8E8E8;
 }
 
 /* Horizontal connector line between steps on desktop */
@@ -105,34 +105,33 @@ const steps = [
 }
 
 .step-num {
-  font-family: 'Cinzel', serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.65rem;
-  color: #7a5f22;
-  letter-spacing: 0.35em;
+  color: #888888;
+  letter-spacing: 0.3em;
   margin-bottom: 1rem;
 }
 
 .step-icon {
   font-size: 1.6rem;
-  color: #c49a38;
+  color: #121212;
   margin-bottom: 1.25rem;
   display: block;
 }
 
 .step-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 0.95rem;
-  font-weight: 700;
-  color: #e2d5bc;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: #121212;
+  letter-spacing: 0.03em;
   margin: 0 0 0.85rem;
 }
 
 .step-desc {
-  font-family: 'IM Fell English', serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 0.88rem;
-  font-style: italic;
-  color: #6a5f52;
+  color: #666666;
   line-height: 1.75;
   margin: 0;
 }
@@ -144,22 +143,24 @@ const steps = [
 }
 
 .btn-ink {
-  font-family: 'Special Elite', cursive;
-  font-size: 0.9rem;
-  letter-spacing: 0.18em;
-  color: #090807;
-  background: #c49a38;
-  border: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  color: #F5F5F5;
+  background: #121212;
+  border: 1.5px solid #121212;
   padding: 0.85rem 2.5rem;
   cursor: pointer;
   clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
   text-decoration: none;
   display: inline-block;
+  box-shadow: 3px 3px 0 #AAAAAA;
 }
 
 .btn-ink:hover {
-  background: #d4a940;
-  box-shadow: 0 0 24px rgba(196, 154, 56, 0.4);
+  background: #2B2B2B;
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 #AAAAAA;
 }
 </style>
