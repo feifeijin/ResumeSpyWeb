@@ -149,5 +149,127 @@
     "japanese": "日语",
     "chinese": "中文",
     "other": "其他"
+  },
+  "home": {
+    "overline": "— 档案编号 001 —",
+    "title": "RESUMESPY",
+    "tagline": "你的档案。你的故事。你的世界。",
+    "description": "为现代专业人士打造的工作室 — 版本控制简历，AI优化每一个机会，用你的真实笔迹撰写。",
+    "cta": "浏览情报报告",
+    "subtitle": "不要让你的简历过时",
+    "features": {
+      "versionControl": "版本控制",
+      "versionControlDesc": "每一份草稿都保留。每一个版本都可恢复。你的简历不断进化 — 没有什么会丢失。",
+      "aiTailoring": "AI优化",
+      "aiTailoringDesc": "粘贴职位描述。看你的故事重新塑造 — 精准、有意、属于你。",
+      "manyTongues": "多种语言",
+      "manyTonguesDesc": "英语。中文。日本語。用你的语言讲述你的故事 — 精心翻译，不是机器翻译。"
+    }
+  },
+  "authMagic": {
+    "processing": "验证凭据",
+    "success": "访问已授予",
+    "error": "访问被拒绝",
+    "processingDesc": "正在验证你的凭据...",
+    "successDesc": "欢迎回来！正在为你跳转。",
+    "errorDesc": "该链接无效或已过期。请申请新的链接。",
+    "continue": "继续",
+    "tryAgain": "重试"
+  },
+  "footer": {
+    "copyright": "© {year}",
+    "buyMeCoffee": "☕ 给我买杯咖啡",
+    "author": "作者：Fei-Fei Jin",
+    "resumeSpy": "RESUMESPY"
+  },
+  "components": {
+    "guestBanner": {
+      "title": "欢迎来到 ResumeSpy",
+      "message": "登录以保存你的简历并解锁所有功能。",
+      "cta": "登录",
+      "close": "关闭"
+    },
+    "guide": {
+      "title": "简历指南",
+      "subtitle": "学习如何使用 ResumeSpy",
+      "step1Title": "创建",
+      "step1Desc": "从空白画布开始或从现有简历导入",
+      "step2Title": "编辑",
+      "step2Desc": "使用我们的富文本编辑器打造你的故事",
+      "step3Title": "优化",
+      "step3Desc": "用 AI 针对每个机会进行优化",
+      "step4Title": "导出",
+      "step4Desc": "下载为 PDF 用于任何申请"
+    },
+    "knowledgeBase": {
+      "title": "知识库",
+      "search": "搜索帮助文章...",
+      "noResults": "未找到结果"
+    },
+    "loading": {
+      "processing": "处理中...",
+      "pleaseWait": "这可能需要一些时间",
+      "cancel": "取消"
+    }
+  },
+  "createView": {
+    "tooltips": {
+      "addLanguage": "添加语言",
+      "sync": "同步",
+      "preview": "预览",
+      "tailorForJD": "AI优化"
+    }
+  },
+  "errors": {
+    "network": "网络连接错误。请检查你的网络连接。",
+    "server": "服务器错误。请稍后再试。",
+    "unauthorized": "未授权。请重新登录。",
+    "notFound": "资源未找到。",
+    "validation": "请检查你的输入并重试。",
+    "timeout": "请求超时。请重试。",
+    "generic": "发生错误。请重试。"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "email": "请输入有效的邮箱地址",
+    "minLength": "至少需要 {min} 个字符",
+    "maxLength": "不能超过 {max} 个字符",
+    "pattern": "格式无效",
+    "match": "字段不匹配",
+    "unique": "此值已被使用"
+  },
+  "placeholder": {
+    "email": "输入你的邮箱地址",
+    "jobDescription": "在此粘贴完整的职位描述...",
+    "resumeTitle": "我的简历",
+    "search": "搜索...",
+    "name": "全名",
+    "company": "公司名称",
+    "position": "职位"
+  },
+  "empty": {
+    "noResumes": "还没有简历。创建一个开始吧！",
+    "noResults": "未找到结果",
+    "noArticles": "没有可用的文章",
+    "noCached": "没有缓存的版本",
+    "tryAgain": "尝试不同的搜索条件",
+    "createFirst": "创建你的第一份简历"
+  },
+  "mySpyView": {
+    "empty": "还没有简历",
+    "emptyHint": "创建你的第一份简历来开始",
+    "actions": {
+      "view": "查看",
+      "edit": "编辑",
+      "duplicate": "复制",
+      "rename": "重命名",
+      "download": "下载",
+      "delete": "删除"
+    },
+    "stats": {
+      "versions": "版本",
+      "lastModified": "最后修改",
+      "created": "创建时间"
+    }
   }
 }

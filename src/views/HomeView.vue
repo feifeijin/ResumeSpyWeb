@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ResumeGuide from '@/components/ResumeGuide.vue'
 import KnowledgeBase from '@/components/KnowledgeBase.vue'
 
 const router = useRouter()
+const { t } = useI18n()
 
 function rainStyle(i: number) {
   const left = (i * 37 + 13) % 97
@@ -24,22 +26,22 @@ const features = [
   {
     num: 'I',
     icon: '◈',
-    title: 'Version Control',
-    desc: 'Every draft preserved. Every version recoverable. Your resume evolves — nothing is ever lost.',
+    title: t('home.features.versionControl'),
+    desc: t('home.features.versionControlDesc'),
     tilt: '-1.2deg',
   },
   {
     num: 'II',
     icon: '◆',
-    title: 'AI Tailoring',
-    desc: 'Paste a job description. Watch your story reshape itself — precise, intentional, yours.',
+    title: t('home.features.aiTailoring'),
+    desc: t('home.features.aiTailoringDesc'),
     tilt: '0.9deg',
   },
   {
     num: 'III',
     icon: '◇',
-    title: 'Many Tongues',
-    desc: 'English. 中文. 日本語. Your story told in every language — translated with care, not machinery.',
+    title: t('home.features.manyTongues'),
+    desc: t('home.features.manyTonguesDesc'),
     tilt: '-0.6deg',
   },
 ]
@@ -63,26 +65,24 @@ const features = [
     <!-- ── HERO ───────────────────────────────────────────── -->
     <section class="hero">
       <div class="hero-inner">
-        <p class="overline">— Case File No. 001 —</p>
+        <p class="overline">{{ $t('home.overline') }}</p>
 
         <h1 class="hero-title">
           RESUME<span class="title-gold">SPY</span>
         </h1>
 
-        <p class="tagline">Your dossier. Your story. Your world.</p>
+        <p class="tagline">{{ $t('home.tagline') }}</p>
 
         <p class="hero-desc">
-          An atelier for the modern professional —<br />
-          version-controlled resumes, AI-tailored to every role,<br />
-          written in the ink of who you are.
+          {{ $t('home.description') }}
         </p>
 
         <div class="hero-cta">
           <button class="btn-ink" @click="router.push('/create')">
-            Open Your Dossier
+            {{ $t('home.cta') }}
           </button>
           <button class="btn-ghost" @click="router.push('/auth')">
-            Sign In
+            {{ $t('navigation.login') }}
           </button>
         </div>
       </div>

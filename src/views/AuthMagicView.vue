@@ -10,7 +10,7 @@
             <span /><span /><span />
           </span>
         </div>
-        <h2 class="state-title">Verifying Credentials</h2>
+        <h2 class="state-title">{{ t('authMagic.processing') }}</h2>
         <p class="state-desc">{{ t('auth.magicProcessing') }}</p>
       </div>
 
@@ -19,10 +19,10 @@
         <div class="stamp-ring stamp-ring--gold">
           <span class="stamp-glyph">✓</span>
         </div>
-        <h2 class="state-title">Access Granted</h2>
+        <h2 class="state-title">{{ t('authMagic.success') }}</h2>
         <p class="state-desc">{{ t('auth.magicSuccess') }}</p>
         <button class="btn-ink" :disabled="isRedirecting" @click="goToDestination">
-          {{ isRedirecting ? 'Entering…' : t('auth.magicContinue') }}
+          {{ isRedirecting ? t('auth.magicContinue') : t('authMagic.continue') }}
         </button>
       </div>
 
@@ -31,7 +31,7 @@
         <div class="stamp-ring stamp-ring--red">
           <span class="stamp-glyph">✕</span>
         </div>
-        <h2 class="state-title">Access Denied</h2>
+        <h2 class="state-title">{{ t('authMagic.error') }}</h2>
         <p class="state-desc">{{ errorMessage }}</p>
         <button class="btn-ghost" @click="goToAuth">
           {{ t('auth.magicReturnToSignIn') }}

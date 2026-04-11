@@ -192,5 +192,127 @@
         "tags": ["Developers", "GitHub"]
       }
     ]
+  },
+  "home": {
+    "overline": "— Case File No. 001 —",
+    "title": "RESUMESPY",
+    "tagline": "Your dossier. Your story. Your world.",
+    "description": "An atelier for the modern professional — version-controlled resumes, AI-tailored to every role, written in the ink of who you are.",
+    "cta": "Explore the intelligence reports",
+    "subtitle": "Never let a resume become stale",
+    "features": {
+      "versionControl": "Version Control",
+      "versionControlDesc": "Every draft preserved. Every version recoverable. Your resume evolves — nothing is ever lost.",
+      "aiTailoring": "AI Tailoring",
+      "aiTailoringDesc": "Paste a job description. Watch your story reshape itself — precise, intentional, yours.",
+      "manyTongues": "Many Tongues",
+      "manyTonguesDesc": "English. 中文. 日本語. Your story told in every language — translated with care, not machinery."
+    }
+  },
+  "authMagic": {
+    "processing": "Verifying Credentials",
+    "success": "Access Granted",
+    "error": "Access Denied",
+    "processingDesc": "Authenticating your credentials...",
+    "successDesc": "Welcome back! Redirecting you now.",
+    "errorDesc": "The link is invalid or has expired. Please request a new one.",
+    "continue": "Continue",
+    "tryAgain": "Try Again"
+  },
+  "footer": {
+    "copyright": "© {year}",
+    "buyMeCoffee": "☕ Buy me a coffee",
+    "author": "By Fei-Fei Jin",
+    "resumeSpy": "RESUMESPY"
+  },
+  "components": {
+    "guestBanner": {
+      "title": "Welcome to ResumeSpy",
+      "message": "Sign in to save your resumes and unlock all features.",
+      "cta": "Sign In",
+      "close": "Dismiss"
+    },
+    "guide": {
+      "title": "Resume Guide",
+      "subtitle": "Learn how to use ResumeSpy",
+      "step1Title": "Create",
+      "step1Desc": "Start with a blank canvas or import from existing",
+      "step2Title": "Edit",
+      "step2Desc": "Craft your story with our rich editor",
+      "step3Title": "Tailor",
+      "step3Desc": "AI-optimize for each opportunity",
+      "step4Title": "Export",
+      "step4Desc": "Download as PDF for any application"
+    },
+    "knowledgeBase": {
+      "title": "Knowledge Base",
+      "search": "Search help articles...",
+      "noResults": "No results found"
+    },
+    "loading": {
+      "processing": "Processing...",
+      "pleaseWait": "This may take a moment",
+      "cancel": "Cancel"
+    }
+  },
+  "createView": {
+    "tooltips": {
+      "addLanguage": "Add Language",
+      "sync": "Sync",
+      "preview": "Preview",
+      "tailorForJD": "AI Tailor"
+    }
+  },
+  "errors": {
+    "network": "Network connection error. Please check your internet.",
+    "server": "Server error. Please try again later.",
+    "unauthorized": "Unauthorized. Please sign in again.",
+    "notFound": "Resource not found.",
+    "validation": "Please check your input and try again.",
+    "timeout": "Request timeout. Please try again.",
+    "generic": "An error occurred. Please try again."
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must not exceed {max} characters",
+    "pattern": "Invalid format",
+    "match": "Fields do not match",
+    "unique": "This value is already taken"
+  },
+  "placeholder": {
+    "email": "Enter your email address",
+    "jobDescription": "Paste the complete job description here...",
+    "resumeTitle": "My Resume",
+    "search": "Search...",
+    "name": "Full Name",
+    "company": "Company Name",
+    "position": "Job Title"
+  },
+  "empty": {
+    "noResumes": "No resumes yet. Create one to get started!",
+    "noResults": "No results found",
+    "noArticles": "No articles available",
+    "noCached": "No cached versions",
+    "tryAgain": "Try different search terms",
+    "createFirst": "Create your first resume"
+  },
+  "mySpyView": {
+    "empty": "No resumes yet",
+    "emptyHint": "Create your first resume to get started",
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "rename": "Rename",
+      "download": "Download",
+      "delete": "Delete"
+    },
+    "stats": {
+      "versions": "Versions",
+      "lastModified": "Last modified",
+      "created": "Created"
+    }
   }
 }

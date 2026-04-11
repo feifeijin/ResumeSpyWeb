@@ -2,7 +2,7 @@
   <footer class="noir-footer">
     <div class="footer-inner">
       <span class="footer-left">
-        RESUME<span class="gold">SPY</span> &nbsp;©&nbsp;{{ new Date().getFullYear() }}
+        {{ $t('footer.resumeSpy') }}&nbsp;<span class="gold">©</span>&nbsp;{{ new Date().getFullYear() }}
       </span>
 
       <a
@@ -11,10 +11,10 @@
         rel="noopener"
         class="footer-coffee"
       >
-        ☕ Buy me a coffee
+        {{ $t('footer.buyMeCoffee') }}
       </a>
 
-      <span class="footer-right">By Fei-Fei Jin</span>
+      <span class="footer-right">{{ $t('footer.author') }}</span>
     </div>
   </footer>
 </template>

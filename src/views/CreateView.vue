@@ -49,22 +49,22 @@
 
         <!-- Action stamps -->
         <div class="action-stamps">
-          <button class="stamp" @click="handleLanguageDialogOpen" title="Add Language">
+          <button class="stamp" @click="handleLanguageDialogOpen" :title="$t('createView.tooltips.addLanguage')">
             <v-icon size="14">mdi-file-account</v-icon>
             <span>{{ $t('createView.selectLanguage') }}</span>
           </button>
 
-          <button class="stamp" @click="openSyncDialog" title="Sync">
+          <button class="stamp" @click="openSyncDialog" :title="$t('createView.tooltips.sync')">
             <v-icon size="14">mdi-translate</v-icon>
             <span>{{ $t('common.sync') }}</span>
           </button>
 
-          <button class="stamp stamp--blue" @click="openPreview" title="Preview">
+          <button class="stamp stamp--blue" @click="openPreview" :title="$t('createView.tooltips.preview')">
             <v-icon size="14">mdi-eye</v-icon>
             <span>{{ $t('createView.preview') }}</span>
           </button>
 
-          <button class="stamp stamp--gold" @click="openTailorDialog" title="AI Tailor">
+          <button class="stamp stamp--gold" @click="openTailorDialog" :title="$t('createView.tooltips.tailorForJD')">
             <v-icon size="14">mdi-magic-staff</v-icon>
             <span>{{ $t('createView.tailorForJD') }}</span>
           </button>
