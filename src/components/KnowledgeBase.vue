@@ -1,9 +1,9 @@
 <template>
   <section class="reading-room">
     <div class="reading-inner">
-      <p class="section-overline">— The Reading Room —</p>
-      <h2 class="section-title">From the Archives</h2>
-      <p class="section-sub">Field notes on resume craft, career strategy, and the art of the application.</p>
+      <p class="section-overline">{{ $t('home.readingRoom.title') }}</p>
+      <h2 class="section-title">{{ $t('home.readingRoom.subtitle') }}</h2>
+      <p class="section-sub">{{ $t('home.readingRoom.description') }}</p>
 
       <div class="article-grid">
         <router-link

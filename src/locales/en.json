@@ -207,7 +207,32 @@
       "aiTailoringDesc": "Paste a job description. Watch your story reshape itself — precise, intentional, yours.",
       "manyTongues": "Many Tongues",
       "manyTonguesDesc": "English. 中文. 日本語. Your story told in every language — translated with care, not machinery."
-    }
+    },
+    "process": {
+      "title": "— The Process —",
+      "subtitle": "How It Works",
+      "step1Title": "Write in Markdown",
+      "step1Desc": "Compose your resume in plain Markdown. Clean, portable, version-controlled. Your words — no templates forcing your hand.",
+      "step2Title": "AI Tailors to the Role",
+      "step2Desc": "Paste a job description. The AI rewrites your dossier to match the role — every fact preserved, every keyword sharpened.",
+      "step3Title": "Export Your Dossier",
+      "step3Desc": "Download a polished PDF. Share in any language. EN, 中文, 日本語 — your story told wherever the opportunity leads.",
+      "cta": "Begin Your Dossier"
+    },
+    "readingRoom": {
+      "title": "— The Reading Room —",
+      "subtitle": "From the Archives",
+      "description": "Field notes on resume craft, career strategy, and the art of the application."
+    },
+    "manifesto": {
+      "label": "— From the desk of the creator —",
+      "quote": "This is not a product. It is a stage. A place where your story takes form — not in templates and checkboxes, but in craft, intention, and ink.",
+      "author": "— Fei-Fei Jin",
+      "note": "Open source · Built for love · Offered freely",
+      "starGitHub": "★  Star on GitHub",
+      "buyCoffee": "☕  Buy me a coffee"
+    },
+    "sectionHeading": "What Lies Within"
   },
   "authMagic": {
     "processing": "Verifying Credentials",

@@ -1,8 +1,8 @@
 <template>
   <section class="how-it-works">
     <div class="how-inner">
-      <p class="section-overline">— The Process —</p>
-      <h2 class="section-title">How It Works</h2>
+      <p class="section-overline">{{ $t('home.process.title') }}</p>
+      <h2 class="section-title">{{ $t('home.process.subtitle') }}</h2>
 
       <div class="steps">
         <div v-for="(step, i) in steps" :key="i" class="step">
@@ -10,37 +10,48 @@
 
           <div class="step-num">{{ step.num }}</div>
           <div class="step-icon">{{ step.icon }}</div>
-          <h3 class="step-title">{{ step.title }}</h3>
-          <p class="step-desc">{{ step.desc }}</p>
+          <h3 class="step-title">{{ $t(step.title) }}</h3>
+          <p class="step-desc">{{ $t(step.desc) }}</p>
         </div>
       </div>
 
       <div class="how-cta">
-        <router-link to="/create" class="btn-ink">Begin Your Dossier</router-link>
+        <router-link to="/create" class="btn-ink">{{ $t('home.process.cta') }}</router-link>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-const steps = [
+import { useI18n } from 'vue-i18n'
+
+useI18n()
+
+interface Step {
+  num: string
+  icon: string
+  title: string
+  desc: string
+}
+
+const steps: Step[] = [
   {
     num: '01',
     icon: '✒',
-    title: 'Write in Markdown',
-    desc: 'Compose your resume in plain Markdown. Clean, portable, version-controlled. Your words — no templates forcing your hand.',
+    title: 'home.process.step1Title',
+    desc: 'home.process.step1Desc',
   },
   {
     num: '02',
     icon: '◆',
-    title: 'AI Tailors to the Role',
-    desc: 'Paste a job description. The AI rewrites your dossier to match the role — every fact preserved, every keyword sharpened.',
+    title: 'home.process.step2Title',
+    desc: 'home.process.step2Desc',
   },
   {
     num: '03',
     icon: '◈',
-    title: 'Export Your Dossier',
-    desc: 'Download a polished PDF. Share in any language. EN, 中文, 日本語 — your story told wherever the opportunity leads.',
+    title: 'home.process.step3Title',
+    desc: 'home.process.step3Desc',
   },
 ]
 </script>

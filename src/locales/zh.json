@@ -164,7 +164,32 @@
       "aiTailoringDesc": "粘贴职位描述。看你的故事重新塑造 — 精准、有意、属于你。",
       "manyTongues": "多种语言",
       "manyTonguesDesc": "英语。中文。日本語。用你的语言讲述你的故事 — 精心翻译，不是机器翻译。"
-    }
+    },
+    "process": {
+      "title": "— 流程 —",
+      "subtitle": "它是如何运作的",
+      "step1Title": "用 Markdown 编写",
+      "step1Desc": "用纯 Markdown 撰写你的简历。简洁、便携、版本控制。你的话语 — 没有模板强制你的手。",
+      "step2Title": "AI 针对职位优化",
+      "step2Desc": "粘贴职位描述。AI 将重写你的档案以匹配该职位 — 每个事实都保留，每个关键词都加强。",
+      "step3Title": "导出你的档案",
+      "step3Desc": "下载精美的 PDF。用任何语言分享。英语、中文、日本語— 你的故事在任何地方讲述。",
+      "cta": "开始你的档案"
+    },
+    "readingRoom": {
+      "title": "— 阅览室 —",
+      "subtitle": "从档案中",
+      "description": "关于简历编写、职业策略和申请艺术的现场笔记。"
+    },
+    "manifesto": {
+      "label": "— 来自创作者的办公桌 —",
+      "quote": "这不是一个产品。这是一个舞台。一个你的故事形成的地方 — 不是在模板和复选框中，而是在手工、意图和墨水中。",
+      "author": "— Fei-Fei Jin",
+      "note": "开源 · 出于热爱而构建 · 免费提供",
+      "starGitHub": "★  在 GitHub 上 Star",
+      "buyCoffee": "☕  给我买杯咖啡"
+    },
+    "sectionHeading": "内部内容"
   },
   "authMagic": {
     "processing": "验证凭据",

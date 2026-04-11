@@ -100,7 +100,7 @@ const features = [
 
     <!-- ── FEATURES ───────────────────────────────────────── -->
     <section class="features">
-      <h2 class="section-heading">What Lies Within</h2>
+      <h2 class="section-heading">{{ $t('home.sectionHeading') }}</h2>
 
       <div class="card-grid">
         <div
@@ -146,17 +146,14 @@ const features = [
 
     <!-- ── MANIFESTO ──────────────────────────────────────── -->
     <section class="manifesto">
-      <p class="manifesto-label">— From the desk of the creator —</p>
+      <p class="manifesto-label">{{ $t('home.manifesto.label') }}</p>
 
       <blockquote class="manifesto-quote">
-        "This is not a product. It is a stage.<br />
-        A place where your story takes form —<br />
-        not in templates and checkboxes,<br />
-        but in craft, intention, and ink."
+        "{{ $t('home.manifesto.quote') }}"
       </blockquote>
 
-      <p class="manifesto-sig">— Fei-Fei Jin</p>
-      <p class="manifesto-note">Open source · Built for love · Offered freely</p>
+      <p class="manifesto-sig">{{ $t('home.manifesto.author') }}</p>
+      <p class="manifesto-note">{{ $t('home.manifesto.note') }}</p>
 
       <div class="manifesto-actions">
         <a
@@ -165,7 +162,7 @@ const features = [
           rel="noopener"
           class="btn-ghost"
         >
-          ★ &nbsp;Star on GitHub
+          {{ $t('home.manifesto.starGitHub') }}
         </a>
         <a
           href="https://www.buymeacoffee.com/feifeijin"
@@ -173,7 +170,7 @@ const features = [
           rel="noopener"
           class="btn-coffee"
         >
-          ☕ &nbsp;Buy me a coffee
+          {{ $t('home.manifesto.buyCoffee') }}
         </a>
       </div>
     </section>
