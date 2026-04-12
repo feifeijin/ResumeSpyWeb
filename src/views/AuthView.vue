@@ -35,9 +35,10 @@
         <button
           type="submit"
           class="btn-ink"
-          :disabled="!magicLinkFormValid || isProcessing"
+          :disabled="!magicLinkFormValid || isProcessing || cooldown > 0"
         >
           <span v-if="isProcessing">{{ t('auth.sending') }}</span>
+          <span v-else-if="cooldown > 0">{{ t('auth.resendLink') }} ({{ cooldown }}s)</span>
           <span v-else>{{ t(linkSent ? 'auth.resendLink' : 'auth.sendLink') }}</span>
         </button>
       </v-form>
@@ -48,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onUnmounted, reactive, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -67,6 +68,24 @@ const magicLinkFormValid = ref(false)
 const linkSent = ref(false)
 
 const magicLinkForm = reactive({ email: '' })
+
+const cooldown = ref(0)
+let cooldownTimer: ReturnType<typeof setInterval> | null = null
+
+const startCooldown = () => {
+  cooldown.value = 60
+  cooldownTimer = setInterval(() => {
+    cooldown.value--
+    if (cooldown.value <= 0) {
+      clearInterval(cooldownTimer!)
+      cooldownTimer = null
+    }
+  }, 1000)
+}
+
+onUnmounted(() => {
+  if (cooldownTimer) clearInterval(cooldownTimer)
+})
 
 const rules = {
   required: (value: string) =>
@@ -89,6 +108,7 @@ const handleRequest = async () => {
   try {
     await authStore.sendMagicLink(magicLinkForm.email.trim())
     toast.success(t('auth.linkRequestSuccess'))
+    startCooldown()
   } catch (error) {
     linkSent.value = false
     const msg = error instanceof Error ? error.message : String(error)
@@ -131,12 +151,13 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
   --ink:      #FFFFFF;
 
   position: relative;
-  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1.5rem;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
@@ -157,7 +178,7 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
   max-width: 440px;
   background: var(--surface);
   border: 1.5px solid var(--border);
-  padding: 3rem 2.5rem;
+  padding: 2.25rem 2.5rem;
   text-align: center;
   box-shadow: 6px 6px 0 #AAAAAA;
 }
@@ -264,6 +285,7 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
   font-style: italic;
   font-size: 0.85rem;
   color: #F5F5F5;
+  background: #121212;
   border: 1px solid #2B2B2B;
   padding: 0.75rem 1rem;
   display: flex;
