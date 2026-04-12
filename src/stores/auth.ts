@@ -51,8 +51,8 @@ export const useAuthStore = defineStore('auth', () => {
 
       setSession(data.session.access_token, data.session.user.id, data.session.user.email ?? '')
 
-      // Sync with backend
-      await syncWithBackend()
+      // Sync with backend in the background — don't block navigation
+      syncWithBackend()
     } finally {
       loading.value = false
     }
@@ -106,7 +106,7 @@ export const useAuthStore = defineStore('auth', () => {
     const { data } = await supabase.auth.getSession()
     if (data.session) {
       setSession(data.session.access_token, data.session.user.id, data.session.user.email ?? '')
-      await syncWithBackend()
+      syncWithBackend()
     }
 
     // Listen for future auth state changes (token refresh, sign-out, etc.)

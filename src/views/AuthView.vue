@@ -85,11 +85,12 @@ const handleRequest = async () => {
   const validation = await magicLinkFormRef.value?.validate?.()
   if (validation?.valid === false) return
 
+  linkSent.value = true
   try {
     await authStore.sendMagicLink(magicLinkForm.email.trim())
     toast.success(t('auth.linkRequestSuccess'))
-    linkSent.value = true
   } catch (error) {
+    linkSent.value = false
     const msg = error instanceof Error ? error.message : String(error)
     if (msg.includes('rate_limit') || msg.includes('rate limit')) {
       toast.error(t('auth.rateLimitError'))
