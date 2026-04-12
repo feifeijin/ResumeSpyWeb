@@ -36,11 +36,21 @@ export const localeDisplayNames: Record<string, string> = Object.fromEntries(
 
 /**
  * Language detection priority:
- *   1. Stored user preference (localStorage)
- *   2. Browser language (navigator.language)
- *   3. Default → 'en'
+ *   1. ?lang= URL query parameter (set by sitemap alternate links & share links)
+ *   2. Stored user preference (localStorage)
+ *   3. Browser language (navigator.language)
+ *   4. Default → 'en'
+ *
+ * When a ?lang= param is present it is also written to localStorage so the
+ * user's preference is remembered on subsequent visits.
  */
 function detectLocale(): string {
+  const urlLang = new URLSearchParams(window.location.search).get('lang')
+  if (urlLang && supportedLocales.includes(urlLang)) {
+    localStorage.setItem('app-language', urlLang)
+    document.documentElement.lang = urlLang
+    return urlLang
+  }
   const stored = localStorage.getItem('app-language')
   if (stored && supportedLocales.includes(stored)) return stored
   const browser = navigator.language.split('-')[0]

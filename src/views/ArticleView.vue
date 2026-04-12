@@ -120,31 +120,49 @@ const articleMeta = computed<ArticleMeta | undefined>(() =>
 
 const articleContent = computed(() => getArticleBySlug(slug.value))
 
+// ── Inject heading IDs and build TOC in one pass ──────────────────────────
+interface TocItem { id: string; text: string; level: number }
+
+interface ProcessedContent {
+  html: string
+  toc: TocItem[]
+  wordCount: number
+}
+
+function processContent(raw: string): ProcessedContent {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(raw, 'text/html')
+  const headings = Array.from(doc.querySelectorAll('h2, h3'))
+  const toc: TocItem[] = []
+
+  headings.forEach((h, i) => {
+    const id = `section-${i}`
+    h.id = id
+    toc.push({ id, text: h.textContent ?? '', level: parseInt(h.tagName[1]) })
+  })
+
+  const wordCount = doc.body.textContent?.trim().split(/\s+/).length ?? 0
+  return { html: doc.body.innerHTML, toc, wordCount }
+}
+
+const processed = computed<ProcessedContent | null>(() => {
+  const raw = articleContent.value
+  if (!raw) return null
+  return processContent(raw)
+})
+
 const article = computed<ArticleData | null>(() => {
   const meta = articleMeta.value
   if (!meta) return { notFound: true }
-  const content = articleContent.value
-  if (!content) return { notFound: true }
-  return { ...meta, content, notFound: false }
+  const p = processed.value
+  if (!p) return { notFound: true }
+  return { ...meta, content: p.html, notFound: false }
 })
 
-// ── Table of contents (auto-generated for long articles) ──────────────────
-interface TocItem { id: string; text: string; level: number }
-
 const toc = computed<TocItem[]>(() => {
-  if (article.value === null || (article.value as ArticleNotFound).notFound) return []
-  const a = article.value as ArticleWithContent
-  const wordCount = a.content.replace(/<[^>]+>/g, ' ').split(/\s+/).length
-  if (wordCount < 800) return []
-
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(a.content, 'text/html')
-  const headings = Array.from(doc.querySelectorAll('h2, h3'))
-  return headings.map((h, i) => ({
-    id: `section-${i}`,
-    text: h.textContent ?? '',
-    level: parseInt(h.tagName[1]),
-  }))
+  const p = processed.value
+  if (!p || p.wordCount < 800) return []
+  return p.toc
 })
 
 // ── SEO: dynamic <title>, <meta description>, Schema.org JSON-LD ──────────

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /myspy
+Disallow: /create
+
+Sitemap: https://resumespy.com/sitemap.xml

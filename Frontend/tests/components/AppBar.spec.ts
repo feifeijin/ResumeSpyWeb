@@ -55,6 +55,18 @@ vi.mock('@/composables/useToast', () => ({
 
 vi.mock('@/i18n', () => ({
   changeLanguage: (code: string) => setLanguageMock(code),
+  supportedLocales: ['en', 'zh', 'ja'],
+  localeDisplayNames: { en: 'English', zh: '中文', ja: '日本語' },
+  i18n: { global: { locale: 'en' } },
+  default: { global: { locale: 'en' } },
+}))
+
+vi.mock('@/composables/useLanguageSwitch', () => ({
+  useLanguageSwitch: () => ({
+    changeLanguage: (code: string) => setLanguageMock(code),
+    supportedLocales: ['en', 'zh', 'ja'],
+    localeDisplayNames: { en: 'English', zh: '中文', ja: '日本語' },
+  }),
 }))
 
 describe('AppBar', () => {

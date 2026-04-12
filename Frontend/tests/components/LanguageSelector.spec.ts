@@ -22,6 +22,18 @@ vi.mock('vue-i18n', () => ({
 
 vi.mock('@/i18n', () => ({
   changeLanguage: (code: string) => changeLanguageMock(code),
+  supportedLocales: ['en', 'zh', 'ja'],
+  localeDisplayNames: { en: 'English', zh: '中文', ja: '日本語' },
+  i18n: { global: { locale: 'en' } },
+  default: { global: { locale: 'en' } },
+}))
+
+vi.mock('@/composables/useLanguageSwitch', () => ({
+  useLanguageSwitch: () => ({
+    changeLanguage: (code: string) => changeLanguageMock(code),
+    supportedLocales: ['en', 'zh', 'ja'],
+    localeDisplayNames: { en: 'English', zh: '中文', ja: '日本語' },
+  }),
 }))
 
 describe('LanguageSelector', () => {

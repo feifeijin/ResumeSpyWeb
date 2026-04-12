@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { watch, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 import ResumeGuide from '@/components/ResumeGuide.vue'
 import KnowledgeBase from '@/components/KnowledgeBase.vue'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const { isAuthenticated } = storeToRefs(useAuthStore())
 
 function rainStyle(i: number) {
   const left = (i * 37 + 13) % 97
@@ -21,6 +25,32 @@ function rainStyle(i: number) {
     height: `${height}px`,
   }
 }
+
+// ── SEO: page title + meta description ────────────────────────────────────
+let injectedMeta: HTMLMetaElement | null = null
+
+function injectHomeSeo() {
+  document.title = 'ResumeSpy — Your Dossier. Your Story.'
+  injectedMeta?.remove()
+  injectedMeta = document.createElement('meta')
+  injectedMeta.setAttribute('name', 'description')
+  injectedMeta.setAttribute(
+    'content',
+    locale.value === 'zh'
+      ? '面向现代职场人的精品简历工坊。版本控制、AI 定制、多语言支持，让你的简历永不过时。'
+      : locale.value === 'ja'
+        ? 'モダンなプロフェッショナルのための職歴管理ツール。バージョン管理・AI調整・多言語対応で履歴書を常に最新に。'
+        : 'Craft, version, and tailor your resume with AI for every opportunity. Multilingual. Private. Yours.',
+  )
+  document.head.appendChild(injectedMeta)
+}
+
+watch(locale, injectHomeSeo, { immediate: true })
+
+onUnmounted(() => {
+  injectedMeta?.remove()
+  injectedMeta = null
+})
 
 const features = [
   {
@@ -81,8 +111,11 @@ const features = [
           <button class="btn-ink" @click="router.push('/create')">
             {{ $t('home.cta') }}
           </button>
-          <button class="btn-ghost" @click="router.push('/auth')">
+          <button v-if="!isAuthenticated" class="btn-ghost" @click="router.push('/auth')">
             {{ $t('navigation.login') }}
+          </button>
+          <button v-else class="btn-ghost" @click="router.push('/myspy')">
+            {{ $t('navigation.mySpy') }}
           </button>
         </div>
       </div>

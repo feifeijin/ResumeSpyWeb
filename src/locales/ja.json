@@ -109,7 +109,11 @@
     "validation": {
       "required": "この項目は必須です",
       "invalidEmail": "有効なメールアドレスを入力してください"
-    }
+    },
+    "overline": "— アーカイブへのアクセス —",
+    "heading": "サインイン",
+    "sending": "送信中…",
+    "noPassword": "パスワード不要。手間なし。リンクだけ。"
   },
   "createView": {
     "selectLanguage": "言語を選択",
@@ -137,6 +141,15 @@
     "setDefault": "デフォルトに設定",
     "setDefaultSuccess": "デフォルトバージョンとして設定されました。",
     "unsavedBeforeAction": "この機能を使用する前に履歴書を保存してください。",
+    "unsavedLeaveWarning": "未保存の変更があります。このまま移動しますか？",
+    "statusBar": {
+      "saving": "保存中...",
+      "saved": "保存済み",
+      "unsaved": "未保存の変更",
+      "words": "{count} 語",
+      "chars": "{count} 文字",
+      "shortcutHint": "⌘S で保存"
+    },
     "tooltips": {
       "addLanguage": "言語を追加",
       "sync": "同期",
@@ -257,7 +270,18 @@
       "title": "ResumeSpy へようこそ",
       "message": "サインインして履歴書を保存し、すべての機能を利用しましょう。",
       "cta": "サインイン",
-      "close": "閉じる"
+      "close": "閉じる",
+      "browsing": "ゲスト — {current}/{max} 件の案件ファイル",
+      "createAccount": "アカウントを作成",
+      "signInContinue": "サインインして続ける",
+      "upgradeTitle": "永久ファイルを開設する",
+      "upgradeDesc": "無料アカウントを作成して解放：",
+      "featureUnlimited": "無制限の案件ファイル",
+      "featureStorage": "安全な永続ストレージ",
+      "featureAi": "AI調整と翻訳",
+      "featurePdf": "PDFエクスポート",
+      "continueAsGuest": "ゲストとして続ける",
+      "signUpNow": "今すぐ登録"
     },
     "guide": {
       "title": "履歴書ガイド",
@@ -309,6 +333,14 @@
     "name": "氏名",
     "company": "会社名",
     "position": "職種"
+  },
+  "notFound": {
+    "label": "404",
+    "title": "404",
+    "subtitle": "案件終了 — ファイルが見つかりません",
+    "description": "お探しの書類は移動、削除、または存在しなかった可能性があります。アーカイブに戻ってもう一度お試しください。",
+    "goHome": "拠点に戻る",
+    "goMyspy": "MySpy を開く"
   },
   "empty": {
     "noResumes": "まだ履歴書がありません。作成して始めましょう！",

@@ -1,8 +1,7 @@
+import { ref } from 'vue'
 import { mount, shallowMount } from '@vue/test-utils'
 import KnowledgeBase from '../../../src/components/KnowledgeBase.vue'
 import ResumeGuide from '../../../src/components/ResumeGuide.vue'
-import ResumeTemplates from '../../../src/components/ResumeTemplates.vue'
-import WhatWeOffer from '../../../src/components/WhatWeOffer.vue'
 import AppFooter from '../../../src/components/app/AppFooter.vue'
 import IconCommunity from '../../../src/components/icons/IconCommunity.vue'
 import IconDocumentation from '../../../src/components/icons/IconDocumentation.vue'
@@ -11,42 +10,105 @@ import IconSupport from '../../../src/components/icons/IconSupport.vue'
 import IconTooling from '../../../src/components/icons/IconTooling.vue'
 import { commonVuetifyStubs } from '../helpers/vuetify-stubs'
 
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({
+    locale: ref('en'),
+    t: (key: string) => {
+      const map: Record<string, string> = {
+        'home.readingRoom.title': '— Reading Room —',
+        'home.readingRoom.subtitle': 'From the Archives',
+        'home.readingRoom.description': 'Field notes on resume writing.',
+        'articles.readMore': 'Read Archive',
+        'articles.minRead': 'min',
+        'home.process.title': '— Workflow —',
+        'home.process.subtitle': 'How It Works',
+        'home.process.step1Title': 'Write in Markdown',
+        'home.process.step1Desc': 'Write in plain Markdown.',
+        'home.process.step2Title': 'AI-Tailor for the Role',
+        'home.process.step2Desc': 'Paste job description.',
+        'home.process.step3Title': 'Export Your Dossier',
+        'home.process.step3Desc': 'Download a polished PDF.',
+        'home.process.cta': 'Start Building Your Dossier',
+      }
+      return map[key] ?? key
+    },
+  }),
+}))
+
+vi.mock('@/articles/articles', () => ({
+  getArticlesByLocale: () => [
+    {
+      slug: 'test-article',
+      title: 'Test Article',
+      excerpt: 'A test excerpt.',
+      tags: ['Test'],
+      author: 'ResumeSpy Editorial',
+      readTime: 5,
+    },
+  ],
+}))
+
+const tMock = (key: string) => {
+  const map: Record<string, string> = {
+    'home.readingRoom.title': '— Reading Room —',
+    'home.readingRoom.subtitle': 'From the Archives',
+    'home.readingRoom.description': 'Field notes on resume writing.',
+    'articles.readMore': 'Read Archive',
+    'articles.minRead': 'min',
+    'home.process.title': '— Workflow —',
+    'home.process.subtitle': 'How It Works',
+    'home.process.step1Title': 'Write in Markdown',
+    'home.process.step1Desc': 'Write in plain Markdown.',
+    'home.process.step2Title': 'AI-Tailor for the Role',
+    'home.process.step2Desc': 'Paste job description.',
+    'home.process.step3Title': 'Export Your Dossier',
+    'home.process.step3Desc': 'Download a polished PDF.',
+    'home.process.cta': 'Start Building Your Dossier',
+    'footer.resumeSpy': 'RESUMESPY',
+    'footer.buyMeCoffee': '☕ Buy me a coffee',
+    'footer.author': 'Made by Fei-Fei Jin',
+  }
+  return map[key] ?? key
+}
+
 describe('Static content components', () => {
   const factory = (component: object) =>
     shallowMount(component, {
       global: {
+        mocks: {
+          $t: tMock,
+        },
         stubs: {
           ...commonVuetifyStubs,
+          RouterLink: { template: '<a><slot /></a>' },
         },
       },
     })
 
-  it('renders the article section title in KnowledgeBase', () => {
+  it('renders the reading room section title in KnowledgeBase', () => {
     // Purpose: ensure the section headline that anchors the page remains visible.
     const wrapper = factory(KnowledgeBase)
-    expect(wrapper.text()).toContain('Articles')
+    expect(wrapper.text()).toContain('— Reading Room —')
   })
 
-  it('renders all guide bullet points in ResumeGuide', () => {
-    // Purpose: verify guide content count so accidental content loss is detected.
+  it('renders article cards in KnowledgeBase', () => {
+    // Purpose: verify article card list is populated from the articles data source.
+    const wrapper = factory(KnowledgeBase)
+    expect(wrapper.text()).toContain('Test Article')
+  })
+
+  it('renders the workflow section title in ResumeGuide', () => {
+    // Purpose: ensure the how-it-works heading renders correctly.
     const wrapper = factory(ResumeGuide)
-    expect(wrapper.text()).toContain('This section is to guide users to create Resumes.')
-    expect(wrapper.text()).toContain('Quias netus magni netsum eos qui ratione sequi')
+    expect(wrapper.text()).toContain('— Workflow —')
   })
 
-  it('renders three template cards in ResumeTemplates', () => {
-    // Purpose: protect the expected number of template cards from regressions.
-    const wrapper = factory(ResumeTemplates)
-    expect(wrapper.text()).toContain('Resume Templates')
-    expect(wrapper.findAll('img').length).toBeGreaterThanOrEqual(3)
-  })
-
-  it('renders all feature cards in WhatWeOffer', () => {
-    // Purpose: verify user-facing feature list is present and readable.
-    const wrapper = factory(WhatWeOffer)
-    expect(wrapper.text()).toContain('What We Do')
-    expect(wrapper.text()).toContain('Automatic Create Resumes')
-    expect(wrapper.text()).toContain('Life-Long Version Control')
+  it('renders three steps in ResumeGuide', () => {
+    // Purpose: protect the three-step workflow from accidental content loss.
+    const wrapper = factory(ResumeGuide)
+    expect(wrapper.text()).toContain('Write in Markdown')
+    expect(wrapper.text()).toContain('AI-Tailor for the Role')
+    expect(wrapper.text()).toContain('Export Your Dossier')
   })
 
   it('shows current year in AppFooter', () => {

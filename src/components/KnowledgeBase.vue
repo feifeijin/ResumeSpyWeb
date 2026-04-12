@@ -20,7 +20,7 @@
           <div class="card-meta">
             <span>{{ article.author }}</span>
             <span class="meta-dot">·</span>
-            <span>{{ article.readTime }} min</span>
+            <span>{{ article.readTime }} {{ t('articles.minRead') }}</span>
           </div>
           <span class="card-read">{{ t('articles.readMore') }} →</span>
         </router-link>

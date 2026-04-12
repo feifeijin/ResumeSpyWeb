@@ -3,8 +3,8 @@
     <div class="film-grain" aria-hidden="true" />
 
     <div class="auth-card">
-      <p class="auth-overline">— Access the Archives —</p>
-      <h1 class="auth-title">SIGN THE REGISTER</h1>
+      <p class="auth-overline">{{ t('auth.overline') }}</p>
+      <h1 class="auth-title">{{ t('auth.heading') }}</h1>
       <p class="auth-subtitle">{{ t('auth.subtitle') }}</p>
 
       <v-form
@@ -37,12 +37,12 @@
           class="btn-ink"
           :disabled="!magicLinkFormValid || isProcessing"
         >
-          <span v-if="isProcessing">Sending…</span>
+          <span v-if="isProcessing">{{ t('auth.sending') }}</span>
           <span v-else>{{ t(linkSent ? 'auth.resendLink' : 'auth.sendLink') }}</span>
         </button>
       </v-form>
 
-      <p class="auth-note">No password. No friction. Just a link.</p>
+      <p class="auth-note">{{ t('auth.noPassword') }}</p>
     </div>
   </div>
 </template>

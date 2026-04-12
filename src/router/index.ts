@@ -5,6 +5,7 @@ import CreateView from '../views/CreateView.vue'
 import AuthView from '../views/AuthView.vue'
 import AuthMagicView from '../views/AuthMagicView.vue'
 import ArticleView from '../views/ArticleView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -41,6 +42,11 @@ const router = createRouter({
       name: 'auth-magic',
       component: AuthMagicView,
       meta: { requiresGuest: true },
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFoundView,
     },
   ],
 })

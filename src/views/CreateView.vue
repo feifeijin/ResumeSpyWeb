@@ -107,6 +107,40 @@
       </v-tabs-window>
     </div>
 
+    <!-- ── Status Bar ────────────────────────────────────── -->
+    <div class="editor-statusbar">
+      <div class="status-left">
+        <span
+          class="status-indicator"
+          :class="{
+            'status-unsaved': saveStatus === 'unsaved',
+            'status-saving':  saveStatus === 'saving',
+            'status-saved':   saveStatus === 'saved',
+          }"
+        >
+          <template v-if="saveStatus === 'saving'">
+            <v-icon size="11" class="status-spin">mdi-loading</v-icon>
+            {{ $t('createView.statusBar.saving') }}
+          </template>
+          <template v-else-if="saveStatus === 'saved'">
+            <v-icon size="11">mdi-check</v-icon>
+            {{ $t('createView.statusBar.saved') }}
+          </template>
+          <template v-else-if="saveStatus === 'unsaved'">
+            <v-icon size="11">mdi-circle-small</v-icon>
+            {{ $t('createView.statusBar.unsaved') }}
+          </template>
+        </span>
+      </div>
+      <div class="status-right">
+        <span class="status-stat">{{ $t('createView.statusBar.words', { count: wordCount }) }}</span>
+        <span class="status-sep">·</span>
+        <span class="status-stat">{{ $t('createView.statusBar.chars', { count: charCount }) }}</span>
+        <span class="status-sep">·</span>
+        <span class="status-stat status-hint">{{ $t('createView.statusBar.shortcutHint') }}</span>
+      </div>
+    </div>
+
     <!-- ── Language Dialog ────────────────────────────────── -->
     <v-dialog v-model="isDialogActive" max-width="500px" persistent>
       <div class="noir-dialog">
@@ -269,8 +303,8 @@
 
 <script setup lang="ts">
 import CountryFlag from 'vue-country-flag-next'
-import { useRoute, useRouter } from 'vue-router'
-import { ref, onMounted, computed } from 'vue'
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
@@ -342,6 +376,62 @@ const jobDescription = ref('')
 
 const isOtherSelected = computed(() => dialog.value === 'OTHER')
 
+// ── Auto-save & status ────────────────────────────────────────
+type SaveStatus = 'idle' | 'unsaved' | 'saving' | 'saved'
+const saveStatus = ref<SaveStatus>('idle')
+const savedContent = ref<string[]>([])
+let autoSaveTimer: ReturnType<typeof setTimeout> | null = null
+let savedStatusTimer: ReturnType<typeof setTimeout> | null = null
+
+const wordCount = computed(() => {
+  const text = (editors.value[activeTab.value] || '').replace(/```[\s\S]*?```|`[^`]*`/g, '')
+  const words = text.replace(/[#*_[\]()\-+>]/g, ' ').trim()
+  return words ? words.split(/\s+/).filter(Boolean).length : 0
+})
+
+const charCount = computed(() => (editors.value[activeTab.value] || '').length)
+
+const hasUnsavedChanges = computed(() =>
+  editors.value.some((content, i) => content !== (savedContent.value[i] ?? ''))
+)
+
+const scheduleAutoSave = (index: number) => {
+  const detail = resumeDetails.value[index]
+  if (!detail?.id) return // don't auto-save brand-new unsaved resumes
+  saveStatus.value = 'unsaved'
+  if (autoSaveTimer) clearTimeout(autoSaveTimer)
+  autoSaveTimer = setTimeout(() => onSave(index), 2000)
+}
+
+watch(() => editors.value[activeTab.value], (newVal, oldVal) => {
+  if (newVal === undefined || newVal === oldVal) return
+  const saved = savedContent.value[activeTab.value] ?? ''
+  if (newVal === saved) {
+    saveStatus.value = 'saved'
+    return
+  }
+  scheduleAutoSave(activeTab.value)
+})
+
+// Keyboard shortcut Cmd+S / Ctrl+S
+const handleKeyboardSave = (e: KeyboardEvent) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+    e.preventDefault()
+    if (autoSaveTimer) { clearTimeout(autoSaveTimer); autoSaveTimer = null }
+    onSave(activeTab.value)
+  }
+}
+
+// Block navigation when unsaved
+onBeforeRouteLeave((_to, _from, next) => {
+  if (hasUnsavedChanges.value) {
+    const confirmed = window.confirm(t('createView.unsavedLeaveWarning'))
+    if (!confirmed) { next(false); return }
+  }
+  if (autoSaveTimer) clearTimeout(autoSaveTimer)
+  next()
+})
+
 const isAddDisabled = computed(() => {
   if (isGlobalLoading) return true
   if (!dialog.value) return true
@@ -356,12 +446,15 @@ const loadResumeDetails = async (resumeId: string) => {
       resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
       tabs.value = resumeDetails.value.map((detail) => detail.name)
       editors.value = resumeDetails.value.map((detail) => detail.content)
+      savedContent.value = resumeDetails.value.map((detail) => detail.content)
+      saveStatus.value = 'idle'
     },
     { id: 'load-resume-details', message: commonMessages.loading },
   )
 }
 
 onMounted(() => {
+  window.addEventListener('keydown', handleKeyboardSave)
   const resumeId = route.query.resumeId
   if (typeof resumeId === 'string' && resumeId) {
     loadResumeDetails(resumeId)
@@ -369,10 +462,17 @@ onMounted(() => {
     const newResumeTitle = t('createView.newResume')
     tabs.value = [newResumeTitle]
     editors.value = ['']
+    savedContent.value = ['']
     resumeDetails.value = [
       { id: '', resumeId: '', name: newResumeTitle, language: '', content: '', isDefault: true, createTime: '', lastModifyTime: '' },
     ]
   }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyboardSave)
+  if (autoSaveTimer) clearTimeout(autoSaveTimer)
+  if (savedStatusTimer) clearTimeout(savedStatusTimer)
 })
 
 const getLanguageDisplayName = (languageCode: string): string => {
@@ -427,6 +527,7 @@ const onAdd = async () => {
       resumeDetails.value.push(newDetail)
       tabs.value.push(newDetail.name)
       editors.value.push(newDetail.content)
+      savedContent.value.push(newDetail.content)
       if (newDetail.resumeId) currentResumeId.value = newDetail.resumeId
 
       dialog.value = ''
@@ -442,6 +543,7 @@ const onAdd = async () => {
 }
 
 const onSave = async (index: number) => {
+  saveStatus.value = 'saving'
   await withLoading(
     async () => {
       const content = editors.value[index]
@@ -449,17 +551,20 @@ const onSave = async (index: number) => {
       if (detail.id) {
         await resumeDetailService.updateResumeDetailContent(detail.id, content)
         detail.content = content
+        savedContent.value[index] = content
         if (detail.resumeId) currentResumeId.value = detail.resumeId
       } else {
         if (!authStore.isAuthenticated) {
           await guestStore.checkResumeQuota()
           if (guestStore.hasReachedLimit) {
             toast.error(t('errors.guestLimitReached'))
+            saveStatus.value = 'unsaved'
             return
           }
         }
         const newDetail = await resumeDetailService.createResumeDetail({ ...detail, content, name: tabs.value[index] })
         resumeDetails.value[index] = newDetail
+        savedContent.value[index] = content
         if (newDetail.resumeId) {
           currentResumeId.value = newDetail.resumeId
           router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
@@ -469,6 +574,9 @@ const onSave = async (index: number) => {
           }
         }
       }
+      saveStatus.value = 'saved'
+      if (savedStatusTimer) clearTimeout(savedStatusTimer)
+      savedStatusTimer = setTimeout(() => { saveStatus.value = 'idle' }, 3000)
       toast.success('toast.success.resumeSaveSuccess')
     },
     { id: 'save-resume', message: commonMessages.saving },
@@ -983,4 +1091,55 @@ const setCurrentTabAsDefault = async () => {
   color: var(--text) !important;
   font-family: 'Inter', system-ui, sans-serif !important;
 }
+
+/* ── Status Bar ──────────────────────────────────────────────── */
+.editor-statusbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  height: 26px;
+  background: rgba(240, 240, 240, 0.97);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+
+.status-left,
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  transition: color 0.3s;
+}
+
+.status-unsaved { color: #c07a00; }
+.status-saving  { color: #4a7fa5; }
+.status-saved   { color: #4a8a5a; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.status-spin { animation: spin 0.8s linear infinite; }
+
+.status-stat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--gold-dim);
+}
+
+.status-sep { color: var(--border); font-size: 0.7rem; }
+
+.status-hint { opacity: 0.55; }
 </style>

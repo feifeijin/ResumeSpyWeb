@@ -109,7 +109,11 @@
     "validation": {
       "required": "此字段为必填项",
       "invalidEmail": "请输入有效的邮箱地址"
-    }
+    },
+    "overline": "— 进入档案室 —",
+    "heading": "填写登录申请",
+    "sending": "发送中…",
+    "noPassword": "无需密码，无繁琐步骤，仅凭一个链接。"
   },
   "createView": {
     "selectLanguage": "选择语言",
@@ -137,6 +141,15 @@
     "setDefault": "设为默认",
     "setDefaultSuccess": "已成功设为默认版本。",
     "unsavedBeforeAction": "请先保存简历再使用此功能。",
+    "unsavedLeaveWarning": "您有未保存的更改，确定要离开吗？",
+    "statusBar": {
+      "saving": "保存中...",
+      "saved": "已保存",
+      "unsaved": "未保存的更改",
+      "words": "{count} 词",
+      "chars": "{count} 字符",
+      "shortcutHint": "⌘S 保存"
+    },
     "tooltips": {
       "addLanguage": "添加语言",
       "sync": "同步",
@@ -257,7 +270,18 @@
       "title": "欢迎使用 ResumeSpy",
       "message": "登录以保存简历并解锁所有功能。",
       "cta": "登录",
-      "close": "关闭"
+      "close": "关闭",
+      "browsing": "访客模式 — 已有 {current}/{max} 份档案",
+      "createAccount": "创建账户",
+      "signInContinue": "登录以继续",
+      "upgradeTitle": "建立永久档案",
+      "upgradeDesc": "创建免费账户以解锁：",
+      "featureUnlimited": "无限制档案数量",
+      "featureStorage": "安全永久存储",
+      "featureAi": "AI 优化与翻译",
+      "featurePdf": "PDF 导出",
+      "continueAsGuest": "以访客身份继续",
+      "signUpNow": "立即注册"
     },
     "guide": {
       "title": "简历指南",
@@ -309,6 +333,14 @@
     "name": "姓名",
     "company": "公司名称",
     "position": "职位"
+  },
+  "notFound": {
+    "label": "404",
+    "title": "404",
+    "subtitle": "案件终结 — 文件未找到",
+    "description": "您要找的档案已被移动、删除或从未存在。请返回档案室重新查找。",
+    "goHome": "返回基地",
+    "goMyspy": "打开 MySpy"
   },
   "empty": {
     "noResumes": "暂无简历，创建一份开始吧！",

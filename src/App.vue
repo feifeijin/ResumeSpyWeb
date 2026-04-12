@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppBar from './components/app/AppBar.vue'
 import AppFooter from './components/app/AppFooter.vue'
+import GuestSessionBanner from './components/GuestSessionBanner.vue'
 import GlobalLoadingOverlay from './components/GlobalLoadingOverlay.vue'
 import GlobalToastContainer from './components/GlobalToastContainer.vue'
 </script>
@@ -8,6 +9,7 @@ import GlobalToastContainer from './components/GlobalToastContainer.vue'
 <template>
   <v-app>
     <app-bar />
+    <GuestSessionBanner />
     <v-main>
       <router-view />
     </v-main>

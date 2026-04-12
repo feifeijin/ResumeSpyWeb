@@ -109,7 +109,11 @@
     "validation": {
       "required": "This field is required",
       "invalidEmail": "Please enter a valid email address"
-    }
+    },
+    "overline": "— Access the Archives —",
+    "heading": "SIGN THE REGISTER",
+    "sending": "Sending…",
+    "noPassword": "No password. No friction. Just a link."
   },
   "createView": {
     "selectLanguage": "Select Language",
@@ -137,6 +141,15 @@
     "setDefault": "Set as Default",
     "setDefaultSuccess": "Set as default version successfully.",
     "unsavedBeforeAction": "Please save your resume before using this feature.",
+    "unsavedLeaveWarning": "You have unsaved changes. Leave anyway?",
+    "statusBar": {
+      "saving": "Saving...",
+      "saved": "Saved",
+      "unsaved": "Unsaved changes",
+      "words": "{count} words",
+      "chars": "{count} chars",
+      "shortcutHint": "⌘S to save"
+    },
     "tooltips": {
       "addLanguage": "Add Language",
       "sync": "Sync",
@@ -257,7 +270,18 @@
       "title": "Welcome to ResumeSpy",
       "message": "Sign in to save your resumes and unlock all features.",
       "cta": "Sign In",
-      "close": "Dismiss"
+      "close": "Dismiss",
+      "browsing": "Guest — {current}/{max} dossiers on file",
+      "createAccount": "Create Account",
+      "signInContinue": "Sign In to Continue",
+      "upgradeTitle": "Open a Permanent File",
+      "upgradeDesc": "Create a free account to unlock:",
+      "featureUnlimited": "Unlimited dossiers",
+      "featureStorage": "Secure, permanent storage",
+      "featureAi": "AI tailoring & translation",
+      "featurePdf": "PDF export",
+      "continueAsGuest": "Continue as Guest",
+      "signUpNow": "Sign Up Now"
     },
     "guide": {
       "title": "Resume Guide",
@@ -309,6 +333,14 @@
     "name": "Full Name",
     "company": "Company Name",
     "position": "Job Title"
+  },
+  "notFound": {
+    "label": "404",
+    "title": "404",
+    "subtitle": "Case Closed — File Not Found",
+    "description": "The dossier you're looking for has been moved, redacted, or never existed. Return to the archives and try again.",
+    "goHome": "Return to Base",
+    "goMyspy": "Open MySpy"
   },
   "empty": {
     "noResumes": "No resumes yet. Create one to get started!",
