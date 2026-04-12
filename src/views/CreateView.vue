@@ -1,10 +1,10 @@
 <!-- filepath: /Users/ws/Documents/DotCore/ResumeSpyWeb/src/views/CreateView.vue -->
 <template>
-  <div class="noir-create">
+  <div class="noir-create" ref="createContainerRef">
     <div class="film-grain" aria-hidden="true" />
 
     <!-- ── Toolbar ─────────────────────────────────────────── -->
-    <div class="desk-toolbar">
+    <div class="desk-toolbar" ref="toolbarRef">
       <!-- Tabs row -->
       <div class="tabs-row">
         <div class="tabs-strip">
@@ -304,7 +304,7 @@
 <script setup lang="ts">
 import CountryFlag from 'vue-country-flag-next'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
@@ -333,8 +333,21 @@ const editors = ref(resumeDetails.value.map((detail) => detail.content))
 
 const currentDetailId = computed(() => resumeDetails.value[activeTab.value]?.id || '')
 
-// Fills remaining viewport height: 20px (--v-layout-top) + 48px (toolbar) + 26px (statusbar)
-const editorHeight = computed(() => 'calc(100vh - 94px)')
+// Refs for ResizeObserver-based height calculation
+const createContainerRef = ref<HTMLElement | null>(null)
+const toolbarRef = ref<HTMLElement | null>(null)
+const editorHeight = ref('600px')
+const STATUSBAR_H = 26
+
+const recalcEditorHeight = () => {
+  const container = createContainerRef.value
+  const toolbar = toolbarRef.value
+  if (!container || !toolbar) return
+  const h = container.clientHeight - toolbar.clientHeight - STATUSBAR_H
+  editorHeight.value = `${Math.max(200, h)}px`
+}
+
+let _ro: ResizeObserver | null = null
 
 const countries = computed(() => [
   { flag: 'us', label: t('languages.english'), value: 'EN' },
@@ -470,12 +483,20 @@ onMounted(() => {
       { id: '', resumeId: '', name: newResumeTitle, language: '', content: '', isDefault: true, createTime: '', lastModifyTime: '' },
     ]
   }
+
+  nextTick(() => {
+    recalcEditorHeight()
+    _ro = new ResizeObserver(recalcEditorHeight)
+    if (createContainerRef.value) _ro.observe(createContainerRef.value)
+    if (toolbarRef.value) _ro.observe(toolbarRef.value)
+  })
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyboardSave)
   if (autoSaveTimer) clearTimeout(autoSaveTimer)
   if (savedStatusTimer) clearTimeout(savedStatusTimer)
+  _ro?.disconnect()
 })
 
 const getLanguageDisplayName = (languageCode: string): string => {
@@ -895,6 +916,7 @@ const setCurrentTabAsDefault = async () => {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  padding-bottom: 26px; /* leave room for fixed statusbar */
 }
 
 :deep(.noir-editor-window) {
@@ -1109,9 +1131,11 @@ const setCurrentTabAsDefault = async () => {
 
 /* ── Status Bar ──────────────────────────────────────────────── */
 .editor-statusbar {
-  flex-shrink: 0;
-  /* z-index 2001: above fullscreen editor (z-2000) so status is always visible */
-  position: relative;
+  /* Fixed at bottom: always visible even when editor is in fullscreen (z-2000) */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 2001;
   display: flex;
   align-items: center;
