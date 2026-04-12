@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import AppBar from './components/app/AppBar.vue'
 import AppFooter from './components/app/AppFooter.vue'
 import GuestSessionBanner from './components/GuestSessionBanner.vue'
 import GlobalLoadingOverlay from './components/GlobalLoadingOverlay.vue'
 import GlobalToastContainer from './components/GlobalToastContainer.vue'
+
+const route = useRoute()
 </script>
 
 <template>
@@ -13,7 +16,7 @@ import GlobalToastContainer from './components/GlobalToastContainer.vue'
     <v-main style="--v-layout-top: 20px;">
       <router-view />
     </v-main>
-    <app-footer />
+    <app-footer v-if="route.name !== 'create'" />
 
     <!-- Global Loading Overlay -->
     <GlobalLoadingOverlay />

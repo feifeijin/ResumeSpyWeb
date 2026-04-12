@@ -101,7 +101,7 @@
           <v-md-editor
             v-model="editors[index]"
             @save="onSave(index)"
-            height="calc(100vh - 110px)"
+            :height="editorHeight"
           >{{ tab }}</v-md-editor>
         </v-tabs-window-item>
       </v-tabs-window>
@@ -332,6 +332,9 @@ const activeTab = ref(0)
 const editors = ref(resumeDetails.value.map((detail) => detail.content))
 
 const currentDetailId = computed(() => resumeDetails.value[activeTab.value]?.id || '')
+
+// Fills remaining viewport height: 20px (--v-layout-top) + 48px (toolbar) + 26px (statusbar)
+const editorHeight = computed(() => 'calc(100vh - 94px)')
 
 const countries = computed(() => [
   { flag: 'us', label: t('languages.english'), value: 'EN' },
@@ -738,8 +741,11 @@ const setCurrentTabAsDefault = async () => {
   --ink:      #FFFFFF;
   --blue:     #1e4a6e;
 
-  position: relative;
-  min-height: 100vh;
+  /* 20px = --v-layout-top on v-main; subtract so we don't overflow */
+  height: calc(100vh - 20px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
@@ -757,9 +763,7 @@ const setCurrentTabAsDefault = async () => {
 
 /* ── Toolbar ─────────────────────────────────────────────── */
 .desk-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  flex-shrink: 0;
   background: rgba(250, 250, 250, 0.97);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(8px);
@@ -887,9 +891,20 @@ const setCurrentTabAsDefault = async () => {
 .stamp:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* ── Editor ──────────────────────────────────────────────── */
-.editor-wrap { position: relative; z-index: 10; }
+.editor-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
 
-:deep(.noir-editor-window) { background: var(--bg) !important; }
+:deep(.noir-editor-window) {
+  background: var(--bg) !important;
+}
+
+/* Fullscreen: raise above AppBar (Vuetify AppBar z-index ~1004) */
+:deep(.v-md-editor--fullscreen) {
+  z-index: 2000 !important;
+}
 
 /* Override v-md-editor to light theme */
 :deep(.v-md-editor) {
@@ -1094,9 +1109,10 @@ const setCurrentTabAsDefault = async () => {
 
 /* ── Status Bar ──────────────────────────────────────────────── */
 .editor-statusbar {
-  position: sticky;
-  bottom: 0;
-  z-index: 50;
+  flex-shrink: 0;
+  /* z-index 2001: above fullscreen editor (z-2000) so status is always visible */
+  position: relative;
+  z-index: 2001;
   display: flex;
   align-items: center;
   justify-content: space-between;
