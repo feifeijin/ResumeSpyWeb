@@ -130,7 +130,7 @@
         </div>
 
         <!-- Date -->
-        <p class="dossier-date">{{ $t('mySpyView.card.filed') }} {{ resume.lastModifyTime }}</p>
+        <p class="dossier-date">{{ $t('mySpyView.card.filed') }} {{ formatDate(resume.lastModifyTime) }}</p>
 
         <!-- Thumbnail -->
         <div class="dossier-thumb" @click="openEditPage(resume.id)">
@@ -170,6 +170,13 @@ const resumeDetailService = new ResumeDetailService()
 const { t } = useI18n()
 const { withLoading, commonMessages } = useLoading()
 const toast = useToast()
+
+const formatDate = (dateStr: string): string => {
+  if (!dateStr) return '—'
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return '—'
+  return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+}
 
 const router = useRouter()
 const guestStore = useGuestStore()
@@ -215,31 +222,32 @@ const processImport = async (file: File) => {
 
   isImporting.value = true
   try {
-    const { markdown, suggestedTitle } = await resumeService.importFile(file)
-
-    const detail = await resumeDetailService.createResumeDetail({
-      id: '',
-      resumeId: '',
-      name: 'Default',
-      language: '',
-      content: markdown,
-      isDefault: true,
-      createTime: '',
-      lastModifyTime: '',
-    })
-
-    if (detail.resumeId) {
-      await resumeService.updateResumeName(detail.resumeId, suggestedTitle)
-    }
-
+    const resumeId = await withLoading(
+      async () => {
+        const { markdown, suggestedTitle } = await resumeService.importFile(file)
+        const detail = await resumeDetailService.createResumeDetail({
+          id: '',
+          resumeId: '',
+          name: 'Default',
+          language: '',
+          content: markdown,
+          isDefault: true,
+          createTime: '',
+          lastModifyTime: '',
+        })
+        if (detail.resumeId) {
+          await resumeService.updateResumeName(detail.resumeId, suggestedTitle)
+        }
+        if (!authStore.isAuthenticated) {
+          await guestStore.checkResumeQuota()
+          guestStore.notifyQuotaChanged()
+        }
+        return detail.resumeId
+      },
+      { id: 'import-file', message: t('mySpyView.importing'), showErrorToast: false },
+    )
     toast.success(t('mySpyView.importSuccess'))
-
-    if (!authStore.isAuthenticated) {
-      await guestStore.checkResumeQuota()
-      guestStore.notifyQuotaChanged()
-    }
-
-    router.push({ name: 'create', query: { resumeId: detail.resumeId } })
+    router.push({ name: 'create', query: { resumeId } })
   } catch {
     toast.error(t('mySpyView.importError'))
   } finally {

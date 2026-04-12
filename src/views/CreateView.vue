@@ -337,13 +337,12 @@ const currentDetailId = computed(() => resumeDetails.value[activeTab.value]?.id 
 const createContainerRef = ref<HTMLElement | null>(null)
 const toolbarRef = ref<HTMLElement | null>(null)
 const editorHeight = ref('600px')
-const STATUSBAR_H = 26
 
 const recalcEditorHeight = () => {
   const container = createContainerRef.value
   const toolbar = toolbarRef.value
   if (!container || !toolbar) return
-  const h = container.clientHeight - toolbar.clientHeight - STATUSBAR_H
+  const h = container.clientHeight - toolbar.clientHeight
   editorHeight.value = `${Math.max(200, h)}px`
 }
 
@@ -762,8 +761,11 @@ const setCurrentTabAsDefault = async () => {
   --ink:      #FFFFFF;
   --blue:     #1e4a6e;
 
-  /* 20px = --v-layout-top on v-main; subtract so we don't overflow */
-  height: calc(100vh - 20px);
+  position: fixed;
+  top: var(--v-layout-top);
+  left: 0;
+  right: 0;
+  bottom: 26px; /* height of .editor-statusbar */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -916,7 +918,6 @@ const setCurrentTabAsDefault = async () => {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  padding-bottom: 26px; /* leave room for fixed statusbar */
 }
 
 :deep(.noir-editor-window) {

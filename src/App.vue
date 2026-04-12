@@ -12,8 +12,8 @@ const route = useRoute()
 <template>
   <v-app>
     <app-bar />
-    <GuestSessionBanner />
-    <v-main >
+    <v-main>
+      <GuestSessionBanner />
       <router-view />
     </v-main>
     <app-footer v-if="route.name !== 'create'" />
