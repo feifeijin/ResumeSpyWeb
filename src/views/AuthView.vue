@@ -281,20 +281,23 @@ watch(() => magicLinkForm.email, () => { linkSent.value = false })
 }
 
 .link-sent-notice {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-style: italic;
-  font-size: 0.85rem;
-  color: #F5F5F5;
-  background: #121212;
-  border: 1px solid #2B2B2B;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: transparent;
+  border: 1px dashed var(--border);
   padding: 0.75rem 1rem;
   display: flex;
   gap: 0.5rem;
   align-items: flex-start;
-  line-height: 1.5;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
 }
 
-.notice-glyph { flex-shrink: 0; }
+.notice-glyph {
+  flex-shrink: 0;
+  color: var(--gold-dim);
+}
 
 .auth-note {
   font-size: 0.8rem;

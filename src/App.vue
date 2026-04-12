@@ -13,7 +13,7 @@ const route = useRoute()
   <v-app>
     <app-bar />
     <GuestSessionBanner />
-    <v-main style="--v-layout-top: 20px;">
+    <v-main >
       <router-view />
     </v-main>
     <app-footer v-if="route.name !== 'create'" />
