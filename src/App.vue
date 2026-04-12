@@ -10,7 +10,7 @@ import GlobalToastContainer from './components/GlobalToastContainer.vue'
   <v-app>
     <app-bar />
     <GuestSessionBanner />
-    <v-main>
+    <v-main style="--v-layout-top: 20px;">
       <router-view />
     </v-main>
     <app-footer />

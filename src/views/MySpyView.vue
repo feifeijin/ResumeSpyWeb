@@ -38,12 +38,39 @@
       </button>
     </Transition>
 
-    <!-- Empty State -->
+    <!-- Empty State / Drop Zone -->
     <div v-if="resumes.length === 0" class="empty-state">
-      <div class="empty-icon">◫</div>
-      <p class="empty-title">{{ $t('mySpyView.empty.title') }}</p>
+      <p class="empty-overline">{{ $t('mySpyView.empty.overline') }}</p>
+      <h2 class="empty-title">{{ $t('mySpyView.empty.title') }}</h2>
       <p class="empty-desc">{{ $t('mySpyView.empty.description') }}</p>
-      <button class="btn-ink" @click="createNew">{{ $t('common.create') }}</button>
+
+      <div
+        class="drop-zone"
+        :class="{ 'drop-zone--active': isDragging, 'drop-zone--loading': isImporting }"
+        @dragover.prevent="isDragging = true"
+        @dragleave.prevent="isDragging = false"
+        @drop.prevent="onDrop"
+        @click="triggerFileInput"
+      >
+        <div v-if="isImporting" class="drop-loading">
+          <span class="drop-dots"><span /><span /><span /></span>
+          <p class="drop-label">{{ $t('mySpyView.importing') }}</p>
+        </div>
+        <template v-else>
+          <svg class="drop-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="4" width="26" height="36" rx="2" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M28 4v10h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="15" y1="22" x2="33" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="15" y1="29" x2="28" y2="29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <p class="drop-label">↑ {{ $t('mySpyView.empty.dropLabel') }}</p>
+          <p class="drop-hint">{{ $t('mySpyView.empty.dropHint') }}</p>
+          <p class="drop-formats">PDF · DOCX · TXT</p>
+        </template>
+      </div>
+
+      <div class="empty-divider"><span>{{ $t('mySpyView.empty.or') }}</span></div>
+      <button class="btn-ink" @click="createNew">+ {{ $t('mySpyView.empty.createScratch') }}</button>
     </div>
 
     <!-- Resume Grid -->
@@ -152,6 +179,7 @@ const resumes = ref<Resume[]>([])
 const menu = ref<boolean[]>([])
 const showFab = ref(false)
 const isImporting = ref(false)
+const isDragging = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const titleInputRefs = ref<any[]>([])
@@ -160,11 +188,22 @@ const triggerFileInput = () => {
   fileInputRef.value?.click()
 }
 
+const onDrop = async (event: DragEvent) => {
+  isDragging.value = false
+  const file = event.dataTransfer?.files?.[0]
+  if (!file) return
+  await processImport(file)
+}
+
 const onFileSelected = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!fileInputRef.value) return
   fileInputRef.value.value = ''
   if (!file) return
+  await processImport(file)
+}
+
+const processImport = async (file: File) => {
 
   if (!authStore.isAuthenticated) {
     const quota = await guestStore.checkResumeQuota()
@@ -358,7 +397,7 @@ const onDelete = async (resume: Resume) => {
   z-index: 50;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
-  padding: 1.5rem 2.5rem;
+  padding: 0 2.5rem;
 }
 
 .archives-header-inner {
@@ -368,11 +407,12 @@ const onDelete = async (resume: Resume) => {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  min-height: 72px;
 }
 
 @media (max-width: 600px) {
   .archives-header {
-    padding: 1rem 1.5rem;
+    padding: 0 1.5rem;
   }
 }
 
@@ -518,32 +558,142 @@ const onDelete = async (resume: Resume) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  gap: 1rem;
+  padding: 3.5rem 2rem 4rem;
+  gap: 0.75rem;
   text-align: center;
-  padding: 2rem;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
-.empty-icon {
-  font-size: 4rem;
-  color: var(--border);
-  line-height: 1;
+.empty-overline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.3em;
+  margin: 0;
 }
 
 .empty-title {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 1.2rem;
-  color: var(--muted);
-  letter-spacing: 0.15em;
-  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.03em;
+  margin: 0.25rem 0 0;
 }
 
 .empty-desc {
   font-style: italic;
   color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 0.5rem;
+  max-width: 480px;
+}
+
+/* ── Drop Zone ───────────────────────────────────────────── */
+.drop-zone {
+  width: 100%;
+  border: 2px dashed var(--border);
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
+  margin-top: 0.5rem;
+}
+
+.drop-zone:hover,
+.drop-zone--active {
+  border-color: #888888;
+  background: rgba(0,0,0,0.02);
+}
+
+.drop-zone--loading {
+  cursor: default;
+  pointer-events: none;
+}
+
+.drop-icon {
+  width: 56px;
+  height: 56px;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.drop-label {
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
   margin: 0;
+}
+
+.drop-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.drop-formats {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: #AAAAAA;
+  margin: 0;
+}
+
+.drop-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.drop-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.drop-dots span {
+  width: 7px;
+  height: 7px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+
+.drop-dots span:nth-child(2) { animation-delay: 0.2s; }
+.drop-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1); }
+}
+
+.empty-divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+
+.empty-divider::before,
+.empty-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 
 /* ── Grid ────────────────────────────────────────────────── */

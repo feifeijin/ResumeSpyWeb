@@ -165,9 +165,14 @@
     "delete": "删除",
     "exportPdf": "导出 PDF",
     "empty": {
-      "title": "档案室空无一物",
-      "description": "暂无档案。开始您的第一个案件吧。",
-      "cta": "创建"
+      "overline": "— 提交档案 —",
+      "title": "开启您的第一个案例",
+      "description": "上传您的简历，侦探将对其进行全面审查。",
+      "cta": "创建",
+      "dropLabel": "拖放简历至此",
+      "dropHint": "或点击浏览文件",
+      "or": "或",
+      "createScratch": "从零开始创建"
     },
     "card": {
       "filed": "归档日期：",

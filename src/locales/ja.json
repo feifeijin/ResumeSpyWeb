@@ -165,9 +165,14 @@
     "delete": "削除",
     "exportPdf": "PDF エクスポート",
     "empty": {
-      "title": "アーカイブは空です",
-      "description": "まだ書類がありません。最初の案件を始めましょう。",
-      "cta": "作成"
+      "overline": "— 証拠を提出する —",
+      "title": "最初のケースを開く",
+      "description": "職務経歴書をアップロードしてください。探偵が徹底調査を行います。",
+      "cta": "作成",
+      "dropLabel": "ここにドロップ",
+      "dropHint": "またはクリックして選択",
+      "or": "または",
+      "createScratch": "ゼロから作成"
     },
     "card": {
       "filed": "作成日：",

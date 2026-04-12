@@ -165,9 +165,14 @@
     "delete": "Delete",
     "exportPdf": "Export PDF",
     "empty": {
-      "title": "The Archives are Empty",
-      "description": "No dossiers on file. Begin your first case.",
-      "cta": "Create"
+      "overline": "— SUBMIT EVIDENCE —",
+      "title": "Open Your First Case",
+      "description": "Upload your resume. Our detective will conduct a thorough investigation.",
+      "cta": "Create",
+      "dropLabel": "Drop resume here",
+      "dropHint": "or click to browse",
+      "or": "or",
+      "createScratch": "Create from scratch"
     },
     "card": {
       "filed": "Filed:",
