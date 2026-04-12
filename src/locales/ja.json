@@ -178,7 +178,12 @@
     "quota": {
       "limitReached": "ゲストの履歴書数の上限に達しました。さらに作成するにはサインインしてください。",
       "cloneLimited": "ゲストの履歴書数の上限に達しました。クローンするにはサインインしてください。"
-    }
+    },
+    "importFile": "ファイルを読み込む",
+    "importing": "解析中…",
+    "importError": "ファイルのインポートに失敗しました。もう一度お試しください。",
+    "importSuccess": "職務経歴書を正常にインポートしました。",
+    "importHint": "PDF・DOCX・TXT · 最大10MB"
   },
   "languages": {
     "english": "英語",

@@ -178,7 +178,12 @@
     "quota": {
       "limitReached": "您已达到访客简历数量上限。请登录以创建更多简历。",
       "cloneLimited": "您已达到访客简历数量上限。请登录以克隆简历。"
-    }
+    },
+    "importFile": "导入文件",
+    "importing": "正在解析…",
+    "importError": "文件导入失败，请重试。",
+    "importSuccess": "简历导入成功。",
+    "importHint": "PDF、DOCX 或 TXT · 最大 10 MB"
   },
   "languages": {
     "english": "英语",

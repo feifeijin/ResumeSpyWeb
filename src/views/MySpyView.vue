@@ -9,7 +9,20 @@
           <p class="header-overline">{{ $t('mySpyView.caseFilesLabel') }}</p>
           <h1 class="header-title">{{ $t('mySpyView.title') }}</h1>
         </div>
-        <button class="btn-ink" @click="createNew">+ {{ $t('common.create') }}</button>
+        <div class="header-actions">
+          <button class="btn-ghost" :disabled="isImporting" @click="triggerFileInput">
+            <span v-if="isImporting">{{ $t('mySpyView.importing') }}</span>
+            <span v-else>↑ {{ $t('mySpyView.importFile') }}</span>
+          </button>
+          <button class="btn-ink" @click="createNew">+ {{ $t('common.create') }}</button>
+          <input
+            ref="fileInputRef"
+            type="file"
+            accept=".pdf,.docx,.doc,.txt"
+            class="sr-only"
+            @change="onFileSelected"
+          />
+        </div>
       </div>
     </div>
 
@@ -123,8 +136,10 @@ import type { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
+import ResumeDetailService from '@/api/resume-detail-api'
 
 const resumeService = new ResumeService()
+const resumeDetailService = new ResumeDetailService()
 const { t } = useI18n()
 const { withLoading, commonMessages } = useLoading()
 const toast = useToast()
@@ -136,8 +151,62 @@ const authStore = useAuthStore()
 const resumes = ref<Resume[]>([])
 const menu = ref<boolean[]>([])
 const showFab = ref(false)
+const isImporting = ref(false)
+const fileInputRef = ref<HTMLInputElement | null>(null)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const titleInputRefs = ref<any[]>([])
+
+const triggerFileInput = () => {
+  fileInputRef.value?.click()
+}
+
+const onFileSelected = async (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!fileInputRef.value) return
+  fileInputRef.value.value = ''
+  if (!file) return
+
+  if (!authStore.isAuthenticated) {
+    const quota = await guestStore.checkResumeQuota()
+    if (quota && guestStore.hasReachedLimit) {
+      toast.error(t('mySpyView.quota.limitReached'))
+      return
+    }
+  }
+
+  isImporting.value = true
+  try {
+    const { markdown, suggestedTitle } = await resumeService.importFile(file)
+
+    const detail = await resumeDetailService.createResumeDetail({
+      id: '',
+      resumeId: '',
+      name: 'Default',
+      language: '',
+      content: markdown,
+      isDefault: true,
+      createTime: '',
+      lastModifyTime: '',
+    })
+
+    if (detail.resumeId) {
+      await resumeService.updateResumeName(detail.resumeId, suggestedTitle)
+    }
+
+    toast.success(t('mySpyView.importSuccess'))
+
+    if (!authStore.isAuthenticated) {
+      await guestStore.checkResumeQuota()
+      guestStore.notifyQuotaChanged()
+    }
+
+    router.push({ name: 'create', query: { resumeId: detail.resumeId } })
+  } catch {
+    toast.error(t('mySpyView.importError'))
+  } finally {
+    isImporting.value = false
+  }
+}
 
 const handleScroll = () => {
   showFab.value = window.scrollY > 200
@@ -322,6 +391,49 @@ const onDelete = async (resume: Resume) => {
   letter-spacing: 0.05em;
   color: var(--text);
   margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.btn-ghost {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  background: transparent;
+  border: 1.5px solid var(--border);
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  border-color: #888888;
+  color: var(--text);
+}
+
+.btn-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-ink {

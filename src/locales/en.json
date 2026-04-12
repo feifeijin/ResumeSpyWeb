@@ -178,7 +178,12 @@
     "quota": {
       "limitReached": "You have reached the guest resume limit. Please sign in to create more.",
       "cloneLimited": "You have reached the guest resume limit. Please sign in to clone resumes."
-    }
+    },
+    "importFile": "Import File",
+    "importing": "Analysing…",
+    "importError": "Failed to import file. Please try again.",
+    "importSuccess": "Resume imported successfully.",
+    "importHint": "PDF, DOCX or TXT · max 10 MB"
   },
   "languages": {
     "english": "English",

@@ -110,6 +110,16 @@ class ResumeService {
       throw error
     }
   }
+
+  // Import a resume file (PDF, DOCX, TXT) and convert to Markdown via AI
+  async importFile(file: File): Promise<{ markdown: string; suggestedTitle: string }> {
+    const form = new FormData()
+    form.append('file', file)
+    const response = await axios.post(`${API_BASE_URL}/resumeimport`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return response.data
+  }
 }
 
 export default ResumeService
