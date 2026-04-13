@@ -29,18 +29,25 @@
                 @blur="saveTabName(index)"
                 @keydown.enter="saveTabName(index)"
                 @keydown.esc="cancelEdit"
-                single-line dense hide-details autofocus
+                single-line
+                dense
+                hide-details
+                autofocus
                 variant="plain"
                 class="tab-editor"
                 ref="tabEditor"
               />
               <v-icon
                 v-if="!isEditingTab(index) && resumeDetails[index]?.isDefault"
-                size="x-small" icon="mdi-star" class="tab-star ms-1"
+                size="x-small"
+                icon="mdi-star"
+                class="tab-star ms-1"
               />
               <v-icon
                 v-if="index > 0 && !isEditingTab(index)"
-                size="small" icon="mdi-close" class="tab-close"
+                size="small"
+                icon="mdi-close"
+                class="tab-close"
                 @click.stop="openDeleteDialog(index)"
               />
             </v-tab>
@@ -49,37 +56,22 @@
 
         <!-- Action stamps -->
         <div class="action-stamps">
-          <button class="stamp stamp--gold" @click="openTailorDialog" :title="$t('createView.tooltips.tailorForJD')">
-            <v-icon size="14">mdi-magic-staff</v-icon>
-            <span>{{ $t('createView.tailorForJD') }}</span>
+          <button class="noir-menu-item" @click="handleLanguageDialogOpen">
+            <v-icon size="14" class="me-2">mdi-file-account</v-icon>
+            {{ $t('createView.selectLanguage') }}
           </button>
-
+          <button class="noir-menu-item" @click="openSyncDialog">
+            <v-icon size="14" class="me-2">mdi-translate</v-icon>
+            {{ $t('common.sync') }}
+          </button>
+          <button class="noir-menu-item" @click="exportCurrentTabAsPdf">
+            <v-icon size="14" class="me-2">mdi-file-pdf-box</v-icon>
+            {{ $t('createView.exportPdf') }}
+          </button>
           <button class="stamp" @click="openHistoryPanel" :title="$t('version.history')">
             <v-icon size="14">mdi-history</v-icon>
             <span>{{ $t('version.history') }}</span>
           </button>
-
-          <v-menu>
-            <template v-slot:activator="{ props }">
-              <button class="stamp stamp--icon" v-bind="props">
-                <v-icon size="16">mdi-dots-vertical</v-icon>
-              </button>
-            </template>
-            <div class="noir-menu">
-              <button class="noir-menu-item" @click="handleLanguageDialogOpen">
-                <v-icon size="14" class="me-2">mdi-file-account</v-icon>
-                {{ $t('createView.selectLanguage') }}
-              </button>
-              <button class="noir-menu-item" @click="openSyncDialog">
-                <v-icon size="14" class="me-2">mdi-translate</v-icon>
-                {{ $t('common.sync') }}
-              </button>
-              <button class="noir-menu-item" @click="exportCurrentTabAsPdf">
-                <v-icon size="14" class="me-2">mdi-file-pdf-box</v-icon>
-                {{ $t('createView.exportPdf') }}
-              </button>
-            </div>
-          </v-menu>
         </div>
       </div>
     </div>
@@ -95,7 +87,8 @@
             :toolbar="starToolbar"
             left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save set-default"
             right-toolbar="toc sync-scroll fullscreen"
-          >{{ tab }}</v-md-editor>
+            >{{ tab }}</v-md-editor
+          >
         </v-tabs-window-item>
       </v-tabs-window>
     </div>
@@ -107,8 +100,8 @@
           class="status-indicator"
           :class="{
             'status-unsaved': saveStatus === 'unsaved',
-            'status-saving':  saveStatus === 'saving',
-            'status-saved':   saveStatus === 'saved',
+            'status-saving': saveStatus === 'saving',
+            'status-saved': saveStatus === 'saved',
           }"
         >
           <template v-if="saveStatus === 'saving'">
@@ -126,9 +119,13 @@
         </span>
       </div>
       <div class="status-right">
-        <span class="status-stat">{{ $t('createView.statusBar.words', { count: wordCount }) }}</span>
+        <span class="status-stat">{{
+          $t('createView.statusBar.words', { count: wordCount })
+        }}</span>
         <span class="status-sep">·</span>
-        <span class="status-stat">{{ $t('createView.statusBar.chars', { count: charCount }) }}</span>
+        <span class="status-stat">{{
+          $t('createView.statusBar.chars', { count: charCount })
+        }}</span>
         <span class="status-sep">·</span>
         <span class="status-stat status-hint">{{ $t('createView.statusBar.shortcutHint') }}</span>
       </div>
@@ -148,7 +145,12 @@
               <v-radio :value="country.value" class="noir-radio">
                 <template v-slot:label>
                   <div class="radio-label">
-                    <country-flag v-if="country.flag" :country="country.flag" size="normal" class="me-3" />
+                    <country-flag
+                      v-if="country.flag"
+                      :country="country.flag"
+                      size="normal"
+                      class="me-3"
+                    />
                     <v-icon v-else class="me-3" size="large">mdi-earth</v-icon>
                     <span class="radio-text">{{ country.label }}</span>
                   </div>
@@ -193,11 +195,7 @@
           <button class="stamp" @click="isDialogActive = false" :disabled="isGlobalLoading">
             {{ $t('common.cancel') }}
           </button>
-          <button
-            class="stamp stamp--gold"
-            @click="onAdd"
-            :disabled="isAddDisabled"
-          >
+          <button class="stamp stamp--gold" @click="onAdd" :disabled="isAddDisabled">
             {{ $t('common.add') }}
           </button>
         </div>
@@ -214,7 +212,9 @@
           <p class="dialog-hint">{{ $t('createView.deleteConfirm') }}</p>
         </div>
         <div class="dialog-footer">
-          <button class="stamp" @click="isDeleteDialogActive = false">{{ $t('common.cancel') }}</button>
+          <button class="stamp" @click="isDeleteDialogActive = false">
+            {{ $t('common.cancel') }}
+          </button>
           <button class="stamp stamp--danger" @click="deleteTab">{{ $t('common.delete') }}</button>
         </div>
       </div>
@@ -225,53 +225,80 @@
       <div class="noir-dialog sync-dialog">
         <!-- Detective illustration -->
         <div class="sync-detective">
-          <svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="sync-svg">
+          <svg
+            viewBox="0 0 160 130"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            class="sync-svg"
+          >
             <!-- Hat crown -->
-            <rect x="52" y="8" width="42" height="32" rx="5" fill="#111"/>
-            <rect x="42" y="37" width="62" height="8" rx="4" fill="#1a1a1a"/>
-            <rect x="52" y="32" width="42" height="7" fill="#0c0c0c"/>
+            <rect x="52" y="8" width="42" height="32" rx="5" fill="#111" />
+            <rect x="42" y="37" width="62" height="8" rx="4" fill="#1a1a1a" />
+            <rect x="52" y="32" width="42" height="7" fill="#0c0c0c" />
             <!-- Head -->
-            <ellipse cx="73" cy="57" rx="22" ry="23" fill="#2c2c2c"/>
-            <ellipse cx="73" cy="66" rx="16" ry="12" fill="#222"/>
+            <ellipse cx="73" cy="57" rx="22" ry="23" fill="#2c2c2c" />
+            <ellipse cx="73" cy="66" rx="16" ry="12" fill="#222" />
             <!-- Eyes -->
-            <ellipse cx="64" cy="53" rx="4" ry="3" fill="#0e0e0e"/>
-            <ellipse cx="83" cy="53" rx="4" ry="3" fill="#0e0e0e"/>
-            <circle cx="65" cy="53" r="1.8" fill="#080808"/>
-            <circle cx="84" cy="53" r="1.8" fill="#080808"/>
-            <circle cx="65" cy="52" r="0.7" fill="#ccc" opacity="0.5"/>
-            <circle cx="84" cy="52" r="0.7" fill="#ccc" opacity="0.5"/>
+            <ellipse cx="64" cy="53" rx="4" ry="3" fill="#0e0e0e" />
+            <ellipse cx="83" cy="53" rx="4" ry="3" fill="#0e0e0e" />
+            <circle cx="65" cy="53" r="1.8" fill="#080808" />
+            <circle cx="84" cy="53" r="1.8" fill="#080808" />
+            <circle cx="65" cy="52" r="0.7" fill="#ccc" opacity="0.5" />
+            <circle cx="84" cy="52" r="0.7" fill="#ccc" opacity="0.5" />
             <!-- Satisfied smirk -->
-            <path d="M65 67 Q73 72 81 67" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path
+              d="M65 67 Q73 72 81 67"
+              stroke="#111"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
             <!-- Neck -->
-            <rect x="66" y="79" width="13" height="10" rx="2" fill="#2a2a2a"/>
+            <rect x="66" y="79" width="13" height="10" rx="2" fill="#2a2a2a" />
             <!-- Coat -->
-            <path d="M40 90 L32 130 L114 130 L106 90 Z" fill="#1a1a1a"/>
-            <path d="M73 100 L52 90 L58 118 Z" fill="#111"/>
-            <path d="M73 100 L94 90 L88 118 Z" fill="#111"/>
-            <path d="M52 90 L62 80 L73 100 Z" fill="#1c1c1c"/>
-            <path d="M94 90 L84 80 L73 100 Z" fill="#1c1c1c"/>
+            <path d="M40 90 L32 130 L114 130 L106 90 Z" fill="#1a1a1a" />
+            <path d="M73 100 L52 90 L58 118 Z" fill="#111" />
+            <path d="M73 100 L94 90 L88 118 Z" fill="#111" />
+            <path d="M52 90 L62 80 L73 100 Z" fill="#1c1c1c" />
+            <path d="M94 90 L84 80 L73 100 Z" fill="#1c1c1c" />
             <!-- Left arm — pointing at document -->
-            <path d="M40 90 L20 108 L27 112 L47 96 Z" fill="#141414"/>
-            <ellipse cx="22" cy="111" rx="6" ry="4" fill="#2a2a2a"/>
+            <path d="M40 90 L20 108 L27 112 L47 96 Z" fill="#141414" />
+            <ellipse cx="22" cy="111" rx="6" ry="4" fill="#2a2a2a" />
             <!-- Finger pointing -->
-            <line x1="18" y1="110" x2="10" y2="107" stroke="#2a2a2a" stroke-width="3" stroke-linecap="round"/>
+            <line
+              x1="18"
+              y1="110"
+              x2="10"
+              y2="107"
+              stroke="#2a2a2a"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
             <!-- Document / case file -->
-            <rect x="0" y="95" width="14" height="18" rx="1" fill="#e8e0d0" opacity="0.9"/>
-            <line x1="2" y1="100" x2="12" y2="100" stroke="#bbb" stroke-width="1"/>
-            <line x1="2" y1="103" x2="12" y2="103" stroke="#bbb" stroke-width="1"/>
-            <line x1="2" y1="106" x2="9"  y2="106" stroke="#bbb" stroke-width="1"/>
+            <rect x="0" y="95" width="14" height="18" rx="1" fill="#e8e0d0" opacity="0.9" />
+            <line x1="2" y1="100" x2="12" y2="100" stroke="#bbb" stroke-width="1" />
+            <line x1="2" y1="103" x2="12" y2="103" stroke="#bbb" stroke-width="1" />
+            <line x1="2" y1="106" x2="9" y2="106" stroke="#bbb" stroke-width="1" />
             <!-- Check mark on document -->
-            <path d="M3 109 L6 112 L12 107" stroke="#2a7a2a" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="check-mark"/>
+            <path
+              d="M3 109 L6 112 L12 107"
+              stroke="#2a7a2a"
+              stroke-width="1.5"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="check-mark"
+            />
             <!-- Right arm relaxed -->
-            <path d="M106 90 L120 108 L113 112 L99 96 Z" fill="#141414"/>
-            <ellipse cx="117" cy="111" rx="6" ry="4" fill="#2a2a2a"/>
+            <path d="M106 90 L120 108 L113 112 L99 96 Z" fill="#141414" />
+            <ellipse cx="117" cy="111" rx="6" ry="4" fill="#2a2a2a" />
             <!-- Cigarette -->
-            <rect x="118" y="109" width="13" height="2.5" rx="1" fill="#d4c9a8"/>
-            <circle cx="119" cy="110" r="2" class="cig-ember" fill="#cc4400"/>
+            <rect x="118" y="109" width="13" height="2.5" rx="1" fill="#d4c9a8" />
+            <circle cx="119" cy="110" r="2" class="cig-ember" fill="#cc4400" />
             <!-- Smoke -->
-            <circle cx="119" cy="104" r="1.8" class="det-smoke s1" fill="#888"/>
-            <circle cx="117" cy="98"  r="1.4" class="det-smoke s2" fill="#777"/>
-            <circle cx="120" cy="92"  r="0.9" class="det-smoke s3" fill="#666"/>
+            <circle cx="119" cy="104" r="1.8" class="det-smoke s1" fill="#888" />
+            <circle cx="117" cy="98" r="1.4" class="det-smoke s2" fill="#777" />
+            <circle cx="120" cy="92" r="0.9" class="det-smoke s3" fill="#666" />
           </svg>
         </div>
 
@@ -281,7 +308,9 @@
         </div>
 
         <div class="sync-footer">
-          <button class="stamp" @click="isSyncDialogActive = false">{{ $t('common.cancel') }}</button>
+          <button class="stamp" @click="isSyncDialogActive = false">
+            {{ $t('common.cancel') }}
+          </button>
           <button class="stamp stamp--gold" @click="syncTab">{{ $t('common.sync') }}</button>
         </div>
       </div>
@@ -298,7 +327,15 @@
           <v-md-preview :text="editors[activeTab] || ''" class="noir-preview" />
         </div>
         <div class="dialog-footer">
-          <button class="stamp stamp--blue" @click="() => { isPreviewActive = false; exportCurrentTabAsPdf() }">
+          <button
+            class="stamp stamp--blue"
+            @click="
+              () => {
+                isPreviewActive = false
+                exportCurrentTabAsPdf()
+              }
+            "
+          >
             <v-icon size="14" class="me-1">mdi-file-pdf-box</v-icon>
             {{ $t('createView.exportPdf') }}
           </button>
@@ -328,7 +365,13 @@
       <div class="noir-dialog">
         <div class="dialog-header">
           <h3 class="dialog-title">✦ {{ $t('createView.tailorDialogTitle') }}</h3>
-          <button class="dialog-close" @click="isTailorDialogActive = false" :disabled="isGlobalLoading">✕</button>
+          <button
+            class="dialog-close"
+            @click="isTailorDialogActive = false"
+            :disabled="isGlobalLoading"
+          >
+            ✕
+          </button>
         </div>
         <div class="dialog-body">
           <p class="dialog-hint">{{ $t('createView.tailorDialogHint') }}</p>
@@ -398,9 +441,7 @@ const currentDetailId = computed(() => resumeDetails.value[activeTab.value]?.id 
 
 // ── Version control ───────────────────────────────────────────
 const isHistoryPanelOpen = ref(false)
-const { versions, loadVersions, snapshot, removeVersion } = useVersion(
-  () => currentDetailId.value,
-)
+const { versions, loadVersions, snapshot, removeVersion } = useVersion(() => currentDetailId.value)
 
 watch(currentDetailId, (id) => {
   if (id) loadVersions()
@@ -479,14 +520,17 @@ const wordCount = computed(() => {
 const charCount = computed(() => (editors.value[activeTab.value] || '').length)
 
 const hasUnsavedChanges = computed(() =>
-  editors.value.some((content, i) => content !== (savedContent.value[i] ?? ''))
+  editors.value.some((content, i) => content !== (savedContent.value[i] ?? '')),
 )
 
-watch(() => editors.value[activeTab.value], (newVal, oldVal) => {
-  if (newVal === undefined || newVal === oldVal) return
-  const saved = savedContent.value[activeTab.value] ?? ''
-  saveStatus.value = newVal === saved ? 'saved' : 'unsaved'
-})
+watch(
+  () => editors.value[activeTab.value],
+  (newVal, oldVal) => {
+    if (newVal === undefined || newVal === oldVal) return
+    const saved = savedContent.value[activeTab.value] ?? ''
+    saveStatus.value = newVal === saved ? 'saved' : 'unsaved'
+  },
+)
 
 // Keyboard shortcut Cmd+S / Ctrl+S
 const handleKeyboardSave = (e: KeyboardEvent) => {
@@ -500,7 +544,10 @@ const handleKeyboardSave = (e: KeyboardEvent) => {
 onBeforeRouteLeave((_to, _from, next) => {
   if (hasUnsavedChanges.value) {
     const confirmed = window.confirm(t('createView.unsavedLeaveWarning'))
-    if (!confirmed) { next(false); return }
+    if (!confirmed) {
+      next(false)
+      return
+    }
   }
   next()
 })
@@ -537,7 +584,16 @@ onMounted(() => {
     editors.value = ['']
     savedContent.value = ['']
     resumeDetails.value = [
-      { id: '', resumeId: '', name: newResumeTitle, language: '', content: '', isDefault: true, createTime: '', lastModifyTime: '' },
+      {
+        id: '',
+        resumeId: '',
+        name: newResumeTitle,
+        language: '',
+        content: '',
+        isDefault: true,
+        createTime: '',
+        lastModifyTime: '',
+      },
     ]
   }
 
@@ -585,11 +641,28 @@ const onAdd = async () => {
 
   await withLoading(
     async () => {
-      const newDetail = await resumeDetailService.createResumeDetailFromExisting(existingResumeDetailId, language)
+      const newDetail = await resumeDetailService.createResumeDetailFromExisting(
+        existingResumeDetailId,
+        language,
+      )
 
       let cleanName = originalName
       const codes = [
-        'EN', 'JA', 'ZH', 'ES', 'FR', 'DE', 'IT', 'PT', 'RU', 'KO', 'TH', 'VI', 'AR', 'HI', 'TR',
+        'EN',
+        'JA',
+        'ZH',
+        'ES',
+        'FR',
+        'DE',
+        'IT',
+        'PT',
+        'RU',
+        'KO',
+        'TH',
+        'VI',
+        'AR',
+        'HI',
+        'TR',
       ]
       codes.forEach((code) => {
         const patternDash = new RegExp(` - ${code}$`, 'i')
@@ -616,7 +689,9 @@ const onAdd = async () => {
       activeTab.value = tabs.value.length - 1
 
       const languageDisplayName = getLanguageDisplayName(language)
-      toast.success('toast.success.resumeLanguageAdded', undefined, { language: languageDisplayName })
+      toast.success('toast.success.resumeLanguageAdded', undefined, {
+        language: languageDisplayName,
+      })
     },
     { id: 'create-language-version', message: commonMessages.creating },
   )
@@ -642,7 +717,11 @@ const onSave = async (index: number) => {
             return
           }
         }
-        const newDetail = await resumeDetailService.createResumeDetail({ ...detail, content, name: tabs.value[index] })
+        const newDetail = await resumeDetailService.createResumeDetail({
+          ...detail,
+          content,
+          name: tabs.value[index],
+        })
         resumeDetails.value[index] = newDetail
         savedContent.value[index] = content
         if (newDetail.resumeId) {
@@ -656,7 +735,9 @@ const onSave = async (index: number) => {
       }
       saveStatus.value = 'saved'
       if (savedStatusTimer) clearTimeout(savedStatusTimer)
-      savedStatusTimer = setTimeout(() => { saveStatus.value = 'idle' }, 3000)
+      savedStatusTimer = setTimeout(() => {
+        saveStatus.value = 'idle'
+      }, 3000)
       toast.success('toast.success.resumeSaveSuccess')
       // Background snapshot — fire-and-forget, no loading overlay
       snapshot(content)
@@ -722,7 +803,10 @@ const cancelEdit = () => {
 
 const saveTabName = async (index: number) => {
   const newName = editingTabName.value.trim()
-  if (!newName) { cancelEdit(); return }
+  if (!newName) {
+    cancelEdit()
+    return
+  }
 
   const detail = resumeDetails.value[index]
   if (detail.id && newName !== detail.name) {
@@ -765,7 +849,10 @@ const runTailor = async () => {
   isTailorDialogActive.value = false
   await withLoading(
     async () => {
-      const tailoredContent = await resumeDetailService.tailorResume(currentDetailId.value, jobDescription.value)
+      const tailoredContent = await resumeDetailService.tailorResume(
+        currentDetailId.value,
+        jobDescription.value,
+      )
       editors.value[activeTab.value] = tailoredContent
       toast.success(t('createView.tailorSuccess'))
     },
@@ -845,15 +932,15 @@ const onApplyProposal = async (content: string) => {
 
 <style scoped>
 .noir-create {
-  --bg:       #FAFAFA;
-  --surface:  #F0F0F0;
-  --border:   #D4D4D4;
-  --text:     #121212;
-  --muted:    #666666;
-  --gold:     #121212;
+  --bg: #fafafa;
+  --surface: #f0f0f0;
+  --border: #d4d4d4;
+  --text: #121212;
+  --muted: #666666;
+  --gold: #121212;
   --gold-dim: #888888;
-  --ink:      #FFFFFF;
-  --blue:     #1e4a6e;
+  --ink: #ffffff;
+  --blue: #1e4a6e;
 
   position: fixed;
   top: var(--v-layout-top);
@@ -919,7 +1006,9 @@ const onApplyProposal = async (content: string) => {
   padding: 0 12px !important;
   height: 48px !important;
   opacity: 1 !important;
-  transition: color 0.2s, background 0.2s !important;
+  transition:
+    color 0.2s,
+    background 0.2s !important;
 }
 
 :deep(.v-tab--selected) {
@@ -928,7 +1017,9 @@ const onApplyProposal = async (content: string) => {
   border-bottom: 2px solid var(--gold) !important;
 }
 
-:deep(.v-tabs__slider) { display: none !important; }
+:deep(.v-tabs__slider) {
+  display: none !important;
+}
 
 .tab-label {
   max-width: 130px;
@@ -949,7 +1040,9 @@ const onApplyProposal = async (content: string) => {
   padding: 0 !important;
 }
 
-.tab-star { color: var(--gold) !important; }
+.tab-star {
+  color: var(--gold) !important;
+}
 
 .tab-close {
   color: #444444 !important;
@@ -959,7 +1052,9 @@ const onApplyProposal = async (content: string) => {
   margin-left: 4px !important;
 }
 
-.tab-close:hover { color: #888888 !important; }
+.tab-close:hover {
+  color: #888888 !important;
+}
 
 /* ── Action Stamps ───────────────────────────────────────── */
 .action-stamps {
@@ -991,21 +1086,41 @@ const onApplyProposal = async (content: string) => {
 .stamp:hover {
   color: var(--text);
   border-color: var(--border);
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
-.stamp--gold { color: var(--gold-dim); }
-.stamp--gold:hover { color: var(--gold); border-color: var(--gold-dim); }
+.stamp--gold {
+  color: var(--gold-dim);
+}
+.stamp--gold:hover {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+}
 
-.stamp--blue { color: #4a7fa5; }
-.stamp--blue:hover { color: #6aa5cc; border-color: var(--blue); }
+.stamp--blue {
+  color: #4a7fa5;
+}
+.stamp--blue:hover {
+  color: #6aa5cc;
+  border-color: var(--blue);
+}
 
-.stamp--danger { color: #888888; }
-.stamp--danger:hover { color: #F5F5F5; border-color: #666666; }
+.stamp--danger {
+  color: #888888;
+}
+.stamp--danger:hover {
+  color: #f5f5f5;
+  border-color: #666666;
+}
 
-.stamp--icon { padding: 0.35rem; }
+.stamp--icon {
+  padding: 0.35rem;
+}
 
-.stamp:disabled { opacity: 0.35; cursor: not-allowed; }
+.stamp:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 
 /* ── Editor ──────────────────────────────────────────────── */
 .editor-wrap {
@@ -1025,13 +1140,13 @@ const onApplyProposal = async (content: string) => {
 
 /* Override v-md-editor to light theme */
 :deep(.v-md-editor) {
-  background: #FAFAFA !important;
+  background: #fafafa !important;
   border: none !important;
   border-radius: 0 !important;
 }
 
 :deep(.v-md-editor__toolbar) {
-  background: #F0F0F0 !important;
+  background: #f0f0f0 !important;
   border-bottom: 1px solid var(--border) !important;
 }
 
@@ -1041,7 +1156,7 @@ const onApplyProposal = async (content: string) => {
 
 :deep(.v-md-editor__toolbar-item:hover) {
   color: var(--text) !important;
-  background: rgba(0,0,0,0.04) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
 }
 
 /* ── Set-as-default star button ─────────────────────────── */
@@ -1049,7 +1164,9 @@ const onApplyProposal = async (content: string) => {
   font-size: 15px;
   line-height: 28px;
   color: var(--muted) !important;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
 }
 
 :deep(.v-md-editor__toolbar-item-set-default.v-md-editor__toolbar-item--active) {
@@ -1062,15 +1179,15 @@ const onApplyProposal = async (content: string) => {
 }
 
 :deep(.v-md-editor__editor-wrapper) {
-  background: #FAFAFA !important;
+  background: #fafafa !important;
 }
 
 :deep(.codemirror-wrapper) {
-  background: #FAFAFA !important;
+  background: #fafafa !important;
 }
 
 :deep(.CodeMirror) {
-  background: #FAFAFA !important;
+  background: #fafafa !important;
   color: #121212 !important;
   font-family: 'IBM Plex Mono', monospace !important;
   font-size: 14px !important;
@@ -1078,28 +1195,32 @@ const onApplyProposal = async (content: string) => {
 }
 
 :deep(.CodeMirror-gutters) {
-  background: #F0F0F0 !important;
+  background: #f0f0f0 !important;
   border-right: 1px solid var(--border) !important;
 }
 
-:deep(.CodeMirror-linenumber) { color: var(--muted) !important; }
+:deep(.CodeMirror-linenumber) {
+  color: var(--muted) !important;
+}
 
 :deep(.v-md-editor__preview-wrapper) {
-  background: #F5F5F5 !important;
+  background: #f5f5f5 !important;
   border-left: 1px solid var(--border) !important;
 }
 
 /* ── Dialogs ─────────────────────────────────────────────── */
 .noir-dialog {
-  background: #F0F0F0;
+  background: #f0f0f0;
   border: 1.5px solid var(--border);
-  box-shadow: 6px 6px 0 #AAAAAA;
+  box-shadow: 6px 6px 0 #aaaaaa;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
 }
 
-.noir-dialog--sm { max-width: 400px; }
+.noir-dialog--sm {
+  max-width: 400px;
+}
 
 /* ── Sync dialog ─────────────────────────────────────────── */
 .sync-detective {
@@ -1122,7 +1243,9 @@ const onApplyProposal = async (content: string) => {
   animation: draw-check 0.5s ease-out 0.3s forwards;
 }
 @keyframes draw-check {
-  to { stroke-dashoffset: 0; }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* cigarette ember */
@@ -1130,18 +1253,40 @@ const onApplyProposal = async (content: string) => {
   animation: ember 2.5s ease-in-out infinite alternate;
 }
 @keyframes ember {
-  from { fill: #cc4400; }
-  to   { fill: #ff6622; opacity: 0.7; }
+  from {
+    fill: #cc4400;
+  }
+  to {
+    fill: #ff6622;
+    opacity: 0.7;
+  }
 }
 
 /* smoke */
-.det-smoke { animation: det-drift 3s ease-out infinite; }
-.s1 { animation-delay: 0s;   opacity: 0.55; }
-.s2 { animation-delay: 0.7s; opacity: 0.4;  }
-.s3 { animation-delay: 1.4s; opacity: 0.25; }
+.det-smoke {
+  animation: det-drift 3s ease-out infinite;
+}
+.s1 {
+  animation-delay: 0s;
+  opacity: 0.55;
+}
+.s2 {
+  animation-delay: 0.7s;
+  opacity: 0.4;
+}
+.s3 {
+  animation-delay: 1.4s;
+  opacity: 0.25;
+}
 @keyframes det-drift {
-  0%   { transform: translate(0,0)     scale(1);   opacity: inherit; }
-  100% { transform: translate(-3px,-20px) scale(2); opacity: 0; }
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: inherit;
+  }
+  100% {
+    transform: translate(-3px, -20px) scale(2);
+    opacity: 0;
+  }
 }
 
 .sync-body {
@@ -1192,8 +1337,12 @@ const onApplyProposal = async (content: string) => {
   padding: 0;
 }
 
-.dialog-close:hover { color: var(--text); }
-.dialog-close:disabled { opacity: 0.4; }
+.dialog-close:hover {
+  color: var(--text);
+}
+.dialog-close:disabled {
+  opacity: 0.4;
+}
 
 .dialog-body {
   padding: 1.5rem;
@@ -1247,7 +1396,7 @@ const onApplyProposal = async (content: string) => {
 .other-lang-select {
   border: 1px solid var(--border);
   padding: 1rem;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Noir select */
@@ -1256,7 +1405,9 @@ const onApplyProposal = async (content: string) => {
   border-radius: 0 !important;
 }
 
-:deep(.noir-select .v-field__outline) { color: var(--border) !important; }
+:deep(.noir-select .v-field__outline) {
+  color: var(--border) !important;
+}
 
 :deep(.noir-textarea .v-field) {
   background: var(--ink) !important;
@@ -1264,16 +1415,23 @@ const onApplyProposal = async (content: string) => {
   font-family: 'IBM Plex Mono', monospace !important;
 }
 
-:deep(.noir-textarea .v-field__outline) { color: var(--border) !important; }
-:deep(.noir-textarea .v-field--focused .v-field__outline) { color: var(--gold-dim) !important; }
-:deep(.noir-textarea textarea) { color: var(--text) !important; line-height: 1.7 !important; }
+:deep(.noir-textarea .v-field__outline) {
+  color: var(--border) !important;
+}
+:deep(.noir-textarea .v-field--focused .v-field__outline) {
+  color: var(--gold-dim) !important;
+}
+:deep(.noir-textarea textarea) {
+  color: var(--text) !important;
+  line-height: 1.7 !important;
+}
 
 /* Noir menu */
 .noir-menu {
-  background: #F0F0F0;
+  background: #f0f0f0;
   border: 1.5px solid var(--border);
   min-width: 160px;
-  box-shadow: 4px 4px 0 #AAAAAA;
+  box-shadow: 4px 4px 0 #aaaaaa;
 }
 
 .noir-menu-item {
@@ -1289,17 +1447,27 @@ const onApplyProposal = async (content: string) => {
   letter-spacing: 0.1em;
   color: var(--muted);
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
   border-bottom: 1px solid var(--border);
 }
 
-.noir-menu-item:last-child { border-bottom: none; }
-.noir-menu-item:hover:not(:disabled) { color: var(--text); background: rgba(0,0,0,0.04); }
-.noir-menu-item:disabled { opacity: 0.35; cursor: not-allowed; }
+.noir-menu-item:last-child {
+  border-bottom: none;
+}
+.noir-menu-item:hover:not(:disabled) {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.04);
+}
+.noir-menu-item:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 
 /* Noir preview */
 :deep(.noir-preview) {
-  background: #F5F5F5 !important;
+  background: #f5f5f5 !important;
   color: var(--text) !important;
   font-family: 'Inter', system-ui, sans-serif !important;
 }
@@ -1340,12 +1508,24 @@ const onApplyProposal = async (content: string) => {
   transition: color 0.3s;
 }
 
-.status-unsaved { color: #c07a00; }
-.status-saving  { color: #4a7fa5; }
-.status-saved   { color: #4a8a5a; }
+.status-unsaved {
+  color: #c07a00;
+}
+.status-saving {
+  color: #4a7fa5;
+}
+.status-saved {
+  color: #4a8a5a;
+}
 
-@keyframes spin { to { transform: rotate(360deg); } }
-.status-spin { animation: spin 0.8s linear infinite; }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.status-spin {
+  animation: spin 0.8s linear infinite;
+}
 
 .status-stat {
   font-family: 'IBM Plex Mono', monospace;
@@ -1354,7 +1534,12 @@ const onApplyProposal = async (content: string) => {
   color: var(--gold-dim);
 }
 
-.status-sep { color: var(--border); font-size: 0.7rem; }
+.status-sep {
+  color: var(--border);
+  font-size: 0.7rem;
+}
 
-.status-hint { opacity: 0.55; }
+.status-hint {
+  opacity: 0.55;
+}
 </style>
