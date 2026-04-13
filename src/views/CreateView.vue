@@ -59,14 +59,14 @@
             <span>{{ $t('common.sync') }}</span>
           </button>
 
-          <button class="stamp stamp--blue" @click="openPreview" :title="$t('createView.tooltips.preview')">
-            <v-icon size="14">mdi-eye</v-icon>
-            <span>{{ $t('createView.preview') }}</span>
-          </button>
-
           <button class="stamp stamp--gold" @click="openTailorDialog" :title="$t('createView.tooltips.tailorForJD')">
             <v-icon size="14">mdi-magic-staff</v-icon>
             <span>{{ $t('createView.tailorForJD') }}</span>
+          </button>
+
+          <button class="stamp" @click="openHistoryPanel" :title="$t('version.history')">
+            <v-icon size="14">mdi-history</v-icon>
+            <span>{{ $t('version.history') }}</span>
           </button>
 
           <v-menu>
@@ -79,14 +79,6 @@
               <button class="noir-menu-item" @click="exportCurrentTabAsPdf">
                 <v-icon size="14" class="me-2">mdi-file-pdf-box</v-icon>
                 {{ $t('createView.exportPdf') }}
-              </button>
-              <button
-                class="noir-menu-item"
-                @click="setCurrentTabAsDefault"
-                :disabled="!currentDetailId || resumeDetails[activeTab]?.isDefault"
-              >
-                <v-icon size="14" class="me-2">mdi-star-outline</v-icon>
-                {{ $t('createView.setDefault') }}
               </button>
             </div>
           </v-menu>
@@ -102,6 +94,9 @@
             v-model="editors[index]"
             @save="onSave(index)"
             :height="editorHeight"
+            :toolbar="starToolbar"
+            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save set-default"
+            right-toolbar="toc sync-scroll fullscreen"
           >{{ tab }}</v-md-editor>
         </v-tabs-window-item>
       </v-tabs-window>
@@ -228,15 +223,66 @@
     </v-dialog>
 
     <!-- ── Sync Dialog ────────────────────────────────────── -->
-    <v-dialog v-model="isSyncDialogActive" width="auto">
-      <div class="noir-dialog noir-dialog--sm">
-        <div class="dialog-header">
-          <h3 class="dialog-title">{{ $t('createView.confirmSync') }}</h3>
+    <v-dialog v-model="isSyncDialogActive" width="360">
+      <div class="noir-dialog sync-dialog">
+        <!-- Detective illustration -->
+        <div class="sync-detective">
+          <svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="sync-svg">
+            <!-- Hat crown -->
+            <rect x="52" y="8" width="42" height="32" rx="5" fill="#111"/>
+            <rect x="42" y="37" width="62" height="8" rx="4" fill="#1a1a1a"/>
+            <rect x="52" y="32" width="42" height="7" fill="#0c0c0c"/>
+            <!-- Head -->
+            <ellipse cx="73" cy="57" rx="22" ry="23" fill="#2c2c2c"/>
+            <ellipse cx="73" cy="66" rx="16" ry="12" fill="#222"/>
+            <!-- Eyes -->
+            <ellipse cx="64" cy="53" rx="4" ry="3" fill="#0e0e0e"/>
+            <ellipse cx="83" cy="53" rx="4" ry="3" fill="#0e0e0e"/>
+            <circle cx="65" cy="53" r="1.8" fill="#080808"/>
+            <circle cx="84" cy="53" r="1.8" fill="#080808"/>
+            <circle cx="65" cy="52" r="0.7" fill="#ccc" opacity="0.5"/>
+            <circle cx="84" cy="52" r="0.7" fill="#ccc" opacity="0.5"/>
+            <!-- Satisfied smirk -->
+            <path d="M65 67 Q73 72 81 67" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Neck -->
+            <rect x="66" y="79" width="13" height="10" rx="2" fill="#2a2a2a"/>
+            <!-- Coat -->
+            <path d="M40 90 L32 130 L114 130 L106 90 Z" fill="#1a1a1a"/>
+            <path d="M73 100 L52 90 L58 118 Z" fill="#111"/>
+            <path d="M73 100 L94 90 L88 118 Z" fill="#111"/>
+            <path d="M52 90 L62 80 L73 100 Z" fill="#1c1c1c"/>
+            <path d="M94 90 L84 80 L73 100 Z" fill="#1c1c1c"/>
+            <!-- Left arm — pointing at document -->
+            <path d="M40 90 L20 108 L27 112 L47 96 Z" fill="#141414"/>
+            <ellipse cx="22" cy="111" rx="6" ry="4" fill="#2a2a2a"/>
+            <!-- Finger pointing -->
+            <line x1="18" y1="110" x2="10" y2="107" stroke="#2a2a2a" stroke-width="3" stroke-linecap="round"/>
+            <!-- Document / case file -->
+            <rect x="0" y="95" width="14" height="18" rx="1" fill="#e8e0d0" opacity="0.9"/>
+            <line x1="2" y1="100" x2="12" y2="100" stroke="#bbb" stroke-width="1"/>
+            <line x1="2" y1="103" x2="12" y2="103" stroke="#bbb" stroke-width="1"/>
+            <line x1="2" y1="106" x2="9"  y2="106" stroke="#bbb" stroke-width="1"/>
+            <!-- Check mark on document -->
+            <path d="M3 109 L6 112 L12 107" stroke="#2a7a2a" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="check-mark"/>
+            <!-- Right arm relaxed -->
+            <path d="M106 90 L120 108 L113 112 L99 96 Z" fill="#141414"/>
+            <ellipse cx="117" cy="111" rx="6" ry="4" fill="#2a2a2a"/>
+            <!-- Cigarette -->
+            <rect x="118" y="109" width="13" height="2.5" rx="1" fill="#d4c9a8"/>
+            <circle cx="119" cy="110" r="2" class="cig-ember" fill="#cc4400"/>
+            <!-- Smoke -->
+            <circle cx="119" cy="104" r="1.8" class="det-smoke s1" fill="#888"/>
+            <circle cx="117" cy="98"  r="1.4" class="det-smoke s2" fill="#777"/>
+            <circle cx="120" cy="92"  r="0.9" class="det-smoke s3" fill="#666"/>
+          </svg>
         </div>
-        <div class="dialog-body">
-          <p class="dialog-hint">{{ $t('createView.currentTabTitle', { title: tabs[activeTab] }) }}</p>
+
+        <!-- Message -->
+        <div class="sync-body">
+          <p class="sync-msg">{{ $t('createView.syncHint') }}</p>
         </div>
-        <div class="dialog-footer">
+
+        <div class="sync-footer">
           <button class="stamp" @click="isSyncDialogActive = false">{{ $t('common.cancel') }}</button>
           <button class="stamp stamp--gold" @click="syncTab">{{ $t('common.sync') }}</button>
         </div>
@@ -262,6 +308,15 @@
         </div>
       </div>
     </v-dialog>
+
+    <!-- ── Version History Panel ─────────────────────────── -->
+    <VersionHistoryPanel
+      :open="isHistoryPanelOpen"
+      :versions="versions"
+      @close="isHistoryPanelOpen = false"
+      @restore="onRestoreVersion"
+      @delete="onDeleteVersion"
+    />
 
     <!-- ── Tailor Dialog ──────────────────────────────────── -->
     <v-dialog v-model="isTailorDialogActive" max-width="680px" persistent>
@@ -308,10 +363,12 @@ import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
+import { useVersion } from '@/composables/useVersion'
 import type { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
+import VersionHistoryPanel from '@/components/version/VersionHistoryPanel.vue'
 
 const { t } = useI18n()
 const { withLoading, commonMessages, isGlobalLoading } = useLoading()
@@ -332,6 +389,16 @@ const activeTab = ref(0)
 const editors = ref(resumeDetails.value.map((detail) => detail.content))
 
 const currentDetailId = computed(() => resumeDetails.value[activeTab.value]?.id || '')
+
+// ── Version control ───────────────────────────────────────────
+const isHistoryPanelOpen = ref(false)
+const { versions, loadVersions, snapshot, removeVersion } = useVersion(
+  () => currentDetailId.value,
+)
+
+watch(currentDetailId, (id) => {
+  if (id) loadVersions()
+})
 
 // Refs for ResizeObserver-based height calculation
 const createContainerRef = ref<HTMLElement | null>(null)
@@ -601,6 +668,8 @@ const onSave = async (index: number) => {
       if (savedStatusTimer) clearTimeout(savedStatusTimer)
       savedStatusTimer = setTimeout(() => { saveStatus.value = 'idle' }, 3000)
       toast.success('toast.success.resumeSaveSuccess')
+      // Background snapshot — fire-and-forget, no loading overlay
+      snapshot(content)
     },
     { id: 'save-resume', message: commonMessages.saving },
   )
@@ -639,6 +708,8 @@ const syncTab = async () => {
   isSyncDialogActive.value = false
   await withLoading(
     async () => {
+      // Save current editor content first so backend reads the latest version
+      await onSave(activeTab.value)
       await resumeDetailService.syncTranslations(activeResumeDetailID)
       await loadResumeDetails(currentResumeId.value!)
       toast.success('toast.success.resumeSyncSuccess')
@@ -687,8 +758,6 @@ const saveTabName = async (index: number) => {
   }
 }
 
-const openPreview = () => { isPreviewActive.value = true }
-
 const openTailorDialog = () => {
   if (!currentDetailId.value) {
     toast.warning(t('createView.unsavedBeforeAction'))
@@ -733,6 +802,15 @@ const exportCurrentTabAsPdf = async () => {
   )
 }
 
+const starToolbar = {
+  'set-default': {
+    title: () => t('createView.setDefault'),
+    text: '★',
+    active: () => resumeDetails.value[activeTab.value]?.isDefault === true,
+    action: () => setCurrentTabAsDefault(),
+  },
+}
+
 const setCurrentTabAsDefault = async () => {
   if (!currentDetailId.value) {
     toast.warning(t('createView.unsavedBeforeAction'))
@@ -746,6 +824,27 @@ const setCurrentTabAsDefault = async () => {
     },
     { id: 'set-default', message: commonMessages.updating },
   )
+}
+
+const openHistoryPanel = () => {
+  if (!currentDetailId.value) {
+    toast.warning(t('createView.unsavedBeforeAction'))
+    return
+  }
+  loadVersions()
+  isHistoryPanelOpen.value = true
+}
+
+const onRestoreVersion = (content: string) => {
+  editors.value[activeTab.value] = content
+  isHistoryPanelOpen.value = false
+  saveStatus.value = 'unsaved'
+  scheduleAutoSave(activeTab.value)
+  toast.success('version.restoreSuccess')
+}
+
+const onDeleteVersion = async (id: string) => {
+  await removeVersion(id)
 }
 </script>
 
@@ -950,6 +1049,23 @@ const setCurrentTabAsDefault = async () => {
   background: rgba(0,0,0,0.04) !important;
 }
 
+/* ── Set-as-default star button ─────────────────────────── */
+:deep(.v-md-editor__toolbar-item-set-default) {
+  font-size: 15px;
+  line-height: 28px;
+  color: var(--muted) !important;
+  transition: color 0.2s, background 0.2s;
+}
+
+:deep(.v-md-editor__toolbar-item-set-default.v-md-editor__toolbar-item--active) {
+  color: #c8962a !important;
+  background: transparent !important;
+}
+
+:deep(.v-md-editor__toolbar-item-set-default:hover) {
+  color: var(--text) !important;
+}
+
 :deep(.v-md-editor__editor-wrapper) {
   background: #FAFAFA !important;
 }
@@ -989,6 +1105,69 @@ const setCurrentTabAsDefault = async () => {
 }
 
 .noir-dialog--sm { max-width: 400px; }
+
+/* ── Sync dialog ─────────────────────────────────────────── */
+.sync-detective {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0 0.5rem;
+}
+
+.sync-svg {
+  width: 160px;
+  height: auto;
+}
+
+/* check mark draw-on animation */
+.check-mark {
+  stroke-dasharray: 14;
+  stroke-dashoffset: 14;
+  animation: draw-check 0.5s ease-out 0.3s forwards;
+}
+@keyframes draw-check {
+  to { stroke-dashoffset: 0; }
+}
+
+/* cigarette ember */
+.cig-ember {
+  animation: ember 2.5s ease-in-out infinite alternate;
+}
+@keyframes ember {
+  from { fill: #cc4400; }
+  to   { fill: #ff6622; opacity: 0.7; }
+}
+
+/* smoke */
+.det-smoke { animation: det-drift 3s ease-out infinite; }
+.s1 { animation-delay: 0s;   opacity: 0.55; }
+.s2 { animation-delay: 0.7s; opacity: 0.4;  }
+.s3 { animation-delay: 1.4s; opacity: 0.25; }
+@keyframes det-drift {
+  0%   { transform: translate(0,0)     scale(1);   opacity: inherit; }
+  100% { transform: translate(-3px,-20px) scale(2); opacity: 0; }
+}
+
+.sync-body {
+  padding: 1.25rem 1.5rem 0.75rem;
+  text-align: center;
+}
+
+.sync-msg {
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.sync-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem 1.25rem;
+}
 
 .dialog-header {
   display: flex;
