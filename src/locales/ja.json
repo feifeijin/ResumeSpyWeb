@@ -353,6 +353,22 @@
     "goHome": "拠点に戻る",
     "goMyspy": "MySpy を開く"
   },
+  "chat": {
+    "triggerLabel": "探偵に聞く",
+    "online": "勤務中",
+    "thinking": "調査中…",
+    "welcome": "— ケース開始。ポジションを教えてください、書類を調整します。—",
+    "placeholder": "職種、スキル、要件を説明してください…",
+    "send": "送信",
+    "justNow": "今",
+    "proposalLabel": "更新案",
+    "acceptUpdate": "承認して履歴書を更新",
+    "accepted": "適用済み",
+    "dismiss": "却下",
+    "appliedMessage": "書類が更新されました。確認後に保存してください。",
+    "appliedToast": "チャットから履歴書を更新しました。確認後に保存してください。",
+    "error": "回線が切れました。もう一度お試しください。"
+  },
   "version": {
     "history": "履歴",
     "historyLabel": "バージョン履歴",

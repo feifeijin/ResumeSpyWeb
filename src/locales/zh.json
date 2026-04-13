@@ -353,6 +353,22 @@
     "goHome": "返回基地",
     "goMyspy": "打开 MySpy"
   },
+  "chat": {
+    "triggerLabel": "问侦探",
+    "online": "在线",
+    "thinking": "调查中…",
+    "welcome": "— 案件已开启。描述职位，我来为您定制简历。—",
+    "placeholder": "描述职位、技能或要求…",
+    "send": "发送",
+    "justNow": "刚刚",
+    "proposalLabel": "建议更新",
+    "acceptUpdate": "接受并更新简历",
+    "accepted": "已应用",
+    "dismiss": "忽略",
+    "appliedMessage": "您的简历已更新，请确认后保存。",
+    "appliedToast": "简历已根据对话更新，请确认后保存。",
+    "error": "连接中断，请重试。"
+  },
   "version": {
     "history": "历史",
     "historyLabel": "版本历史",

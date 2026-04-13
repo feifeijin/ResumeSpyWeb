@@ -49,16 +49,6 @@
 
         <!-- Action stamps -->
         <div class="action-stamps">
-          <button class="stamp" @click="handleLanguageDialogOpen" :title="$t('createView.tooltips.addLanguage')">
-            <v-icon size="14">mdi-file-account</v-icon>
-            <span>{{ $t('createView.selectLanguage') }}</span>
-          </button>
-
-          <button class="stamp" @click="openSyncDialog" :title="$t('createView.tooltips.sync')">
-            <v-icon size="14">mdi-translate</v-icon>
-            <span>{{ $t('common.sync') }}</span>
-          </button>
-
           <button class="stamp stamp--gold" @click="openTailorDialog" :title="$t('createView.tooltips.tailorForJD')">
             <v-icon size="14">mdi-magic-staff</v-icon>
             <span>{{ $t('createView.tailorForJD') }}</span>
@@ -76,6 +66,14 @@
               </button>
             </template>
             <div class="noir-menu">
+              <button class="noir-menu-item" @click="handleLanguageDialogOpen">
+                <v-icon size="14" class="me-2">mdi-file-account</v-icon>
+                {{ $t('createView.selectLanguage') }}
+              </button>
+              <button class="noir-menu-item" @click="openSyncDialog">
+                <v-icon size="14" class="me-2">mdi-translate</v-icon>
+                {{ $t('common.sync') }}
+              </button>
               <button class="noir-menu-item" @click="exportCurrentTabAsPdf">
                 <v-icon size="14" class="me-2">mdi-file-pdf-box</v-icon>
                 {{ $t('createView.exportPdf') }}
@@ -318,6 +316,13 @@
       @delete="onDeleteVersion"
     />
 
+    <!-- ── Detective Chat Widget ─────────────────────────── -->
+    <DetectiveChatWidget
+      :current-content="editors[activeTab] || ''"
+      :language="resumeDetails[activeTab]?.language ?? undefined"
+      @apply-proposal="onApplyProposal"
+    />
+
     <!-- ── Tailor Dialog ──────────────────────────────────── -->
     <v-dialog v-model="isTailorDialogActive" max-width="680px" persistent>
       <div class="noir-dialog">
@@ -369,6 +374,7 @@ import ResumeDetailService from '@/api/resume-detail-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
 import VersionHistoryPanel from '@/components/version/VersionHistoryPanel.vue'
+import DetectiveChatWidget from '@/components/DetectiveChatWidget.vue'
 
 const { t } = useI18n()
 const { withLoading, commonMessages, isGlobalLoading } = useLoading()
@@ -458,11 +464,10 @@ const jobDescription = ref('')
 
 const isOtherSelected = computed(() => dialog.value === 'OTHER')
 
-// ── Auto-save & status ────────────────────────────────────────
+// ── Save status ───────────────────────────────────────────────
 type SaveStatus = 'idle' | 'unsaved' | 'saving' | 'saved'
 const saveStatus = ref<SaveStatus>('idle')
 const savedContent = ref<string[]>([])
-let autoSaveTimer: ReturnType<typeof setTimeout> | null = null
 let savedStatusTimer: ReturnType<typeof setTimeout> | null = null
 
 const wordCount = computed(() => {
@@ -477,29 +482,16 @@ const hasUnsavedChanges = computed(() =>
   editors.value.some((content, i) => content !== (savedContent.value[i] ?? ''))
 )
 
-const scheduleAutoSave = (index: number) => {
-  const detail = resumeDetails.value[index]
-  if (!detail?.id) return // don't auto-save brand-new unsaved resumes
-  saveStatus.value = 'unsaved'
-  if (autoSaveTimer) clearTimeout(autoSaveTimer)
-  autoSaveTimer = setTimeout(() => onSave(index), 2000)
-}
-
 watch(() => editors.value[activeTab.value], (newVal, oldVal) => {
   if (newVal === undefined || newVal === oldVal) return
   const saved = savedContent.value[activeTab.value] ?? ''
-  if (newVal === saved) {
-    saveStatus.value = 'saved'
-    return
-  }
-  scheduleAutoSave(activeTab.value)
+  saveStatus.value = newVal === saved ? 'saved' : 'unsaved'
 })
 
 // Keyboard shortcut Cmd+S / Ctrl+S
 const handleKeyboardSave = (e: KeyboardEvent) => {
   if ((e.metaKey || e.ctrlKey) && e.key === 's') {
     e.preventDefault()
-    if (autoSaveTimer) { clearTimeout(autoSaveTimer); autoSaveTimer = null }
     onSave(activeTab.value)
   }
 }
@@ -510,7 +502,6 @@ onBeforeRouteLeave((_to, _from, next) => {
     const confirmed = window.confirm(t('createView.unsavedLeaveWarning'))
     if (!confirmed) { next(false); return }
   }
-  if (autoSaveTimer) clearTimeout(autoSaveTimer)
   next()
 })
 
@@ -560,7 +551,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyboardSave)
-  if (autoSaveTimer) clearTimeout(autoSaveTimer)
   if (savedStatusTimer) clearTimeout(savedStatusTimer)
   _ro?.disconnect()
 })
@@ -839,12 +829,17 @@ const onRestoreVersion = (content: string) => {
   editors.value[activeTab.value] = content
   isHistoryPanelOpen.value = false
   saveStatus.value = 'unsaved'
-  scheduleAutoSave(activeTab.value)
   toast.success('version.restoreSuccess')
 }
 
 const onDeleteVersion = async (id: string) => {
   await removeVersion(id)
+}
+
+const onApplyProposal = (content: string) => {
+  editors.value[activeTab.value] = content
+  saveStatus.value = 'unsaved'
+  toast.success(t('chat.appliedToast'))
 }
 </script>
 

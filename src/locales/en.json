@@ -353,6 +353,22 @@
     "goHome": "Return to Base",
     "goMyspy": "Open MySpy"
   },
+  "chat": {
+    "triggerLabel": "Ask Detective",
+    "online": "On duty",
+    "thinking": "Investigating…",
+    "welcome": "— Case open. Describe the role and I'll tailor your dossier. —",
+    "placeholder": "Describe the role, skills, or requirements…",
+    "send": "Send message",
+    "justNow": "just now",
+    "proposalLabel": "Proposed Update",
+    "acceptUpdate": "Accept & Update Resume",
+    "accepted": "Applied",
+    "dismiss": "Dismiss",
+    "appliedMessage": "Your dossier has been updated. Review and save when ready.",
+    "appliedToast": "Resume updated from chat. Review and save.",
+    "error": "The line went dark. Please try again."
+  },
   "version": {
     "history": "History",
     "historyLabel": "Version History",

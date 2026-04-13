@@ -162,7 +162,7 @@ function formatDate(dateStr: string): string {
 .vh-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.3);
   z-index: 2000;
   display: flex;
   justify-content: flex-end;
@@ -176,12 +176,13 @@ function formatDate(dateStr: string): string {
 .vh-panel {
   width: 360px;
   height: 100%;
-  background: #0e0e0e;
-  border-left: 1px solid #2a2a2a;
+  background: #fafafa;
+  border-left: 1.5px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   font-family: 'IBM Plex Mono', monospace;
   overflow: hidden;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.08);
 }
 
 .vh-header {
@@ -189,7 +190,8 @@ function formatDate(dateStr: string): string {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid #e8e8e8;
+  background: #f5f5f5;
 }
 
 .vh-overline {
@@ -197,12 +199,13 @@ function formatDate(dateStr: string): string {
   letter-spacing: 0.15em;
   color: #888;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .vh-close {
   background: none;
   border: none;
-  color: #666;
+  color: #aaa;
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
@@ -211,7 +214,7 @@ function formatDate(dateStr: string): string {
 }
 
 .vh-close:hover {
-  color: #ccc;
+  color: #444;
 }
 
 .vh-controls {
@@ -220,12 +223,13 @@ function formatDate(dateStr: string): string {
   justify-content: space-between;
   padding: 10px 20px;
   min-height: 44px;
-  border-bottom: 1px solid #1a1a1a;
+  border-bottom: 1px solid #ebebeb;
+  background: #fff;
 }
 
 .vh-hint {
   font-size: 10px;
-  color: #666;
+  color: #999;
   letter-spacing: 0.05em;
 }
 
@@ -234,7 +238,7 @@ function formatDate(dateStr: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #444;
+  color: #bbb;
   font-size: 12px;
   letter-spacing: 0.08em;
 }
@@ -242,29 +246,34 @@ function formatDate(dateStr: string): string {
 .vh-list {
   list-style: none;
   margin: 0;
-  padding: 8px 0;
+  padding: 6px 0;
   overflow-y: auto;
   flex: 1;
+  background: #fff;
 }
+
+.vh-list::-webkit-scrollbar { width: 4px; }
+.vh-list::-webkit-scrollbar-track { background: transparent; }
+.vh-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
 
 .vh-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   padding: 10px 20px;
-  border-bottom: 1px solid #181818;
+  border-bottom: 1px solid #f0f0f0;
   cursor: default;
   transition: background 0.1s;
 }
 
 .vh-item:hover {
-  background: #141414;
+  background: #f8f8f8;
 }
 
 .vh-item--selected {
-  background: #1a1a1a;
-  border-left: 2px solid #c8a951;
-  padding-left: 18px;
+  background: #fdf8ed;
+  border-left: 2.5px solid #c8a951;
+  padding-left: 17px;
 }
 
 .vh-item-check {
@@ -288,16 +297,17 @@ function formatDate(dateStr: string): string {
 
 .vh-item-label {
   font-size: 11px;
-  color: #ccc;
+  color: #222;
   letter-spacing: 0.06em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
 }
 
 .vh-item-preview {
   font-size: 10px;
-  color: #555;
+  color: #888;
   line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
@@ -307,7 +317,7 @@ function formatDate(dateStr: string): string {
 
 .vh-item-date {
   font-size: 9px;
-  color: #444;
+  color: #bbb;
   letter-spacing: 0.05em;
 }
 
@@ -319,8 +329,8 @@ function formatDate(dateStr: string): string {
 
 .vh-btn-sm {
   background: none;
-  border: 1px solid #2a2a2a;
-  color: #666;
+  border: 1px solid #e0e0e0;
+  color: #aaa;
   cursor: pointer;
   font-size: 11px;
   width: 24px;
@@ -328,53 +338,60 @@ function formatDate(dateStr: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 2px;
-  transition: color 0.15s, border-color 0.15s;
+  border-radius: 4px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
 .vh-btn-sm:hover {
-  color: #ccc;
-  border-color: #555;
+  color: #333;
+  border-color: #bbb;
+  background: #f0f0f0;
 }
 
 .vh-btn-del:hover {
-  color: #e07070;
-  border-color: #e07070;
+  color: #c05050;
+  border-color: #d08080;
+  background: #fff0f0;
 }
 
 .vh-btn {
   background: none;
-  border: 1px solid #2a2a2a;
-  color: #888;
+  border: 1px solid #d8d8d8;
+  color: #777;
   cursor: pointer;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
   letter-spacing: 0.12em;
   padding: 5px 12px;
+  border-radius: 4px;
   transition: all 0.15s;
 }
 
 .vh-btn:hover {
-  color: #ccc;
-  border-color: #555;
+  color: #333;
+  border-color: #aaa;
+  background: #f5f5f5;
 }
 
 .vh-btn.stamp {
   border-color: #c8a951;
-  color: #c8a951;
+  color: #a08030;
 }
 
 .vh-btn.stamp:hover {
   background: #c8a951;
-  color: #0e0e0e;
+  color: #fff;
+  border-color: #c8a951;
 }
 
 /* Restore confirm modal */
 .vh-modal {
-  background: #111;
-  border: 1px solid #2a2a2a;
+  background: #f8f8f8;
+  border: 1.5px solid #e0e0e0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   padding: 28px 32px;
   min-width: 300px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -383,7 +400,7 @@ function formatDate(dateStr: string): string {
 
 .vh-modal-text {
   font-size: 12px;
-  color: #ccc;
+  color: #333;
   letter-spacing: 0.06em;
   line-height: 1.6;
   margin: 0;
