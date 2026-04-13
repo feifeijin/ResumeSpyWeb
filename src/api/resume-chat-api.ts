@@ -6,9 +6,17 @@ export interface ChatMessage {
   content: string
 }
 
+export interface OptionSet {
+  label: string
+  items: string[]
+  category: string
+  multiple: boolean
+}
+
 export interface ChatResponse {
   reply: string
   proposedContent: string | null
+  options: OptionSet | null
 }
 
 class ResumeChatService {

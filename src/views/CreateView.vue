@@ -836,10 +836,10 @@ const onDeleteVersion = async (id: string) => {
   await removeVersion(id)
 }
 
-const onApplyProposal = (content: string) => {
+const onApplyProposal = async (content: string) => {
   editors.value[activeTab.value] = content
   saveStatus.value = 'unsaved'
-  toast.success(t('chat.appliedToast'))
+  await onSave(activeTab.value)
 }
 </script>
 

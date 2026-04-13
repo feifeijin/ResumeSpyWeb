@@ -83,16 +83,90 @@
           </div>
 
           <template v-for="(msg, i) in messages" :key="i">
-            <!-- Regular message -->
+            <!-- Message bubble — inline [[chip]] tokens rendered as quick-reply buttons -->
             <div
               class="dc-msg"
               :class="msg.role === 'user' ? 'dc-msg--user' : 'dc-msg--bot'"
             >
-              <div class="dc-msg-bubble" v-html="renderMarkdown(msg.content)" />
+              <div class="dc-msg-bubble">
+                <template v-for="(part, pi) in parseMessageParts(msg.content)" :key="pi">
+                  <span v-if="part.type === 'text'" v-html="renderMarkdown(part.content)" />
+                  <button
+                    v-else
+                    class="dc-inline-chip"
+                    :class="{ 'dc-inline-chip--sent': msg.submittedSelections?.includes(part.content) }"
+                    :disabled="!!msg.submittedSelections || isThinking"
+                    @click="quickReply(part.content, i)"
+                  >{{ part.content }}</button>
+                </template>
+              </div>
               <div class="dc-msg-time">{{ msg.time }}</div>
             </div>
 
-            <!-- Proposal card (attached to the assistant message that has a proposal) -->
+            <!-- Option card — multi-select (multiple: true) or full list for single-select -->
+            <div v-if="msg.role === 'assistant' && msg.options && !resumeGenerated" class="dc-options-card"
+                 :class="{ 'dc-options-card--single': !msg.options.multiple }">
+              <div class="dc-options-label">{{ msg.options.label }}</div>
+              <div class="dc-options-pills">
+                <button
+                  v-for="item in msg.options.items"
+                  :key="item"
+                  class="dc-pill"
+                  :class="{
+                    'dc-pill--selected':  msg.options.multiple && isActiveOptions(i) && pendingSelections.has(item),
+                    'dc-pill--submitted': msg.submittedSelections?.includes(item),
+                    'dc-pill--frozen':    !!msg.submittedSelections,
+                  }"
+                  :disabled="!!msg.submittedSelections || isThinking"
+                  @click="msg.options!.multiple
+                    ? (isActiveOptions(i) && toggleOption(item))
+                    : quickReply(item, i)"
+                >
+                  {{ item }}
+                </button>
+              </div>
+              <!-- Multi-select hint / frozen summary -->
+              <div v-if="msg.options.multiple && isActiveOptions(i) && pendingSelections.size > 0"
+                   class="dc-options-hint">
+                {{ pendingSelections.size }} selected — press Send ↑
+              </div>
+              <div v-else-if="msg.submittedSelections?.length" class="dc-options-submitted">
+                ✓ {{ msg.submittedSelections.join(' · ') }}
+              </div>
+            </div>
+
+            <!-- Auto-detected quick replies (fallback when AI skips structured options) -->
+            <template v-if="msg.role === 'assistant' && !msg.options && !resumeGenerated">
+              <div
+                v-if="detectOptionsFromText(msg.content)?.length"
+                class="dc-options-card dc-options-card--auto"
+              >
+                <div class="dc-options-label">Quick replies <span class="dc-options-label-hint">— tap to add, send when ready</span></div>
+                <div class="dc-options-pills">
+                  <button
+                    v-for="item in detectOptionsFromText(msg.content)"
+                    :key="item"
+                    class="dc-pill"
+                    :class="{
+                      'dc-pill--selected':  autoActiveIdx === i && pendingSelections.has(item),
+                      'dc-pill--submitted': msg.submittedSelections?.includes(item),
+                      'dc-pill--frozen':    !!msg.submittedSelections,
+                    }"
+                    :disabled="!!msg.submittedSelections || isThinking"
+                    @click="toggleAutoReply(item, i)"
+                  >{{ item }}</button>
+                </div>
+                <div v-if="autoActiveIdx === i && pendingSelections.size > 0 && !msg.submittedSelections"
+                     class="dc-options-hint">
+                  {{ pendingSelections.size }} selected — press Send ↑
+                </div>
+                <div v-else-if="msg.submittedSelections?.length" class="dc-options-submitted">
+                  ✓ {{ msg.submittedSelections.join(' · ') }}
+                </div>
+              </div>
+            </template>
+
+            <!-- Proposal card -->
             <div v-if="msg.proposedContent" class="dc-proposal-card">
               <div class="dc-proposal-header">
                 <span class="dc-proposal-overline">— {{ t('chat.proposalLabel') }} —</span>
@@ -124,13 +198,23 @@
           </div>
         </div>
 
+        <!-- Generate button -->
+        <div class="dc-generate-bar">
+          <button class="dc-generate-btn" @click="generateResume" :disabled="isThinking">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.83-4.4z" clip-rule="evenodd"/>
+            </svg>
+            Generate Resume
+          </button>
+        </div>
+
         <!-- Input -->
         <form class="dc-input-area" @submit.prevent="send" aria-label="Message input">
           <textarea
             ref="inputEl"
             v-model="draft"
             class="dc-input"
-            :placeholder="t('chat.placeholder')"
+            :placeholder="pendingSelections.size > 0 ? `${pendingSelections.size} selected — add a note or send` : t('chat.placeholder')"
             :disabled="isThinking"
             rows="1"
             @keydown.enter.exact.prevent="send"
@@ -141,7 +225,7 @@
           <button
             type="submit"
             class="dc-send-btn"
-            :disabled="!draft.trim() || isThinking"
+            :disabled="(!draft.trim() && pendingSelections.size === 0) || isThinking"
             :aria-label="t('chat.send')"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">
@@ -157,12 +241,15 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ResumeChatService, { type ChatMessage } from '@/api/resume-chat-api'
+import { useLoading } from '@/composables/useLoading'
+import ResumeChatService, { type ChatMessage, type OptionSet } from '@/api/resume-chat-api'
 
 interface ChatEntry {
   role: 'user' | 'assistant'
   content: string
   proposedContent?: string | null
+  options?: OptionSet | null
+  submittedSelections?: string[]
   time: string
 }
 
@@ -176,10 +263,13 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { startLoading, stopLoading } = useLoading()
 const api = new ResumeChatService()
 
 const isOpen = ref(false)
 const isThinking = ref(false)
+const isGenerating = ref(false)   // true while the Generate button flow is in-flight
+const resumeGenerated = ref(false) // true once a resume has been successfully generated
 const draft = ref('')
 const accepted = ref(false)
 const messages = ref<ChatEntry[]>([])
@@ -188,6 +278,44 @@ const inputEl = ref<HTMLTextAreaElement | null>(null)
 
 const unreadCount = ref(0)
 const hasUnread = computed(() => !isOpen.value && unreadCount.value > 0)
+
+// ── Option selection state ────────────────────────────────────
+const pendingSelections = ref(new Set<string>())
+// Which auto-detected message's quick replies are currently being multi-selected
+const autoActiveIdx = ref(-1)
+
+// Index of the last assistant message with options that hasn't been submitted yet
+const activeOptionMsgIdx = computed(() => {
+  for (let i = messages.value.length - 1; i >= 0; i--) {
+    const m = messages.value[i]
+    if (m.role === 'assistant' && m.options && !m.submittedSelections) return i
+  }
+  return -1
+})
+
+function isActiveOptions(idx: number) {
+  return idx === activeOptionMsgIdx.value
+}
+
+function toggleOption(item: string) {
+  const s = new Set(pendingSelections.value)
+  s.has(item) ? s.delete(item) : s.add(item)
+  pendingSelections.value = s
+}
+
+/** Toggle an auto-detected quick-reply chip — adds/removes from input draft */
+function toggleAutoReply(item: string, msgIdx: number) {
+  if (isThinking.value || messages.value[msgIdx]?.submittedSelections) return
+  // Switching to a different message's chips — clear previous selections
+  if (autoActiveIdx.value !== msgIdx) {
+    pendingSelections.value = new Set()
+    autoActiveIdx.value = msgIdx
+  }
+  toggleOption(item)
+  // Keep draft in sync with selected chips
+  draft.value = Array.from(pendingSelections.value).join(', ')
+  nextTick(() => inputEl.value?.focus())
+}
 
 // ── Drag ──────────────────────────────────────────────────────
 const dragPos = ref({ right: 20, bottom: 56 })
@@ -257,6 +385,12 @@ function toggleChat() {
   }
 }
 
+async function generateResume() {
+  isGenerating.value = true
+  draft.value = 'Generate my resume now. GENERATE — use placeholders for anything I have not provided yet.'
+  await send()
+}
+
 function now(): string {
   return new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
 }
@@ -273,6 +407,185 @@ function scrollToBottom() {
       messagesEl.value.scrollTop = messagesEl.value.scrollHeight
     }
   })
+}
+
+// ── Resume keyword bank ───────────────────────────────────────
+const KEYWORD_BANK: Record<string, string[]> = {
+  role: [
+    'Software Engineer', 'Frontend Developer', 'Backend Developer', 'Full Stack Developer',
+    'DevOps Engineer', 'Site Reliability Engineer', 'Platform Engineer',
+    'Data Engineer', 'Data Scientist', 'ML Engineer', 'AI Engineer',
+    'Product Manager', 'Product Owner', 'Project Manager', 'Program Manager',
+    'UX Designer', 'UI Designer', 'Product Designer',
+    'Cloud Architect', 'Solution Architect', 'Enterprise Architect',
+    'Tech Lead', 'Engineering Manager', 'VP of Engineering', 'CTO',
+    'QA Engineer', 'Test Automation Engineer', 'Security Engineer',
+    'Mobile Developer', 'iOS Developer', 'Android Developer',
+    'Business Analyst', 'Scrum Master', 'Agile Coach',
+    'Director of Engineering', 'Staff Engineer', 'Principal Engineer',
+  ],
+  industry: [
+    'Technology', 'Finance', 'Healthcare', 'E-commerce', 'Education',
+    'Manufacturing', 'Consulting', 'Retail', 'Media & Entertainment',
+    'Government', 'Startups', 'Fintech', 'Biotech', 'Logistics',
+    'Real Estate', 'Insurance', 'Telecommunications', 'Energy',
+    'Non-profit', 'Gaming', 'Automotive', 'Aerospace', 'Legal',
+    'Food & Beverage', 'Travel & Hospitality', 'Cybersecurity',
+  ],
+  skill: [
+    'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'Go', 'Rust', 'Kotlin', 'Swift',
+    'React', 'Vue', 'Angular', 'Next.js', 'Nuxt.js', 'Svelte',
+    'Node.js', 'Express', 'FastAPI', 'Django', 'Spring Boot', 'ASP.NET',
+    'Docker', 'Kubernetes', 'Terraform', 'Ansible', 'Helm',
+    'AWS', 'Azure', 'Google Cloud', 'Serverless',
+    'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'Elasticsearch',
+    'GraphQL', 'REST APIs', 'gRPC', 'Kafka', 'RabbitMQ',
+    'Git', 'GitHub Actions', 'Jenkins', 'CircleCI', 'CI/CD',
+    'Machine Learning', 'Deep Learning', 'TensorFlow', 'PyTorch',
+    'Agile', 'Scrum', 'Kanban', 'JIRA', 'SQL', 'Linux',
+  ],
+  softSkill: [
+    'Leadership', 'Communication', 'Problem Solving', 'Critical Thinking',
+    'Teamwork', 'Collaboration', 'Adaptability', 'Time Management',
+    'Creativity', 'Attention to Detail', 'Mentoring', 'Coaching',
+    'Presentation Skills', 'Stakeholder Management', 'Conflict Resolution',
+    'Decision Making', 'Emotional Intelligence', 'Negotiation',
+    'Strategic Thinking', 'Initiative', 'Project Ownership',
+  ],
+  certification: [
+    'AWS Certified Solutions Architect', 'AWS Certified Developer',
+    'Google Cloud Professional', 'Azure Solutions Architect',
+    'Certified Kubernetes Administrator (CKA)', 'Terraform Associate',
+    'PMP (Project Management)', 'Certified Scrum Master (CSM)',
+    'CISSP', 'CompTIA Security+', 'CompTIA Cloud+',
+    'Oracle Java Certified', 'Microsoft Certified', 'Docker Certified',
+    'Salesforce Certified', 'ITIL Foundation', 'Six Sigma',
+  ],
+  experience: [
+    '0-1 years', '1-2 years', '2-3 years', '3-5 years',
+    '5-7 years', '7-10 years', '10+ years', '15+ years',
+  ],
+  education: [
+    'High School Diploma', "Associate's Degree", "Bachelor's in Computer Science",
+    "Bachelor's in Engineering", "Bachelor's in Business",
+    "Master's in Computer Science", "Master's in Data Science",
+    "Master's in Business (MBA)", 'PhD in Computer Science',
+    'Coding Bootcamp', 'Self-taught / Online Courses',
+    'Professional Certifications only',
+  ],
+  language: [
+    'English', 'Spanish', 'French', 'German', 'Mandarin Chinese',
+    'Japanese', 'Portuguese', 'Arabic', 'Korean', 'Hindi',
+    'Italian', 'Russian', 'Dutch', 'Turkish', 'Polish',
+  ],
+  tone: [
+    'Professional & Formal', 'Results-driven', 'Technical & Precise',
+    'Leadership-focused', 'Creative', 'Concise & Direct',
+    'Collaborative', 'Innovative', 'Data-driven',
+  ],
+  highlight: [
+    'Led a team', 'Increased revenue', 'Reduced costs', 'Improved performance',
+    'Built from scratch', 'Scaled infrastructure', 'Shipped major feature',
+    'Mentored junior engineers', 'Won company award', 'Delivered ahead of schedule',
+    'Migrated legacy system', 'Improved test coverage', 'Reduced tech debt',
+    'Drove customer satisfaction', 'Managed cross-functional project',
+  ],
+}
+
+/** Detect which resume category the AI message is about */
+function detectCategory(text: string): string | null {
+  const t = text.toLowerCase()
+  if (/\b(role|title|position|job|career|profession)\b/.test(t)) return 'role'
+  if (/\b(industry|sector|field|domain|market|vertical)\b/.test(t)) return 'industry'
+  if (/\b(tech(nical)? skill|tool|framework|technology|programming|language|library|platform)\b/.test(t)) return 'skill'
+  if (/\b(soft skill|interpersonal|quality|trait|strength|ability)\b/.test(t)) return 'softSkill'
+  if (/\b(certif(icate|ication)|credential|license|accreditation)\b/.test(t)) return 'certification'
+  if (/\b(experience|year|seniority|junior|senior|mid-level)\b/.test(t)) return 'experience'
+  if (/\b(education|degree|study|university|college|school|academic)\b/.test(t)) return 'education'
+  if (/\b(language|speak|fluent|native|bilingual)\b/.test(t)) return 'language'
+  if (/\b(tone|style|approach|voice|format|presentation)\b/.test(t)) return 'tone'
+  if (/\b(highlight|achievement|accomplishment|impact|result|success)\b/.test(t)) return 'highlight'
+  return null
+}
+
+/**
+ * Parse AI text for natural-language option lists when the model doesn't
+ * return a structured `options` field. Merges parsed items with keyword bank.
+ */
+function detectOptionsFromText(text: string): string[] | null {
+  // Skip if text already carries [[chip]] markers — those are rendered inline
+  if (/\[\[/.test(text)) return null
+
+  const STOP = /^(something|else|etc|other|more|anything|another|whatever|any|all|many|some)\b/i
+
+  function split(raw: string): string[] {
+    return raw
+      .split(/,\s*|\s+or\s+|\s+and\s+/i)
+      .map(s => s.replace(/^(?:a|an|the|or)\s+/i, '').replace(/[?.!'"]+$/, '').trim())
+      .filter(s => s.length >= 2 && s.length <= 50 && !STOP.test(s))
+  }
+
+  const patterns: RegExp[] = [
+    /\bsuch as\s+([^.?!\n]{4,100})/i,
+    /\blike\s+([A-Z][^.?!\n]{4,100})/m,
+    /\bfor example[,:]?\s+([^.?!\n]{4,100})/i,
+    /\b(?:options?|choices?)[:\s]+([^.?!\n]{4,100})/i,
+    /\b(?:choose|pick|select)[^:]*:\s*([^.?!\n]{4,100})/i,
+    /:\s*([A-Z][^.?!\n]{4,100})/,
+    /\b([A-Za-z][a-zA-Z-]{1,24}(?:,\s*[A-Za-z][a-zA-Z-]{1,24})+),?\s+or\s+something\b/i,
+  ]
+
+  let detected: string[] = []
+  for (const re of patterns) {
+    const m = text.match(re)
+    if (m) {
+      const items = split(m[1])
+      if (items.length >= 2) { detected = items; break }
+    }
+  }
+
+  // Augment with keyword bank based on detected category
+  const category = detectCategory(text)
+  const bankItems: string[] = category ? (KEYWORD_BANK[category] ?? []) : []
+
+  // Merge: detected items first, then bank items (deduplicated, case-insensitive)
+  const seen = new Set(detected.map(s => s.toLowerCase()))
+  const merged = [...detected]
+  for (const item of bankItems) {
+    if (!seen.has(item.toLowerCase())) {
+      merged.push(item)
+      seen.add(item.toLowerCase())
+    }
+  }
+
+  return merged.length >= 2 ? merged : null
+}
+
+/** Split message text on [[chip]] tokens into alternating text/chip segments */
+function parseMessageParts(text: string): Array<{ type: 'text' | 'chip'; content: string }> {
+  const parts: Array<{ type: 'text' | 'chip'; content: string }> = []
+  const regex = /\[\[([^\]]+)\]\]/g
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = regex.exec(text)) !== null) {
+    if (m.index > last) parts.push({ type: 'text', content: text.slice(last, m.index) })
+    parts.push({ type: 'chip', content: m[1].trim() })
+    last = m.index + m[0].length
+  }
+  if (last < text.length) parts.push({ type: 'text', content: text.slice(last) })
+  return parts
+}
+
+/** Single-click quick reply — marks options as submitted and sends immediately */
+async function quickReply(item: string, msgIdx: number) {
+  if (isThinking.value || messages.value[msgIdx]?.submittedSelections) return
+  // Mark option set as submitted
+  messages.value.splice(msgIdx, 1, { ...messages.value[msgIdx], submittedSelections: [item] })
+  pendingSelections.value = new Set()
+  // Push user message
+  messages.value.push({ role: 'user', content: item, time: now() })
+  scrollToBottom()
+  await dispatchToAPI()
 }
 
 function renderMarkdown(text: string): string {
@@ -293,50 +606,82 @@ function truncateProposal(content: string): string {
   return lines.slice(0, 8).join('\n') + '\n…'
 }
 
-async function send() {
-  const text = draft.value.trim()
-  if (!text || isThinking.value) return
-
-  draft.value = ''
-  if (inputEl.value) {
-    inputEl.value.style.height = 'auto'
-  }
-
-  messages.value.push({ role: 'user', content: text, time: now() })
-  scrollToBottom()
-
+/** Shared: call the API with current message history and push the bot reply */
+async function dispatchToAPI() {
   isThinking.value = true
   scrollToBottom()
-
+  const generatingNow = isGenerating.value
+  if (generatingNow) startLoading('chat-generate', 'Generating your resume…')
   try {
     const history: ChatMessage[] = messages.value
       .filter((m) => m.role === 'user' || m.role === 'assistant')
       .map((m) => ({ role: m.role, content: m.content }))
+    const result = await api.sendMessage(props.currentContent || '', history, props.language)
 
-    const result = await api.sendMessage(
-      props.currentContent || '',
-      history,
-      props.language,
-    )
-
-    messages.value.push({
-      role: 'assistant',
-      content: result.reply,
-      proposedContent: result.proposedContent ?? null,
-      time: now(),
-    })
-
+    if (generatingNow && result.proposedContent) {
+      // Auto-apply the generated resume immediately — no Accept button needed
+      resumeGenerated.value = true
+      accepted.value = true
+      isGenerating.value = false
+      emit('applyProposal', result.proposedContent)
+      // Push message showing the preview card (already accepted)
+      messages.value.push({
+        role: 'assistant',
+        content: result.reply,
+        proposedContent: result.proposedContent,
+        options: null,
+        time: now(),
+      })
+    } else {
+      if (generatingNow) isGenerating.value = false
+      messages.value.push({
+        role: 'assistant',
+        content: result.reply,
+        proposedContent: result.proposedContent ?? null,
+        options: result.options ?? null,
+        time: now(),
+      })
+    }
     if (!isOpen.value) unreadCount.value++
   } catch {
-    messages.value.push({
-      role: 'assistant',
-      content: t('chat.error'),
-      time: now(),
-    })
+    if (generatingNow) isGenerating.value = false
+    messages.value.push({ role: 'assistant', content: t('chat.error'), time: now() })
   } finally {
+    if (generatingNow) stopLoading('chat-generate')
     isThinking.value = false
     scrollToBottom()
   }
+}
+
+async function send() {
+  const text = draft.value.trim()
+  const selections = Array.from(pendingSelections.value)
+  if ((!text && selections.length === 0) || isThinking.value) return
+
+  // Build message content — combine selections + typed text
+  const messageContent = selections.length > 0 && text
+    ? `${selections.join(', ')} — ${text}`
+    : selections.length > 0
+      ? selections.join(', ')
+      : text
+
+  draft.value = ''
+  if (inputEl.value) inputEl.value.style.height = 'auto'
+
+  // Mark the active option set (structured or auto-detected) as submitted
+  const activeIdx = activeOptionMsgIdx.value >= 0 ? activeOptionMsgIdx.value : autoActiveIdx.value
+  if (activeIdx >= 0 && selections.length > 0) {
+    messages.value.splice(activeIdx, 1, {
+      ...messages.value[activeIdx],
+      submittedSelections: selections,
+    })
+  }
+  pendingSelections.value = new Set()
+  autoActiveIdx.value = -1
+
+  messages.value.push({ role: 'user', content: messageContent, time: now() })
+  scrollToBottom()
+  await dispatchToAPI()
 }
 
 function acceptProposal(content: string) {
@@ -654,6 +999,191 @@ watch(() => props.currentContent, () => {
 @keyframes typing-bounce {
   0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
   40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ── Inline chips (inside message bubble) ─────────────────── */
+.dc-inline-chip {
+  display: inline-flex;
+  align-items: center;
+  margin: 1px 3px;
+  padding: 2px 9px;
+  border-radius: 12px;
+  border: 1.5px solid #c8a951;
+  background: #fffdf5;
+  color: #a08030;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+
+.dc-inline-chip:hover:not(:disabled) {
+  background: #c8a951;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(200,169,81,0.3);
+}
+
+.dc-inline-chip--sent {
+  background: #c8a951;
+  color: #fff;
+  cursor: default;
+}
+
+.dc-inline-chip:disabled:not(.dc-inline-chip--sent) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Option pills ─────────────────────────────────────────── */
+.dc-options-card {
+  align-self: flex-start;
+  width: calc(100% - 0px);
+  max-width: 100%;
+  background: #fff;
+  border: 1.5px solid #e8e4d8;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dc-options-card--auto {
+  border-color: #e8e4d8;
+  background: #fdfcf8;
+}
+
+.dc-options-card--single .dc-pill {
+  /* Single-select: gold border, click-to-send immediately */
+  border-color: #c8a951;
+  color: #a08030;
+}
+
+.dc-options-card--single .dc-pill:hover:not(:disabled):not(.dc-pill--frozen) {
+  background: #c8a951;
+  color: #fff;
+}
+
+.dc-options-label {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a08030;
+  font-weight: 600;
+}
+
+.dc-options-label-hint {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: #aaa;
+  font-size: 9px;
+}
+
+.dc-options-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dc-pill {
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1.5px solid #d8d8d8;
+  background: #fff;
+  color: #555;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.dc-pill:hover:not(:disabled):not(.dc-pill--frozen) {
+  border-color: #c8a951;
+  color: #a08030;
+  background: #fdf8ee;
+}
+
+.dc-pill--selected {
+  border-color: #c8a951;
+  background: #c8a951;
+  color: #fff;
+  font-weight: 600;
+}
+
+.dc-pill--submitted {
+  border-color: #c8a951;
+  background: #fdf8ee;
+  color: #a08030;
+}
+
+.dc-pill--frozen {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.dc-pill--frozen:not(.dc-pill--submitted) {
+  opacity: 0.45;
+}
+
+.dc-options-hint {
+  font-size: 9px;
+  color: #c8a951;
+  letter-spacing: 0.06em;
+  font-style: italic;
+}
+
+.dc-options-submitted {
+  font-size: 9px;
+  color: #4a8a5a;
+  letter-spacing: 0.06em;
+}
+
+/* ── Generate bar ─────────────────────────────────────────── */
+.dc-generate-bar {
+  padding: 8px 12px;
+  border-top: 1px solid #ebebeb;
+  flex-shrink: 0;
+}
+
+.dc-generate-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: linear-gradient(135deg, #c8a951, #b8993f);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(200,169,81,0.3);
+}
+
+.dc-generate-btn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(200,169,81,0.4);
+}
+
+.dc-generate-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Proposal card */
