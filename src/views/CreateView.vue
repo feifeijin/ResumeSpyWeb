@@ -17,7 +17,10 @@
                 'custom-tab--active': activeTab === index,
                 'tab-editing': isEditingTab(index),
                 'tab--dragging': dragIndex === index,
-                'tab--drag-over': dragOverIndex === index && dragOverIndex !== dragIndex,
+                'tab--drop-before': dragOverIndex === index && dragIndex !== null && dragIndex > index,
+                'tab--drop-after':
+                  (dragOverIndex === index && dragIndex !== null && dragIndex < index) ||
+                  (index === tabs.length - 1 && dragOverIndex === tabs.length && dragIndex !== null && dragIndex !== tabs.length - 1),
               }"
               draggable="true"
               @click="activeTab = index"
@@ -68,6 +71,14 @@
                 @click.stop="openDeleteDialog(index)"
               />
             </div>
+
+            <!-- Trailing drop zone — catches drops past the last tab -->
+            <div
+              v-if="dragIndex !== null"
+              class="tab-end-drop"
+              @dragover.prevent="onEndDragOver"
+              @drop.prevent="onEndDrop"
+            />
           </div>
         </div>
 
@@ -909,6 +920,22 @@ function onTabDragEnd() {
   dragOverIndex.value = null
 }
 
+function onEndDragOver() {
+  if (dragIndex.value === null) return
+  dragOverIndex.value = tabs.value.length  // sentinel → highlights last tab's right border
+}
+
+function onEndDrop() {
+  const fromIndex = dragIndex.value
+  const lastIndex = tabs.value.length - 1
+  if (fromIndex === null || fromIndex === lastIndex) {
+    dragIndex.value = null
+    dragOverIndex.value = null
+    return
+  }
+  onTabDrop(lastIndex)
+}
+
 const openDeleteDialog = (index: number) => {
   tabIndexToDelete.value = index
   isDeleteDialogActive.value = true
@@ -1218,9 +1245,20 @@ const onApplyProposal = async (content: string) => {
   opacity: 0.4;
 }
 
-.tab--drag-over {
+.tab--drop-before {
   border-left: 2px solid var(--gold) !important;
   background: rgba(245, 245, 245, 0.06) !important;
+}
+
+.tab--drop-after {
+  border-right: 2px solid var(--gold) !important;
+  background: rgba(245, 245, 245, 0.06) !important;
+}
+
+.tab-end-drop {
+  flex: 1;
+  min-width: 40px;
+  height: 48px;
 }
 
 .tab-label {
