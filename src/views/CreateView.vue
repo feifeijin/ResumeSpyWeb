@@ -72,6 +72,14 @@
               </button>
             </template>
           </v-tooltip>
+          <div class="stamp-divider" />
+          <v-tooltip location="bottom" text="How to use ResumeSpy">
+            <template #activator="{ props }">
+              <button class="stamp stamp--help" v-bind="props" @click="isGuideDialogOpen = true">
+                <v-icon size="15">mdi-help-circle-outline</v-icon>
+              </button>
+            </template>
+          </v-tooltip>
         </div>
       </div>
     </div>
@@ -304,7 +312,22 @@
 
         <!-- Message -->
         <div class="sync-body">
+          <p class="sync-title">Translate to all languages</p>
           <p class="sync-msg">{{ $t('createView.syncHint') }}</p>
+          <div class="sync-info-row">
+            <div class="sync-info-item">
+              <v-icon size="14" class="me-1">mdi-translate</v-icon>
+              <span>AI translation</span>
+            </div>
+            <div class="sync-info-item">
+              <v-icon size="14" class="me-1">mdi-lightning-bolt</v-icon>
+              <span>All tabs updated</span>
+            </div>
+            <div class="sync-info-item">
+              <v-icon size="14" class="me-1">mdi-lock-outline</v-icon>
+              <span>Original preserved</span>
+            </div>
+          </div>
         </div>
 
         <div class="sync-footer">
@@ -352,6 +375,86 @@
       @restore="onRestoreVersion"
       @delete="onDeleteVersion"
     />
+
+    <!-- ── User Guide Dialog ────────────────────────────── -->
+    <v-dialog v-model="isGuideDialogOpen" max-width="560px" scrollable>
+      <div class="noir-dialog">
+        <div class="dialog-header">
+          <h3 class="dialog-title">◈ How to use ResumeSpy</h3>
+          <button class="dialog-close" @click="isGuideDialogOpen = false">✕</button>
+        </div>
+        <div class="dialog-body guide-body">
+          <div class="guide-section">
+            <div class="guide-step">
+              <div class="guide-step-icon">01</div>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Create Your Resume</div>
+                <div class="guide-step-desc">
+                  Write in <strong>Markdown</strong> — clean, portable, and version-controlled. Use the toolbar for headings, bold, lists, and links. Press <kbd>Cmd+S</kbd> to save anytime.
+                </div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-step-icon">02</div>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Add Language Versions</div>
+                <div class="guide-step-desc">
+                  Click <strong>Select Language</strong> to create a new language tab (English, Japanese, Chinese…). Each version is stored independently so you can tailor tone and vocabulary per market.
+                </div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-step-icon">03</div>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Sync Across Languages</div>
+                <div class="guide-step-desc">
+                  After editing the primary version, click <strong>Sync</strong> (↔ in the editor toolbar) to automatically translate and propagate your changes to all other language tabs. No manual re-typing.
+                </div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-step-icon">04</div>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Tailor for a Job</div>
+                <div class="guide-step-desc">
+                  Click the <strong>Tailor for JD</strong> stamp and paste the job description. The AI rewrites your resume to match keywords and requirements — without changing your facts.
+                </div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-step-icon">05</div>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Build from Scratch with the Detective</div>
+                <div class="guide-step-desc">
+                  New to resumes? Click the <strong>detective icon</strong> (bottom right) to open the AI chat. Answer a few questions and hit <strong>Generate</strong> — the Detective writes your full resume from the conversation.
+                </div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-step-icon">06</div>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Export as PDF</div>
+                <div class="guide-step-desc">
+                  Click <strong>Export PDF</strong> in the editor toolbar to download a ready-to-send PDF. The layout is clean and ATS-friendly — no bloated design, no gimmicks.
+                </div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-step-icon">07</div>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Version History</div>
+                <div class="guide-step-desc">
+                  Click <strong>History</strong> to see all saved versions. Restore any previous version with one click. Every save is automatically snapshotted.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button class="stamp stamp--gold" @click="isGuideDialogOpen = false">Got it ✓</button>
+        </div>
+      </div>
+    </v-dialog>
 
     <!-- ── Detective Chat Widget ─────────────────────────── -->
     <DetectiveChatWidget
@@ -498,6 +601,7 @@ const tabIndexToDelete = ref(-1)
 const isSyncDialogActive = ref(false)
 const isPreviewActive = ref(false)
 const isTailorDialogActive = ref(false)
+const isGuideDialogOpen = ref(false)
 const editingTabIndex = ref<number | null>(null)
 const editingTabName = ref('')
 const selectedOtherLanguage = ref('')
@@ -532,13 +636,8 @@ watch(
   },
 )
 
-// Keyboard shortcut Cmd+S / Ctrl+S
-const handleKeyboardSave = (e: KeyboardEvent) => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-    e.preventDefault()
-    onSave(activeTab.value)
-  }
-}
+// Cmd+S / Ctrl+S is handled by v-md-editor's built-in @save event.
+// A separate window keydown listener would fire onSave twice — do not add one.
 
 // Block navigation when unsaved
 onBeforeRouteLeave((_to, _from, next) => {
@@ -574,7 +673,6 @@ const loadResumeDetails = async (resumeId: string) => {
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyboardSave)
   const resumeId = route.query.resumeId
   if (typeof resumeId === 'string' && resumeId) {
     loadResumeDetails(resumeId)
@@ -606,7 +704,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyboardSave)
   if (savedStatusTimer) clearTimeout(savedStatusTimer)
   _ro?.disconnect()
 })
@@ -1235,17 +1332,89 @@ const onApplyProposal = async (content: string) => {
 }
 
 /* ── Dialogs ─────────────────────────────────────────────── */
+/* Kill Vuetify's default white overlay background */
+:deep(.v-overlay__content) {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 .noir-dialog {
-  background: #f0f0f0;
-  border: 1.5px solid var(--border);
-  box-shadow: 6px 6px 0 #aaaaaa;
+  background: #f5f5f5;
+  border: 1px solid #c8c8c8;
+  border-top: 3px solid #1a1a1a;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 4px 4px 0 #d0d0d0;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
+  border-radius: 2px;
+  overflow: hidden;
 }
 
 .noir-dialog--sm {
   max-width: 400px;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.5rem;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.dialog-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.dialog-close {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+
+.dialog-close:hover {
+  color: #e8e8e8;
+}
+.dialog-close:disabled {
+  opacity: 0.4;
+}
+
+.dialog-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  background: #f5f5f5;
+}
+
+.dialog-hint {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.9rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  background: #efefef;
+  flex-shrink: 0;
 }
 
 /* ── Sync dialog ─────────────────────────────────────────── */
@@ -1335,66 +1504,127 @@ const onApplyProposal = async (content: string) => {
   padding: 0.75rem 1.5rem 1.25rem;
 }
 
-.dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-.dialog-title {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.1em;
-  margin: 0;
-}
-
-.dialog-close {
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 1rem;
-  transition: color 0.2s;
-  padding: 0;
-}
-
-.dialog-close:hover {
-  color: var(--text);
-}
-.dialog-close:disabled {
-  opacity: 0.4;
-}
-
-.dialog-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.dialog-hint {
-  font-style: italic;
-  color: var(--muted);
-  font-size: 0.88rem;
-  line-height: 1.6;
-  margin-bottom: 1.25rem;
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
-}
 
 .preview-body {
   max-height: 65vh;
+}
+
+/* ── Guide dialog ─────────────────────────────────────────── */
+.guide-body {
+  padding: 0;
+}
+
+.guide-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-step {
+  display: flex;
+  gap: 1rem;
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid #e8e8e8;
+  transition: background 0.15s;
+}
+
+.guide-step:last-child {
+  border-bottom: none;
+}
+
+.guide-step:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.guide-step-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: #1a1a1a;
+  color: #c8a951;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  margin-top: 1px;
+}
+
+.guide-step-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.35rem;
+}
+
+.guide-step-desc {
+  font-size: 0.83rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.guide-step-desc strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+kbd {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  background: #e8e8e8;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: #333;
+}
+
+/* ── Stamp divider & help button ─────────────────────────── */
+.stamp-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.stamp--help {
+  padding: 0 8px;
+  color: #999;
+}
+
+.stamp--help:hover {
+  color: #1a1a1a;
+}
+
+/* ── Sync dialog extras ───────────────────────────────────── */
+.sync-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  margin: 0 0 0.4rem;
+}
+
+.sync-info-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.sync-info-item {
+  display: flex;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  gap: 2px;
 }
 
 /* Noir radio group */
