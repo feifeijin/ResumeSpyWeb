@@ -22,8 +22,8 @@ class ResumeService {
         title: item.title,
         resumeDetailCount: item.resumeDetailCount,
         resumeImgPath: resolveImgPath(item.resumeImgPath),
-        createTime: item.createTime,
-        lastModifyTime: item.lastModifyTime,
+        createTime: item.entryDate ?? item.createTime,
+        lastModifyTime: item.updateDate ?? item.lastModifyTime,
         preview: item.preview,
         isEditing: item.isEditing,
       }))

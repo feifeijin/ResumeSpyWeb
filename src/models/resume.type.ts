@@ -8,6 +8,8 @@ export interface Resume {
   resumeImgPath: string
   createTime: string
   lastModifyTime: string
+  entryDate?: string
+  updateDate?: string
   preview: boolean
   isEditing?: boolean
 }

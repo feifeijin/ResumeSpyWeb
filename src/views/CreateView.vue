@@ -623,7 +623,7 @@ const isTailorDialogActive = ref(false)
 const isGuideDialogOpen = ref(false)
 const editingTabIndex = ref<number | null>(null)
 const editingTabName = ref('')
-const selectedOtherLanguage = ref('')
+const selectedOtherLanguage = ref('ES')
 const jobDescription = ref('')
 
 const isOtherSelected = computed(() => dialog.value === 'OTHER')
@@ -742,7 +742,7 @@ const handleLanguageDialogOpen = () => {
     return
   }
   dialog.value = ''
-  selectedOtherLanguage.value = ''
+  selectedOtherLanguage.value = 'ES'
   isDialogActive.value = true
 }
 
@@ -800,7 +800,7 @@ const onAdd = async () => {
       if (newDetail.resumeId) currentResumeId.value = newDetail.resumeId
 
       dialog.value = ''
-      selectedOtherLanguage.value = ''
+      selectedOtherLanguage.value = 'ES'
       isDialogActive.value = false
       activeTab.value = tabs.value.length - 1
 
