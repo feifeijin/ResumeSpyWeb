@@ -56,22 +56,22 @@
 
         <!-- Action stamps -->
         <div class="action-stamps">
-          <button class="noir-menu-item" @click="handleLanguageDialogOpen">
-            <v-icon size="14" class="me-2">mdi-file-account</v-icon>
-            {{ $t('createView.selectLanguage') }}
-          </button>
-          <button class="noir-menu-item" @click="openSyncDialog">
-            <v-icon size="14" class="me-2">mdi-translate</v-icon>
-            {{ $t('common.sync') }}
-          </button>
-          <button class="noir-menu-item" @click="exportCurrentTabAsPdf">
-            <v-icon size="14" class="me-2">mdi-file-pdf-box</v-icon>
-            {{ $t('createView.exportPdf') }}
-          </button>
-          <button class="stamp" @click="openHistoryPanel" :title="$t('version.history')">
-            <v-icon size="14">mdi-history</v-icon>
-            <span>{{ $t('version.history') }}</span>
-          </button>
+          <v-tooltip location="bottom" :text="$t('createView.selectLanguage')">
+            <template #activator="{ props }">
+              <button class="stamp" v-bind="props" @click="handleLanguageDialogOpen">
+                <v-icon size="15">mdi-file-account</v-icon>
+                <span>{{ $t('createView.selectLanguage') }}</span>
+              </button>
+            </template>
+          </v-tooltip>
+          <v-tooltip location="bottom" :text="$t('version.history')">
+            <template #activator="{ props }">
+              <button class="stamp" v-bind="props" @click="openHistoryPanel">
+                <v-icon size="15">mdi-history</v-icon>
+                <span>{{ $t('version.history') }}</span>
+              </button>
+            </template>
+          </v-tooltip>
         </div>
       </div>
     </div>
@@ -85,7 +85,7 @@
             @save="onSave(index)"
             :height="editorHeight"
             :toolbar="starToolbar"
-            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save set-default"
+            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save set-default | sync export-pdf"
             right-toolbar="toc sync-scroll fullscreen"
             >{{ tab }}</v-md-editor
           >
@@ -886,6 +886,16 @@ const starToolbar = {
     active: () => resumeDetails.value[activeTab.value]?.isDefault === true,
     action: () => setCurrentTabAsDefault(),
   },
+  sync: {
+    title: () => t('common.sync'),
+    icon: 'mdi mdi-translate',
+    action: () => openSyncDialog(),
+  },
+  'export-pdf': {
+    title: () => t('createView.exportPdf'),
+    icon: 'mdi mdi-file-pdf-box',
+    action: () => exportCurrentTabAsPdf(),
+  },
 }
 
 const setCurrentTabAsDefault = async () => {
@@ -1060,8 +1070,8 @@ const onApplyProposal = async (content: string) => {
 .action-stamps {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 0 8px;
+  gap: 1px;
+  padding: 0 10px;
   border-left: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -1069,24 +1079,29 @@ const onApplyProposal = async (content: string) => {
 .stamp {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--muted);
   background: transparent;
   border: 1px solid transparent;
-  padding: 0.35rem 0.7rem;
+  border-radius: 4px;
+  padding: 0 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    border-color 0.15s;
   white-space: nowrap;
-  height: 32px;
+  height: 30px;
 }
 
 .stamp:hover {
   color: var(--text);
+  background: rgba(0, 0, 0, 0.05);
   border-color: var(--border);
-  background: rgba(255, 255, 255, 0.03);
 }
 
 .stamp--gold {
@@ -1176,6 +1191,17 @@ const onApplyProposal = async (content: string) => {
 
 :deep(.v-md-editor__toolbar-item-set-default:hover) {
   color: var(--text) !important;
+}
+
+/* Sync + Export PDF toolbar buttons */
+:deep(.v-md-editor__toolbar-item-sync .mdi),
+:deep(.v-md-editor__toolbar-item-export-pdf .mdi) {
+  font-size: 16px;
+  line-height: 1;
+}
+
+:deep(.v-md-editor__toolbar-item-export-pdf .mdi) {
+  color: inherit;
 }
 
 :deep(.v-md-editor__editor-wrapper) {
