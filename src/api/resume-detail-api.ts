@@ -178,6 +178,16 @@ class ResumeDetailService {
     }
   }
 
+  // Reorder resume details
+  async reorderDetails(resumeId: string, orderedIds: string[]): Promise<void> {
+    try {
+      await axios.patch(`${API_BASE_URL}/resumeDetail/reorder`, { resumeId, orderedIds })
+    } catch (error) {
+      console.error('Failed to reorder resume details:', error)
+      throw error
+    }
+  }
+
   // Tailor resume content for a job description using AI
   async tailorResume(id: string, jobDescription: string): Promise<string> {
     try {

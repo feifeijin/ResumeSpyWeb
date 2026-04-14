@@ -8,16 +8,33 @@
       <!-- Tabs row -->
       <div class="tabs-row">
         <div class="tabs-strip">
-          <v-tabs v-model="activeTab" class="noir-tabs">
-            <v-tab
+          <div class="custom-tabs">
+            <div
               v-for="(tab, index) in tabs"
               :key="`tab-${index}`"
-              class="noir-tab"
-              :class="{ 'tab-editing': isEditingTab(index) }"
+              class="custom-tab"
+              :class="{
+                'custom-tab--active': activeTab === index,
+                'tab-editing': isEditingTab(index),
+                'tab--dragging': dragIndex === index,
+                'tab--drag-over': dragOverIndex === index && dragOverIndex !== dragIndex,
+              }"
+              draggable="true"
+              @click="activeTab = index"
+              @dragstart="onTabDragStart(index, $event)"
+              @dragover.prevent="onTabDragOver(index)"
+              @drop.prevent="onTabDrop(index)"
+              @dragend="onTabDragEnd"
             >
+              <v-icon
+                v-if="!isEditingTab(index)"
+                size="x-small"
+                icon="mdi-drag-horizontal-variant"
+                class="tab-drag-handle"
+              />
               <v-tooltip location="bottom" v-if="!isEditingTab(index)">
                 <template v-slot:activator="{ props }">
-                  <span class="tab-label" v-bind="props" @dblclick="editTabName(index)">
+                  <span class="tab-label" v-bind="props" @dblclick.stop="editTabName(index)">
                     {{ tab }}
                   </span>
                 </template>
@@ -50,8 +67,8 @@
                 class="tab-close"
                 @click.stop="openDeleteDialog(index)"
               />
-            </v-tab>
-          </v-tabs>
+            </div>
+          </div>
         </div>
 
         <!-- Action stamps -->
@@ -181,12 +198,12 @@
                 class="noir-select"
               >
                 <template v-slot:item="{ props, item }">
-                  <v-list-item v-bind="props" class="d-flex align-center">
-                    <template v-slot:prepend>
-                      <country-flag :country="item.raw.flag" size="small" class="me-3" />
-                    </template>
-                    <v-list-item-title>{{ item.raw.name }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ item.raw.code }}</v-list-item-subtitle>
+                  <v-list-item v-bind="props" :title="undefined" :subtitle="undefined">
+                    <div class="lang-option-row">
+                      <country-flag :country="item.raw.flag" size="small" class="lang-flag" />
+                      <span class="lang-name">{{ item.raw.name }}</span>
+                      <span class="lang-code">{{ item.raw.code }}</span>
+                    </div>
                   </v-list-item>
                 </template>
                 <template v-slot:selection="{ item }">
@@ -415,15 +432,6 @@
             <div class="guide-step">
               <div class="guide-step-icon">04</div>
               <div class="guide-step-content">
-                <div class="guide-step-title">Tailor for a Job</div>
-                <div class="guide-step-desc">
-                  Click the <strong>Tailor for JD</strong> stamp and paste the job description. The AI rewrites your resume to match keywords and requirements — without changing your facts.
-                </div>
-              </div>
-            </div>
-            <div class="guide-step">
-              <div class="guide-step-icon">05</div>
-              <div class="guide-step-content">
                 <div class="guide-step-title">Build from Scratch with the Detective</div>
                 <div class="guide-step-desc">
                   New to resumes? Click the <strong>detective icon</strong> (bottom right) to open the AI chat. Answer a few questions and hit <strong>Generate</strong> — the Detective writes your full resume from the conversation.
@@ -431,7 +439,7 @@
               </div>
             </div>
             <div class="guide-step">
-              <div class="guide-step-icon">06</div>
+              <div class="guide-step-icon">05</div>
               <div class="guide-step-content">
                 <div class="guide-step-title">Export as PDF</div>
                 <div class="guide-step-desc">
@@ -440,7 +448,7 @@
               </div>
             </div>
             <div class="guide-step">
-              <div class="guide-step-icon">07</div>
+              <div class="guide-step-icon">06</div>
               <div class="guide-step-content">
                 <div class="guide-step-title">Version History</div>
                 <div class="guide-step-desc">
@@ -843,6 +851,64 @@ const onSave = async (index: number) => {
   )
 }
 
+// ── Drag-to-reorder tabs ──────────────────────────────────────
+const dragIndex = ref<number | null>(null)
+const dragOverIndex = ref<number | null>(null)
+
+function onTabDragStart(index: number, event: DragEvent) {
+  dragIndex.value = index
+  if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move'
+}
+
+function onTabDragOver(index: number) {
+  if (dragIndex.value === null || dragIndex.value === index) return
+  dragOverIndex.value = index
+}
+
+function onTabDrop(toIndex: number) {
+  const fromIndex = dragIndex.value
+  if (fromIndex === null || fromIndex === toIndex) {
+    dragIndex.value = null
+    dragOverIndex.value = null
+    return
+  }
+
+  const move = <T>(arr: T[]): T[] => {
+    const result = [...arr]
+    const [item] = result.splice(fromIndex, 1)
+    result.splice(toIndex, 0, item)
+    return result
+  }
+
+  tabs.value = move(tabs.value)
+  editors.value = move(editors.value)
+  savedContent.value = move(savedContent.value)
+  resumeDetails.value = move(resumeDetails.value)
+
+  // Keep the active tab tracking the same item
+  if (activeTab.value === fromIndex) {
+    activeTab.value = toIndex
+  } else if (activeTab.value > fromIndex && activeTab.value <= toIndex) {
+    activeTab.value--
+  } else if (activeTab.value < fromIndex && activeTab.value >= toIndex) {
+    activeTab.value++
+  }
+
+  dragIndex.value = null
+  dragOverIndex.value = null
+
+  // Persist order — fire and forget
+  if (currentResumeId.value) {
+    const orderedIds = resumeDetails.value.map((d) => d.id).filter(Boolean)
+    resumeDetailService.reorderDetails(currentResumeId.value, orderedIds).catch(() => {})
+  }
+}
+
+function onTabDragEnd() {
+  dragIndex.value = null
+  dragOverIndex.value = null
+}
+
 const openDeleteDialog = (index: number) => {
   tabIndexToDelete.value = index
   isDeleteDialogActive.value = true
@@ -1094,38 +1160,67 @@ const onApplyProposal = async (content: string) => {
   overflow: hidden;
 }
 
-/* ── Noir Tabs ───────────────────────────────────────────── */
-:deep(.noir-tabs) {
-  background: transparent !important;
-  border-bottom: none !important;
-  height: 48px !important;
+/* ── Custom Draggable Tabs ───────────────────────────────── */
+.custom-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 48px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-:deep(.v-tab) {
-  font-family: 'IBM Plex Mono', monospace !important;
-  font-size: 0.75rem !important;
-  letter-spacing: 0.12em !important;
-  color: var(--muted) !important;
-  text-transform: none !important;
-  border-right: 1px solid var(--border) !important;
-  border-bottom: none !important;
-  min-width: 80px !important;
-  padding: 0 12px !important;
-  height: 48px !important;
-  opacity: 1 !important;
+.custom-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-transform: none;
+  border-right: 1px solid var(--border);
+  min-width: 80px;
+  padding: 0 10px;
+  height: 48px;
+  cursor: pointer;
+  user-select: none;
   transition:
     color 0.2s,
-    background 0.2s !important;
+    background 0.2s;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
-:deep(.v-tab--selected) {
+.custom-tab:hover {
+  color: var(--text);
+  background: rgba(245, 245, 245, 0.03);
+}
+
+.custom-tab--active {
   color: var(--text) !important;
   background: rgba(245, 245, 245, 0.05) !important;
   border-bottom: 2px solid var(--gold) !important;
 }
 
-:deep(.v-tabs__slider) {
-  display: none !important;
+.tab-drag-handle {
+  color: var(--muted) !important;
+  opacity: 0;
+  transition: opacity 0.15s;
+  cursor: grab;
+  flex-shrink: 0;
+}
+
+.custom-tab:hover .tab-drag-handle {
+  opacity: 0.5;
+}
+
+.tab--dragging {
+  opacity: 0.4;
+}
+
+.tab--drag-over {
+  border-left: 2px solid var(--gold) !important;
+  background: rgba(245, 245, 245, 0.06) !important;
 }
 
 .tab-label {
@@ -1339,14 +1434,13 @@ const onApplyProposal = async (content: string) => {
 }
 
 .noir-dialog {
-  background: #f5f5f5;
-  border: 1px solid #c8c8c8;
-  border-top: 3px solid #1a1a1a;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 4px 4px 0 #d0d0d0;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 2px 2px 0 #d8d8d8;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  border-radius: 2px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -1358,18 +1452,18 @@ const onApplyProposal = async (content: string) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.9rem 1.5rem;
-  background: #1a1a1a;
-  border-bottom: 1px solid #333;
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e8e8e8;
   flex-shrink: 0;
 }
 
 .dialog-title {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  color: #e8e8e8;
-  letter-spacing: 0.14em;
+  color: #333;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   margin: 0;
 }
@@ -1377,16 +1471,16 @@ const onApplyProposal = async (content: string) => {
 .dialog-close {
   background: none;
   border: none;
-  color: #888;
+  color: #aaa;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: color 0.15s;
   padding: 0;
   line-height: 1;
 }
 
 .dialog-close:hover {
-  color: #e8e8e8;
+  color: #333;
 }
 .dialog-close:disabled {
   opacity: 0.4;
@@ -1396,7 +1490,7 @@ const onApplyProposal = async (content: string) => {
   padding: 1.5rem;
   overflow-y: auto;
   flex: 1;
-  background: #f5f5f5;
+  background: #ffffff;
 }
 
 .dialog-hint {
@@ -1411,9 +1505,9 @@ const onApplyProposal = async (content: string) => {
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
-  padding: 0.9rem 1.5rem;
-  border-top: 1px solid #e0e0e0;
-  background: #efefef;
+  padding: 12px 20px;
+  border-top: 1px solid #e8e8e8;
+  background: #f5f5f5;
   flex-shrink: 0;
 }
 
@@ -1539,8 +1633,8 @@ const onApplyProposal = async (content: string) => {
   flex-shrink: 0;
   width: 28px;
   height: 28px;
-  background: #1a1a1a;
-  color: #c8a951;
+  background: #f5f5f5;
+  color: #888;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.65rem;
   font-weight: 700;
@@ -1652,7 +1746,36 @@ kbd {
 .other-lang-select {
   border: 1px solid var(--border);
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.lang-option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  width: 100%;
+}
+
+.lang-flag {
+  flex-shrink: 0;
+}
+
+.lang-name {
+  flex: 1;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lang-code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: #999;
+  flex-shrink: 0;
 }
 
 /* Noir select */
