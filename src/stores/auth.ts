@@ -26,6 +26,21 @@ export const useAuthStore = defineStore('auth', () => {
     session.value = null
   }
 
+  /** Sign in with a third-party OAuth provider (Google, GitHub) */
+  const signInWithOAuth = async (provider: 'google' | 'github') => {
+    loading.value = true
+    try {
+      const redirectTo = `${window.location.origin}/auth/magic`
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo },
+      })
+      if (error) throw new Error(error.message)
+    } finally {
+      loading.value = false
+    }
+  }
+
   /** Send a Supabase magic link OTP to the provided email */
   const sendMagicLink = async (email: string) => {
     loading.value = true
@@ -127,6 +142,7 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken,
     displayName,
     email,
+    signInWithOAuth,
     sendMagicLink,
     handleMagicLinkCallback,
     logout,
