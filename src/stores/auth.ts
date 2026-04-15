@@ -60,38 +60,55 @@ export const useAuthStore = defineStore('auth', () => {
   const handleMagicLinkCallback = async () => {
     loading.value = true
     try {
-      // OAuth PKCE flow returns ?code=... in the query string
-      // Magic link implicit flow returns #access_token=... in the hash
-      const code = new URLSearchParams(window.location.search).get('code')
-
-      let supaSession
-      if (code) {
-        // Supabase auto-exchanges the code on client init (detectSessionInUrl=true).
-        // Check if the session is already available; fall back to manual exchange
-        // if the auto-exchange hasn't completed yet.
-        const { data: existing } = await supabase.auth.getSession()
-        if (existing.session) {
-          supaSession = existing.session
-        } else {
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-          if (error) throw new Error(error.message)
-          if (!data.session) throw new Error('No session returned from Supabase.')
-          supaSession = data.session
-        }
-      } else {
-        const { data, error } = await supabase.auth.getSession()
-        if (error) throw new Error(error.message)
-        if (!data.session) throw new Error('No session returned from Supabase.')
-        supaSession = data.session
-      }
-
+      const supaSession = await resolveSessionFromCallback()
       setSession(supaSession.access_token, supaSession.user.id, supaSession.user.email ?? '')
-
-      // Sync with backend in the background — don't block navigation
       syncWithBackend()
     } finally {
       loading.value = false
     }
+  }
+
+  /**
+   * Resolves the Supabase session after an auth callback (magic link or OAuth PKCE).
+   * - Magic link: #access_token in hash → getSession() picks it up directly.
+   * - OAuth PKCE:  ?code in query     → Supabase auto-exchanges on init; we wait for
+   *               the SIGNED_IN event rather than racing with the internal exchange.
+   */
+  const resolveSessionFromCallback = (): Promise<import('@supabase/supabase-js').Session> => {
+    return new Promise((resolve, reject) => {
+      const TIMEOUT_MS = 15_000
+
+      const timer = setTimeout(() => {
+        subscription.unsubscribe()
+        reject(new Error('Authentication timed out. Please try again.'))
+      }, TIMEOUT_MS)
+
+      const cleanup = (cb: () => void) => {
+        clearTimeout(timer)
+        subscription.unsubscribe()
+        cb()
+      }
+
+      // Register the listener first to avoid missing a fast SIGNED_IN event
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+          cleanup(() => resolve(session))
+        } else if (event === 'SIGNED_OUT') {
+          cleanup(() => reject(new Error('Sign in failed. Please try again.')))
+        }
+      })
+
+      // Also check immediately — the session may already be set if
+      // Supabase completed the PKCE exchange before we registered the listener
+      supabase.auth.getSession().then(({ data, error }) => {
+        if (error) {
+          cleanup(() => reject(new Error(error.message)))
+        } else if (data.session) {
+          cleanup(() => resolve(data.session!))
+        }
+        // If null, we wait for onAuthStateChange above
+      })
+    })
   }
 
   /** Sync the Supabase session with the backend to ensure a local user exists */
