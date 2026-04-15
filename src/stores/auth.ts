@@ -56,15 +56,28 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  /** Called after Supabase redirects back — exchanges hash params for a session */
+  /** Called after Supabase redirects back — handles both magic link (implicit) and OAuth (PKCE) */
   const handleMagicLinkCallback = async () => {
     loading.value = true
     try {
-      const { data, error } = await supabase.auth.getSession()
-      if (error) throw new Error(error.message)
-      if (!data.session) throw new Error('No session returned from Supabase.')
+      // OAuth PKCE flow returns ?code=... in the query string
+      // Magic link implicit flow returns #access_token=... in the hash
+      const code = new URLSearchParams(window.location.search).get('code')
 
-      setSession(data.session.access_token, data.session.user.id, data.session.user.email ?? '')
+      let supaSession
+      if (code) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+        if (error) throw new Error(error.message)
+        if (!data.session) throw new Error('No session returned from Supabase.')
+        supaSession = data.session
+      } else {
+        const { data, error } = await supabase.auth.getSession()
+        if (error) throw new Error(error.message)
+        if (!data.session) throw new Error('No session returned from Supabase.')
+        supaSession = data.session
+      }
+
+      setSession(supaSession.access_token, supaSession.user.id, supaSession.user.email ?? '')
 
       // Sync with backend in the background — don't block navigation
       syncWithBackend()
