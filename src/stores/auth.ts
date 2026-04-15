@@ -66,10 +66,18 @@ export const useAuthStore = defineStore('auth', () => {
 
       let supaSession
       if (code) {
-        const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-        if (error) throw new Error(error.message)
-        if (!data.session) throw new Error('No session returned from Supabase.')
-        supaSession = data.session
+        // Supabase auto-exchanges the code on client init (detectSessionInUrl=true).
+        // Check if the session is already available; fall back to manual exchange
+        // if the auto-exchange hasn't completed yet.
+        const { data: existing } = await supabase.auth.getSession()
+        if (existing.session) {
+          supaSession = existing.session
+        } else {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+          if (error) throw new Error(error.message)
+          if (!data.session) throw new Error('No session returned from Supabase.')
+          supaSession = data.session
+        }
       } else {
         const { data, error } = await supabase.auth.getSession()
         if (error) throw new Error(error.message)
