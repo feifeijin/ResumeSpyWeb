@@ -153,8 +153,8 @@
       "shortcutHint": "⌘S 保存"
     },
     "tooltips": {
-      "addLanguage": "添加语言",
-      "sync": "同步",
+      "addLanguage": "添加语言版本",
+      "sync": "翻译到所有语言",
       "preview": "预览",
       "tailorForJD": "AI优化"
     }

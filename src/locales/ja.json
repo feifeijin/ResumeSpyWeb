@@ -153,8 +153,8 @@
       "shortcutHint": "⌘S で保存"
     },
     "tooltips": {
-      "addLanguage": "言語を追加",
-      "sync": "同期",
+      "addLanguage": "言語バージョンを追加",
+      "sync": "すべての言語に翻訳",
       "preview": "プレビュー",
       "tailorForJD": "AI最適化"
     }

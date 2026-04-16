@@ -153,8 +153,8 @@
       "shortcutHint": "⌘S to save"
     },
     "tooltips": {
-      "addLanguage": "Add Language",
-      "sync": "Sync",
+      "addLanguage": "Add language version",
+      "sync": "Translate to all languages",
       "preview": "Preview",
       "tailorForJD": "AI Tailor"
     }

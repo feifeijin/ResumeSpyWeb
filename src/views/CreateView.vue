@@ -84,14 +84,6 @@
 
         <!-- Action stamps -->
         <div class="action-stamps">
-          <v-tooltip location="bottom" :text="$t('createView.selectLanguage')">
-            <template #activator="{ props }">
-              <button class="stamp" v-bind="props" @click="handleLanguageDialogOpen">
-                <v-icon size="15">mdi-file-account</v-icon>
-                <span>{{ $t('createView.selectLanguage') }}</span>
-              </button>
-            </template>
-          </v-tooltip>
           <v-tooltip location="bottom" :text="$t('version.history')">
             <template #activator="{ props }">
               <button class="stamp" v-bind="props" @click="openHistoryPanel">
@@ -121,7 +113,7 @@
             @save="onSave(index)"
             :height="editorHeight"
             :toolbar="starToolbar"
-            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save set-default | sync export-pdf"
+            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save set-default | add-language sync export-pdf"
             right-toolbar="toc sync-scroll fullscreen"
             >{{ tab }}</v-md-editor
           >
@@ -1076,8 +1068,13 @@ const starToolbar = {
     active: () => resumeDetails.value[activeTab.value]?.isDefault === true,
     action: () => setCurrentTabAsDefault(),
   },
+  'add-language': {
+    title: () => t('createView.tooltips.addLanguage'),
+    icon: 'mdi mdi-earth-plus',
+    action: () => handleLanguageDialogOpen(),
+  },
   sync: {
-    title: () => t('common.sync'),
+    title: () => t('createView.tooltips.sync'),
     icon: 'mdi mdi-translate',
     action: () => openSyncDialog(),
   },
@@ -1281,7 +1278,7 @@ const onApplyProposal = async (content: string) => {
 }
 
 .tab-star {
-  color: var(--gold) !important;
+  color: #c8a951 !important;
 }
 
 .tab-close {
