@@ -82,7 +82,10 @@ onMounted(async () => {
     await goToDestination()
   } catch (error) {
     state.value = 'error'
-    errorMessage.value = error instanceof Error ? error.message : t('auth.magicInvalidLink')
+    const msg = error instanceof Error ? error.message : ''
+    errorMessage.value = msg.toLowerCase().includes('multiple accounts') || msg.toLowerCase().includes('same email')
+      ? t('auth.duplicateAccountError')
+      : (msg || t('auth.magicInvalidLink'))
     toast.error(errorMessage.value)
   }
 })

@@ -60,6 +60,12 @@ export const useAuthStore = defineStore('auth', () => {
   const handleMagicLinkCallback = async () => {
     loading.value = true
     try {
+      // Surface any error Supabase passed back in the URL (e.g. access_denied, bad redirect)
+      const params = new URLSearchParams(window.location.search)
+      const urlError = params.get('error')
+      const urlErrorDesc = params.get('error_description')
+      if (urlError) throw new Error(urlErrorDesc ?? urlError)
+
       const supaSession = await resolveSessionFromCallback()
       setSession(supaSession.access_token, supaSession.user.id, supaSession.user.email ?? '')
       syncWithBackend()

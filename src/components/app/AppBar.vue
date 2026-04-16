@@ -199,6 +199,7 @@ const handleLogout = async () => {
   font-size: 0.75rem !important;
   color: #888888 !important;
   transition: color 0.25s !important;
+  text-transform: none !important;
 }
 
 :deep(.v-btn:hover) { color: #121212 !important; }

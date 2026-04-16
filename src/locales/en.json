@@ -105,6 +105,7 @@
     "magicTitleError": "Link is invalid or expired",
     "magicInvalidLink": "This magic link is invalid or has already been used. Request a new one to sign in.",
     "magicReturnToSignIn": "Back to sign-in",
+    "duplicateAccountError": "This email is already registered via magic link. Sign in with your magic link instead, or contact support to merge your accounts.",
     "magicFailed": "We couldn't verify your link. Please request a new one.",
     "validation": {
       "required": "This field is required",

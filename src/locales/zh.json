@@ -105,6 +105,7 @@
     "magicTitleError": "链接无效或已过期",
     "magicInvalidLink": "该登录链接无效或已被使用，请重新申请。",
     "magicReturnToSignIn": "返回登录页面",
+    "duplicateAccountError": "该邮箱已通过魔法链接注册。请使用魔法链接登录，或联系客服合并账号。",
     "magicFailed": "无法验证此链接，请重新申请。",
     "validation": {
       "required": "此字段为必填项",
