@@ -395,5 +395,43 @@
     "noCached": "No cached versions",
     "tryAgain": "Try different search terms",
     "createFirst": "Create your first resume"
+  },
+  "onboarding": {
+    "part1": {
+      "step1": {
+        "title": "WRITE YOUR RESUME",
+        "description": "Type your resume content here using Markdown. Headings, bold, lists — all the structure a clean resume needs."
+      },
+      "step2": {
+        "title": "SAVE YOUR WORK",
+        "description": "Click Save or press ⌘S to save your resume. Once saved, we'll walk you through the other features."
+      }
+    },
+    "part2": {
+      "step1": {
+        "title": "SET AS DEFAULT",
+        "description": "Mark this version as your default resume. The default is used for exports and shown first in previews."
+      },
+      "step2": {
+        "title": "ADD A LANGUAGE",
+        "description": "Create a new language version of your resume — Japanese, French, or any other. Each tab is stored independently."
+      },
+      "step3": {
+        "title": "SYNC TO ALL LANGUAGES",
+        "description": "After editing your primary draft, click Sync to automatically translate it to every other language tab."
+      },
+      "step4": {
+        "title": "EXPORT AS PDF",
+        "description": "Download a clean, ATS-friendly PDF in one click. Repeat for each language tab to have all versions ready."
+      }
+    },
+    "nav": {
+      "next": "Next →",
+      "back": "← Back",
+      "skip": "Skip",
+      "done": "Done ✓"
+    },
+    "restartTour": "Restart Tour",
+    "gotIt": "Got it ✓"
   }
 }

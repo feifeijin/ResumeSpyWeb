@@ -105,7 +105,7 @@
     </div>
 
     <!-- ── Editor ─────────────────────────────────────────── -->
-    <div class="editor-wrap">
+    <div class="editor-wrap" data-onboarding="editor-wrap">
       <v-tabs-window v-model="activeTab" class="noir-editor-window">
         <v-tabs-window-item v-for="(tab, index) in tabs" :key="tab">
           <v-md-editor
@@ -462,7 +462,12 @@
           </div>
         </div>
         <div class="dialog-footer">
-          <button class="stamp stamp--gold" @click="isGuideDialogOpen = false">Got it ✓</button>
+          <button class="stamp" @click="handleRestartTour">
+            {{ $t('onboarding.restartTour') }}
+          </button>
+          <button class="stamp stamp--gold" @click="isGuideDialogOpen = false">
+            {{ $t('onboarding.gotIt') }}
+          </button>
         </div>
       </div>
     </v-dialog>
@@ -530,6 +535,8 @@ import type { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
+import { useOnboardingStore } from '@/stores/onboarding'
+import { useOnboarding } from '@/composables/useOnboarding'
 import VersionHistoryPanel from '@/components/version/VersionHistoryPanel.vue'
 import DetectiveChatWidget from '@/components/DetectiveChatWidget.vue'
 
@@ -542,6 +549,8 @@ const route = useRoute()
 const router = useRouter()
 const guestStore = useGuestStore()
 const authStore = useAuthStore()
+const onboardingStore = useOnboardingStore()
+const { startPart1Tour, startPart2Tour } = useOnboarding()
 
 const dialog = ref('')
 const currentResumeId = ref<string | null>(null)
@@ -711,6 +720,11 @@ onMounted(() => {
     _ro = new ResizeObserver(recalcEditorHeight)
     if (createContainerRef.value) _ro.observe(createContainerRef.value)
     if (toolbarRef.value) _ro.observe(toolbarRef.value)
+
+    // Part 1: write & save tutorial — shown on first ever visit to CreateView
+    if (onboardingStore.shouldShowPart1) {
+      setTimeout(startPart1Tour, 500)
+    }
   })
 })
 
@@ -806,6 +820,7 @@ const onAdd = async () => {
 }
 
 const onSave = async (index: number) => {
+  const wasFirstSave = !resumeDetails.value[index]?.id
   saveStatus.value = 'saving'
   await withLoading(
     async () => {
@@ -852,6 +867,11 @@ const onSave = async (index: number) => {
     },
     { id: 'save-resume', message: commonMessages.saving },
   )
+
+  // Part 2: feature tour — trigger once after the very first successful save
+  if (wasFirstSave && resumeDetails.value[index]?.id && onboardingStore.shouldShowPart2) {
+    setTimeout(startPart2Tour, 800)
+  }
 }
 
 // ── Drag-to-reorder tabs ──────────────────────────────────────
@@ -952,6 +972,14 @@ const deleteTab = async () => {
 const openSyncDialog = () => {
   if (!currentResumeId.value) return
   isSyncDialogActive.value = true
+}
+
+const handleRestartTour = () => {
+  isGuideDialogOpen.value = false
+  setTimeout(() => {
+    onboardingStore.restartPart2()
+    startPart2Tour()
+  }, 200)
 }
 
 const syncTab = async () => {

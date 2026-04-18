@@ -1,0 +1,132 @@
+/* ── driver.js noir theme for ResumeSpy ──────────────────── */
+
+/* Overlay */
+.driver-overlay {
+  background: rgba(18, 18, 18, 0.55) !important;
+}
+
+/* Popover container */
+.noir-tour-popover.driver-popover {
+  background: #f5f5f5;
+  border: 1.5px solid #d4d4d4;
+  box-shadow: 5px 5px 0 #aaaaaa;
+  border-radius: 0;
+  padding: 1.5rem;
+  max-width: 340px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #121212;
+}
+
+/* Hide default arrow — flat shadow communicates direction */
+.noir-tour-popover.driver-popover .driver-popover-arrow {
+  display: none !important;
+}
+
+/* Title */
+.noir-tour-popover.driver-popover .driver-popover-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #121212;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  padding-right: 1.5rem; /* space for close button */
+}
+
+/* Description */
+.noir-tour-popover.driver-popover .driver-popover-description {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: #444444;
+}
+
+/* Step badge — injected via buildDesc() */
+.tour-step-badge {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: #888888;
+  margin-bottom: 0.5rem;
+}
+
+/* Navigation buttons container */
+.noir-tour-popover.driver-popover .driver-popover-navigation-btns {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* Prev button */
+.noir-tour-popover.driver-popover .driver-popover-prev-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  border: 1.5px solid #d4d4d4;
+  background: transparent;
+  color: #666666;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  border-radius: 0;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+  text-decoration: none;
+}
+
+.noir-tour-popover.driver-popover .driver-popover-prev-btn:hover {
+  border-color: #888888;
+  color: #121212;
+}
+
+/* Next / Done button */
+.noir-tour-popover.driver-popover .driver-popover-next-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  border: 1.5px solid #121212;
+  background: #121212;
+  color: #f5f5f5;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  border-radius: 0;
+  box-shadow: 2px 2px 0 #aaaaaa;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+  text-decoration: none;
+}
+
+.noir-tour-popover.driver-popover .driver-popover-next-btn:hover {
+  background: #2b2b2b;
+  box-shadow: 3px 3px 0 #888888;
+}
+
+/* Close (×) button */
+.noir-tour-popover.driver-popover .driver-popover-close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.15rem 0.4rem;
+  background: transparent;
+  color: #888888;
+  border: none;
+  box-shadow: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.noir-tour-popover.driver-popover .driver-popover-close-btn:hover {
+  color: #121212;
+}
+
+/* Highlighted element ring — monochrome, no blue */
+.driver-active-element,
+.driver-active-element:not([disabled]) {
+  box-shadow: 0 0 0 3px #121212, 0 0 0 5px rgba(18, 18, 18, 0.15) !important;
+}
