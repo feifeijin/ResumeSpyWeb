@@ -17,10 +17,14 @@
                 'custom-tab--active': activeTab === index,
                 'tab-editing': isEditingTab(index),
                 'tab--dragging': dragIndex === index,
-                'tab--drop-before': dragOverIndex === index && dragIndex !== null && dragIndex > index,
+                'tab--drop-before':
+                  dragOverIndex === index && dragIndex !== null && dragIndex > index,
                 'tab--drop-after':
                   (dragOverIndex === index && dragIndex !== null && dragIndex < index) ||
-                  (index === tabs.length - 1 && dragOverIndex === tabs.length && dragIndex !== null && dragIndex !== tabs.length - 1),
+                  (index === tabs.length - 1 &&
+                    dragOverIndex === tabs.length &&
+                    dragIndex !== null &&
+                    dragIndex !== tabs.length - 1),
               }"
               draggable="true"
               @click="activeTab = index"
@@ -410,7 +414,9 @@
               <div class="guide-step-content">
                 <div class="guide-step-title">Create Your Resume</div>
                 <div class="guide-step-desc">
-                  Write in <strong>Markdown</strong> — clean, portable, and version-controlled. Use the toolbar for headings, bold, lists, and links. Press <kbd>Cmd+S</kbd> to save anytime.
+                  Write in <strong>Markdown</strong> — clean, portable, and version-controlled. Use
+                  the toolbar for headings, bold, lists, and links. Press <kbd>Cmd+S</kbd> to save
+                  anytime.
                 </div>
               </div>
             </div>
@@ -419,7 +425,9 @@
               <div class="guide-step-content">
                 <div class="guide-step-title">Add Language Versions</div>
                 <div class="guide-step-desc">
-                  Click <strong>Select Language</strong> to create a new language tab (English, Japanese, Chinese…). Each version is stored independently so you can tailor tone and vocabulary per market.
+                  Click <strong>Select Language</strong> to create a new language tab (English,
+                  Japanese, Chinese…). Each version is stored independently so you can tailor tone
+                  and vocabulary per market.
                 </div>
               </div>
             </div>
@@ -428,7 +436,9 @@
               <div class="guide-step-content">
                 <div class="guide-step-title">Sync Across Languages</div>
                 <div class="guide-step-desc">
-                  After editing the primary version, click <strong>Sync</strong> (↔ in the editor toolbar) to automatically translate and propagate your changes to all other language tabs. No manual re-typing.
+                  After editing the primary version, click <strong>Sync</strong> (↔ in the editor
+                  toolbar) to automatically translate and propagate your changes to all other
+                  language tabs. No manual re-typing.
                 </div>
               </div>
             </div>
@@ -437,7 +447,9 @@
               <div class="guide-step-content">
                 <div class="guide-step-title">Build from Scratch with the Detective</div>
                 <div class="guide-step-desc">
-                  New to resumes? Click the <strong>detective icon</strong> (bottom right) to open the AI chat. Answer a few questions and hit <strong>Generate</strong> — the Detective writes your full resume from the conversation.
+                  New to resumes? Click the <strong>detective icon</strong> (bottom right) to open
+                  the AI chat. Answer a few questions and hit <strong>Generate</strong> — the
+                  Detective writes your full resume from the conversation.
                 </div>
               </div>
             </div>
@@ -446,7 +458,9 @@
               <div class="guide-step-content">
                 <div class="guide-step-title">Export as PDF</div>
                 <div class="guide-step-desc">
-                  Click <strong>Export PDF</strong> in the editor toolbar to download a ready-to-send PDF. The layout is clean and ATS-friendly — no bloated design, no gimmicks.
+                  Click <strong>Export PDF</strong> in the editor toolbar to download a
+                  ready-to-send PDF. The layout is clean and ATS-friendly — no bloated design, no
+                  gimmicks.
                 </div>
               </div>
             </div>
@@ -455,7 +469,8 @@
               <div class="guide-step-content">
                 <div class="guide-step-title">Version History</div>
                 <div class="guide-step-desc">
-                  Click <strong>History</strong> to see all saved versions. Restore any previous version with one click. Every save is automatically snapshotted.
+                  Click <strong>History</strong> to see all saved versions. Restore any previous
+                  version with one click. Every save is automatically snapshotted.
                 </div>
               </div>
             </div>
@@ -896,7 +911,7 @@ function onTabDrop(toIndex: number) {
     return
   }
 
-  const move = <T>(arr: T[]): T[] => {
+  const move = <T,>(arr: T[]): T[] => {
     const result = [...arr]
     const [item] = result.splice(fromIndex, 1)
     result.splice(toIndex, 0, item)
@@ -934,7 +949,7 @@ function onTabDragEnd() {
 
 function onEndDragOver() {
   if (dragIndex.value === null) return
-  dragOverIndex.value = tabs.value.length  // sentinel → highlights last tab's right border
+  dragOverIndex.value = tabs.value.length // sentinel → highlights last tab's right border
 }
 
 function onEndDrop() {
@@ -1499,7 +1514,9 @@ const onApplyProposal = async (content: string) => {
 .noir-dialog {
   background: #ffffff;
   border: 1px solid #e0e0e0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 2px 2px 0 #d8d8d8;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    2px 2px 0 #d8d8d8;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -1661,7 +1678,6 @@ const onApplyProposal = async (content: string) => {
   padding: 0.75rem 1.5rem 1.25rem;
 }
 
-
 .preview-body {
   max-height: 65vh;
 }
@@ -1793,7 +1809,9 @@ kbd {
 :deep(.v-selection-control__input > .v-icon) {
   color: var(--gold-dim) !important;
 }
-
+:deep(.v-md-editor__toolbar-item-export-pdf) {
+  margin-right: 5px;
+}
 .radio-label {
   display: flex;
   align-items: center;
