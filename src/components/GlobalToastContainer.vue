@@ -1,49 +1,33 @@
 <template>
-  <div class="global-toast-container">
-    <v-snackbar
-      v-for="toast in toastStore.toasts"
-      :key="toast.id"
-      :model-value="true"
-      :color="getToastColor(toast.type)"
-      :timeout="toast.persistent ? -1 : toast.duration || 5000"
-      location="top center"
-      :multi-line="toast.message.length > 60"
-      :vertical="!!toast.actions && toast.actions.length > 0"
-      class="toast-item"
-      :style="{
-        zIndex: 10000 + getToastIndex(toast.id),
-        marginTop: `${getToastIndex(toast.id) * 80}px`,
-      }"
-      @update:model-value="(value) => !value && toastStore.removeToast(toast.id)"
-    >
-      <div class="d-flex align-center">
-        <v-icon :icon="getToastIcon(toast.type)" class="me-3" size="small" />
+  <div class="toast-stack" aria-live="polite" aria-atomic="false">
+    <transition-group name="toast">
+      <div
+        v-for="toast in toastStore.toasts"
+        :key="toast.id"
+        class="toast-item"
+        :class="`toast-item--${toast.type}`"
+        role="alert"
+      >
+        <v-icon :icon="getToastIcon(toast.type)" class="toast-icon" size="small" />
 
         <span class="toast-message">{{ toast.message }}</span>
+
+        <div v-if="toast.actions && toast.actions.length > 0" class="toast-actions">
+          <button
+            v-for="(action, index) in toast.actions"
+            :key="index"
+            class="toast-action-btn"
+            @click="action.action"
+          >
+            {{ action.text }}
+          </button>
+        </div>
+
+        <button class="toast-close" @click="toastStore.removeToast(toast.id)" aria-label="Dismiss">
+          <v-icon icon="mdi-close" size="x-small" />
+        </button>
       </div>
-
-      <template v-slot:actions v-if="toast.actions && toast.actions.length > 0">
-        <v-btn
-          v-for="(action, index) in toast.actions"
-          :key="index"
-          variant="text"
-          size="small"
-          @click="action.action"
-          class="me-2"
-        >
-          {{ action.text }}
-        </v-btn>
-      </template>
-
-      <template v-slot:actions v-else>
-        <v-btn
-          variant="text"
-          size="small"
-          icon="mdi-close"
-          @click="toastStore.removeToast(toast.id)"
-        />
-      </template>
-    </v-snackbar>
+    </transition-group>
   </div>
 </template>
 
@@ -52,108 +36,124 @@ import { useToastStore, type ToastType } from '@/stores/toast'
 
 const toastStore = useToastStore()
 
-// Get toast index for positioning
-const getToastIndex = (id: string): number => {
-  return toastStore.toasts.findIndex((toast) => toast.id === id)
-}
-
-// Get appropriate color for toast type
-const getToastColor = (type: ToastType): string => {
-  switch (type) {
-    case 'success':
-      return 'success'
-    case 'error':
-      return 'error'
-    case 'warning':
-      return 'warning'
-    case 'info':
-      return 'info'
-    default:
-      return 'primary'
-  }
-}
-
-// Get appropriate icon for toast type
 const getToastIcon = (type: ToastType): string => {
   switch (type) {
-    case 'success':
-      return 'mdi-check-circle'
-    case 'error':
-      return 'mdi-alert-circle'
-    case 'warning':
-      return 'mdi-alert'
-    case 'info':
-      return 'mdi-information'
-    default:
-      return 'mdi-information'
+    case 'success': return 'mdi-check-circle'
+    case 'error':   return 'mdi-alert-circle'
+    case 'warning': return 'mdi-alert'
+    case 'info':    return 'mdi-information'
+    default:        return 'mdi-information'
   }
 }
 
-// Define component name for Vue DevTools
-defineOptions({
-  name: 'GlobalToastContainer',
-})
+defineOptions({ name: 'GlobalToastContainer' })
 </script>
 
 <style scoped>
-.global-toast-container {
+/* ── Stack container ────────────────────────────────────────────
+   pointer-events: none means the empty space between/around toasts
+   never blocks clicks on the page beneath.                       */
+.toast-stack {
   position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10000;
-  pointer-events: none;
-}
-
-.toast-item {
-  pointer-events: auto;
-  position: fixed !important;
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  width: max-content;
+  max-width: min(500px, 90vw);
+}
+
+/* ── Individual toast ───────────────────────────────────────────
+   pointer-events: auto re-enables clicks only on the toast itself. */
+.toast-item {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
   min-width: 300px;
-  max-width: 500px;
+  max-width: min(500px, 90vw);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #fff;
+  word-break: break-word;
+}
+
+/* ── Colours ─────────────────────────────────────────────────── */
+.toast-item--success { background: rgb(var(--v-theme-success)); }
+.toast-item--error   { background: rgb(var(--v-theme-error)); }
+.toast-item--warning { background: rgb(var(--v-theme-warning)); color: rgba(0,0,0,.87); }
+.toast-item--info    { background: rgb(var(--v-theme-info)); }
+
+.toast-icon {
+  flex-shrink: 0;
 }
 
 .toast-message {
-  line-height: 1.4;
-  word-wrap: break-word;
+  flex: 1;
 }
 
-/* Override Vuetify's default snackbar positioning */
-.toast-item :deep(.v-snackbar__wrapper) {
-  position: static;
+/* ── Action buttons ──────────────────────────────────────────── */
+.toast-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-/* Prevent the snackbar's internal overlay from blocking clicks on the page */
-.toast-item :deep(.v-overlay__scrim),
-.toast-item :deep(.v-overlay__content) {
-  pointer-events: none;
+.toast-action-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 4px 10px;
 }
-.toast-item :deep(.v-snackbar__wrapper) {
-  pointer-events: auto;
-}
-
-/* Custom animations for stacked toasts */
-.toast-item {
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* Toast type specific styling */
-.toast-item :deep(.v-snackbar--variant-flat.bg-success) {
-  background-color: rgb(var(--v-theme-success)) !important;
+.toast-action-btn:hover {
+  background: rgba(255,255,255,0.35);
 }
 
-.toast-item :deep(.v-snackbar--variant-flat.bg-error) {
-  background-color: rgb(var(--v-theme-error)) !important;
+/* ── Close button ────────────────────────────────────────────── */
+.toast-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.7;
+  padding: 2px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+.toast-close:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.15);
 }
 
-.toast-item :deep(.v-snackbar--variant-flat.bg-warning) {
-  background-color: rgb(var(--v-theme-warning)) !important;
-  color: rgb(var(--v-theme-on-warning)) !important;
+/* ── Slide-in / fade-out animation ──────────────────────────── */
+.toast-enter-active {
+  transition: all 0.25s ease-out;
 }
-
-.toast-item :deep(.v-snackbar--variant-flat.bg-info) {
-  background-color: rgb(var(--v-theme-info)) !important;
+.toast-leave-active {
+  transition: all 0.2s ease-in;
+}
+.toast-enter-from {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.toast-move {
+  transition: transform 0.25s ease;
 }
 </style>

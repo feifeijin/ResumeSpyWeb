@@ -2,31 +2,30 @@ import { createPinia, setActivePinia } from 'pinia'
 import { shallowMount } from '@vue/test-utils'
 import GlobalToastContainer from '../../../src/components/GlobalToastContainer.vue'
 import { useToastStore } from '../../../src/stores/toast'
-import { VSnackbarStub, commonVuetifyStubs } from '../helpers/vuetify-stubs'
+import { commonVuetifyStubs } from '../helpers/vuetify-stubs'
 
 describe('GlobalToastContainer', () => {
   beforeEach(() => {
-    // Purpose: reset store state and fake timers before each test run.
+    // Purpose: reset store state before each test.
     setActivePinia(createPinia())
     vi.useFakeTimers()
   })
 
-  it('maps toast type to proper snackbar color and icon', () => {
-    // Purpose: protect visual semantics for status feedback messages.
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('maps toast type to proper CSS class and renders message', () => {
+    // Purpose: protect visual semantics — each toast type gets its own colour class.
     const store = useToastStore()
     store.showError('Request failed')
 
     const wrapper = shallowMount(GlobalToastContainer, {
-      global: {
-        stubs: {
-          ...commonVuetifyStubs,
-          VSnackbar: VSnackbarStub,
-        },
-      },
+      global: { stubs: { ...commonVuetifyStubs, TransitionGroup: false } },
     })
 
-    const snackbar = wrapper.findComponent(VSnackbarStub)
-    expect(snackbar.props('color')).toBe('error')
+    const item = wrapper.find('.toast-item--error')
+    expect(item.exists()).toBe(true)
     expect(wrapper.text()).toContain('Request failed')
   })
 
@@ -42,35 +41,25 @@ describe('GlobalToastContainer', () => {
     })
 
     const wrapper = shallowMount(GlobalToastContainer, {
-      global: {
-        stubs: {
-          ...commonVuetifyStubs,
-          VSnackbar: VSnackbarStub,
-        },
-      },
+      global: { stubs: { ...commonVuetifyStubs, TransitionGroup: false } },
     })
 
-    const actionButton = wrapper.find('button')
+    const actionButton = wrapper.find('.toast-action-btn')
     await actionButton.trigger('click')
     expect(actionSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('removes a toast when snackbar model is turned off', async () => {
-    // Purpose: test dismiss behavior used by close interactions.
+  it('removes a toast when the close button is clicked', async () => {
+    // Purpose: test dismiss behavior for the close button.
     const store = useToastStore()
     const id = store.showInfo('Dismiss me')
 
     const wrapper = shallowMount(GlobalToastContainer, {
-      global: {
-        stubs: {
-          ...commonVuetifyStubs,
-          VSnackbar: VSnackbarStub,
-        },
-      },
+      global: { stubs: { ...commonVuetifyStubs, TransitionGroup: false } },
     })
 
-    const snackbar = wrapper.findComponent(VSnackbarStub)
-    await snackbar.vm.$emit('update:model-value', false)
+    const closeBtn = wrapper.find('.toast-close')
+    await closeBtn.trigger('click')
 
     expect(store.toasts.find((toast) => toast.id === id)).toBeUndefined()
   })
