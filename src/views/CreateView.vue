@@ -975,7 +975,7 @@ const saveTabName = async (index: number) => {
   }
 }
 
-const openTailorDialog = () => {
+const _openTailorDialog = () => {
   if (!currentDetailId.value) {
     toast.warning(t('createView.unsavedBeforeAction'))
     return

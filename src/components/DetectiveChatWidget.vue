@@ -299,7 +299,8 @@ function isActiveOptions(idx: number) {
 
 function toggleOption(item: string) {
   const s = new Set(pendingSelections.value)
-  s.has(item) ? s.delete(item) : s.add(item)
+  if (s.has(item)) s.delete(item)
+  else s.add(item)
   pendingSelections.value = s
 }
 

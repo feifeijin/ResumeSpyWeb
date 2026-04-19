@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import GuestSessionBanner from '../../../src/components/GuestSessionBanner.vue'
 import { commonVuetifyStubs } from '../helpers/vuetify-stubs'
