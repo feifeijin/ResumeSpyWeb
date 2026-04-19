@@ -252,117 +252,6 @@
       </div>
     </v-dialog>
 
-    <!-- ── Sync Dialog ────────────────────────────────────── -->
-    <v-dialog v-model="isSyncDialogActive" width="360">
-      <div class="noir-dialog sync-dialog">
-        <!-- Detective illustration -->
-        <div class="sync-detective">
-          <svg
-            viewBox="0 0 160 130"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            class="sync-svg"
-          >
-            <!-- Hat crown -->
-            <rect x="52" y="8" width="42" height="32" rx="5" fill="#111" />
-            <rect x="42" y="37" width="62" height="8" rx="4" fill="#1a1a1a" />
-            <rect x="52" y="32" width="42" height="7" fill="#0c0c0c" />
-            <!-- Head -->
-            <ellipse cx="73" cy="57" rx="22" ry="23" fill="#2c2c2c" />
-            <ellipse cx="73" cy="66" rx="16" ry="12" fill="#222" />
-            <!-- Eyes -->
-            <ellipse cx="64" cy="53" rx="4" ry="3" fill="#0e0e0e" />
-            <ellipse cx="83" cy="53" rx="4" ry="3" fill="#0e0e0e" />
-            <circle cx="65" cy="53" r="1.8" fill="#080808" />
-            <circle cx="84" cy="53" r="1.8" fill="#080808" />
-            <circle cx="65" cy="52" r="0.7" fill="#ccc" opacity="0.5" />
-            <circle cx="84" cy="52" r="0.7" fill="#ccc" opacity="0.5" />
-            <!-- Satisfied smirk -->
-            <path
-              d="M65 67 Q73 72 81 67"
-              stroke="#111"
-              stroke-width="2"
-              fill="none"
-              stroke-linecap="round"
-            />
-            <!-- Neck -->
-            <rect x="66" y="79" width="13" height="10" rx="2" fill="#2a2a2a" />
-            <!-- Coat -->
-            <path d="M40 90 L32 130 L114 130 L106 90 Z" fill="#1a1a1a" />
-            <path d="M73 100 L52 90 L58 118 Z" fill="#111" />
-            <path d="M73 100 L94 90 L88 118 Z" fill="#111" />
-            <path d="M52 90 L62 80 L73 100 Z" fill="#1c1c1c" />
-            <path d="M94 90 L84 80 L73 100 Z" fill="#1c1c1c" />
-            <!-- Left arm — pointing at document -->
-            <path d="M40 90 L20 108 L27 112 L47 96 Z" fill="#141414" />
-            <ellipse cx="22" cy="111" rx="6" ry="4" fill="#2a2a2a" />
-            <!-- Finger pointing -->
-            <line
-              x1="18"
-              y1="110"
-              x2="10"
-              y2="107"
-              stroke="#2a2a2a"
-              stroke-width="3"
-              stroke-linecap="round"
-            />
-            <!-- Document / case file -->
-            <rect x="0" y="95" width="14" height="18" rx="1" fill="#e8e0d0" opacity="0.9" />
-            <line x1="2" y1="100" x2="12" y2="100" stroke="#bbb" stroke-width="1" />
-            <line x1="2" y1="103" x2="12" y2="103" stroke="#bbb" stroke-width="1" />
-            <line x1="2" y1="106" x2="9" y2="106" stroke="#bbb" stroke-width="1" />
-            <!-- Check mark on document -->
-            <path
-              d="M3 109 L6 112 L12 107"
-              stroke="#2a7a2a"
-              stroke-width="1.5"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="check-mark"
-            />
-            <!-- Right arm relaxed -->
-            <path d="M106 90 L120 108 L113 112 L99 96 Z" fill="#141414" />
-            <ellipse cx="117" cy="111" rx="6" ry="4" fill="#2a2a2a" />
-            <!-- Cigarette -->
-            <rect x="118" y="109" width="13" height="2.5" rx="1" fill="#d4c9a8" />
-            <circle cx="119" cy="110" r="2" class="cig-ember" fill="#cc4400" />
-            <!-- Smoke -->
-            <circle cx="119" cy="104" r="1.8" class="det-smoke s1" fill="#888" />
-            <circle cx="117" cy="98" r="1.4" class="det-smoke s2" fill="#777" />
-            <circle cx="120" cy="92" r="0.9" class="det-smoke s3" fill="#666" />
-          </svg>
-        </div>
-
-        <!-- Message -->
-        <div class="sync-body">
-          <p class="sync-title">Translate to all languages</p>
-          <p class="sync-msg">{{ $t('createView.syncHint') }}</p>
-          <div class="sync-info-row">
-            <div class="sync-info-item">
-              <v-icon size="14" class="me-1">mdi-translate</v-icon>
-              <span>AI translation</span>
-            </div>
-            <div class="sync-info-item">
-              <v-icon size="14" class="me-1">mdi-lightning-bolt</v-icon>
-              <span>All tabs updated</span>
-            </div>
-            <div class="sync-info-item">
-              <v-icon size="14" class="me-1">mdi-lock-outline</v-icon>
-              <span>Original preserved</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="sync-footer">
-          <button class="stamp" @click="isSyncDialogActive = false">
-            {{ $t('common.cancel') }}
-          </button>
-          <button class="stamp stamp--gold" @click="syncTab">{{ $t('common.sync') }}</button>
-        </div>
-      </div>
-    </v-dialog>
-
     <!-- ── Preview Dialog ─────────────────────────────────── -->
     <v-dialog v-model="isPreviewActive" max-width="860px" scrollable>
       <div class="noir-dialog">
@@ -633,7 +522,6 @@ const otherLanguages = computed(() =>
 const isDialogActive = ref(false)
 const isDeleteDialogActive = ref(false)
 const tabIndexToDelete = ref(-1)
-const isSyncDialogActive = ref(false)
 const isPreviewActive = ref(false)
 const isTailorDialogActive = ref(false)
 const isGuideDialogOpen = ref(false)
@@ -984,11 +872,6 @@ const deleteTab = async () => {
   }
 }
 
-const openSyncDialog = () => {
-  if (!currentResumeId.value) return
-  isSyncDialogActive.value = true
-}
-
 const handleRestartTour = () => {
   isGuideDialogOpen.value = false
   setTimeout(() => {
@@ -1001,7 +884,6 @@ const syncTab = async () => {
   if (!currentResumeId.value) return
   const activeResumeDetailID = resumeDetails.value[activeTab.value].id
   if (!activeResumeDetailID) return
-  isSyncDialogActive.value = false
   await withLoading(
     async () => {
       // Save current editor content first so backend reads the latest version
@@ -1119,7 +1001,7 @@ const starToolbar = {
   sync: {
     title: () => t('createView.tooltips.sync'),
     icon: 'mdi mdi-translate',
-    action: () => openSyncDialog(),
+    action: () => syncTab(),
   },
   'export-pdf': {
     title: () => t('createView.exportPdf'),

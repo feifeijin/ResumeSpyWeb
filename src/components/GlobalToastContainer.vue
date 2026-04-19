@@ -125,6 +125,15 @@ defineOptions({
   position: static;
 }
 
+/* Prevent the snackbar's internal overlay from blocking clicks on the page */
+.toast-item :deep(.v-overlay__scrim),
+.toast-item :deep(.v-overlay__content) {
+  pointer-events: none;
+}
+.toast-item :deep(.v-snackbar__wrapper) {
+  pointer-events: auto;
+}
+
 /* Custom animations for stacked toasts */
 .toast-item {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
