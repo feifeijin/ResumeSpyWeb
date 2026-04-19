@@ -61,6 +61,12 @@ describe('auth store', () => {
     clearGuestSessionMock.mockReset()
     clearAnonymousIdMock.mockReset()
     pushMock.mockReset()
+
+    // onAuthStateChange must return { data: { subscription } } — the store destructures this.
+    // Default: never fires the callback (tests that need it override this per-test).
+    onAuthStateChangeMock.mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    })
   })
 
   it('sends magic link with expected redirect URL and resets loading', async () => {
@@ -122,11 +128,19 @@ describe('auth store', () => {
 
   it('throws when callback session is missing', async () => {
     // Purpose: test edge case where Supabase callback lacks session data.
+    // getSession returns null (e.g. OAuth code not yet exchanged), and
+    // onAuthStateChange fires SIGNED_OUT → store rejects with sign-in failure.
     const store = useAuthStore()
     getSessionMock.mockResolvedValue({ data: { session: null }, error: null })
+    onAuthStateChangeMock.mockImplementation((callback: (event: string, session: null) => void) => {
+      // Fire asynchronously — `subscription` must be initialised from the return value
+      // before the callback can call cleanup() which calls subscription.unsubscribe().
+      Promise.resolve().then(() => callback('SIGNED_OUT', null))
+      return { data: { subscription: { unsubscribe: vi.fn() } } }
+    })
 
     await expect(store.handleMagicLinkCallback()).rejects.toThrow(
-      'No session returned from Supabase.',
+      'Sign in failed. Please try again.',
     )
     expect(store.isLoading).toBe(false)
   })
