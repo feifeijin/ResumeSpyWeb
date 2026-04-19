@@ -142,6 +142,7 @@
     "exportPdf": "Export PDF",
     "setDefault": "Set as Default",
     "setDefaultSuccess": "Set as default version successfully.",
+    "syncNoChanges": "No changes since last sync — nothing to translate.",
     "unsavedBeforeAction": "Please save your resume before using this feature.",
     "unsavedLeaveWarning": "You have unsaved changes. Leave anyway?",
     "statusBar": {
@@ -386,7 +387,8 @@
     "restoreNewer": "Restore Newer",
     "restoreConfirm": "Restore this version? Your current editor content will be replaced.",
     "restoreSuccess": "Version restored. Review changes before saving.",
-    "deleteSuccess": "Version deleted."
+    "deleteSuccess": "Version deleted.",
+    "syncLabel": "↻ Synced"
   },
   "empty": {
     "noResumes": "No resumes yet. Create one to get started!",

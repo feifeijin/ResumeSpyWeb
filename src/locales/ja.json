@@ -142,6 +142,7 @@
     "exportPdf": "PDF エクスポート",
     "setDefault": "デフォルトに設定",
     "setDefaultSuccess": "デフォルトバージョンとして設定されました。",
+    "syncNoChanges": "前回の同期以降に変更がありません。翻訳は不要です。",
     "unsavedBeforeAction": "この機能を使用する前に履歴書を保存してください。",
     "unsavedLeaveWarning": "未保存の変更があります。このまま移動しますか？",
     "statusBar": {
@@ -386,7 +387,8 @@
     "restoreNewer": "新しいバージョンを復元",
     "restoreConfirm": "このバージョンを復元しますか？現在のエディタ内容が置き換えられます。",
     "restoreSuccess": "バージョンを復元しました。保存前に変更を確認してください。",
-    "deleteSuccess": "バージョンを削除しました。"
+    "deleteSuccess": "バージョンを削除しました。",
+    "syncLabel": "↻ 同期済み"
   },
   "empty": {
     "noResumes": "まだ履歴書がありません。作成して始めましょう！",

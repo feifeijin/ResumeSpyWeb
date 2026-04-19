@@ -35,7 +35,10 @@
               v-for="v in versions"
               :key="v.id"
               class="vh-item"
-              :class="{ 'vh-item--selected': selected.has(v.id) }"
+              :class="{
+                'vh-item--selected': selected.has(v.id),
+                'vh-item--synced': isSyncVersion(v),
+              }"
             >
               <label class="vh-item-check">
                 <input
@@ -47,7 +50,10 @@
               </label>
 
               <div class="vh-item-body" @click="toggleSelect(v.id)">
-                <span class="vh-item-label">{{ v.label ?? formatDate(v.createdAt) }}</span>
+                <span class="vh-item-label">
+                  <span v-if="isSyncVersion(v)" class="vh-sync-badge">↻</span>
+                  {{ v.label ?? formatDate(v.createdAt) }}
+                </span>
                 <span class="vh-item-preview">{{ v.preview }}</span>
                 <span class="vh-item-date" v-if="v.label">{{ formatDate(v.createdAt) }}</span>
               </div>
@@ -148,6 +154,10 @@ async function confirmRestore() {
 
 function onDelete(id: string) {
   emit('delete', id)
+}
+
+function isSyncVersion(v: ResumeVersion): boolean {
+  return !!v.label?.startsWith('↻')
 }
 
 function formatDate(dateStr: string): string {
@@ -274,6 +284,37 @@ function formatDate(dateStr: string): string {
   background: #fdf8ed;
   border-left: 2.5px solid #c8a951;
   padding-left: 17px;
+}
+
+/* Sync version — teal accent, distinct from manual saves */
+.vh-item--synced {
+  background: #f2f8f7;
+  border-left: 2.5px solid #4a9d8f;
+  padding-left: 17px;
+}
+
+.vh-item--synced:hover {
+  background: #e8f4f2;
+}
+
+.vh-item--synced.vh-item--selected {
+  background: #e8f4f2;
+  border-left: 2.5px solid #4a9d8f;
+}
+
+.vh-sync-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  color: #4a9d8f;
+  background: rgba(74, 157, 143, 0.12);
+  border: 1px solid rgba(74, 157, 143, 0.3);
+  border-radius: 3px;
+  padding: 0 4px;
+  margin-right: 4px;
+  letter-spacing: 0;
+  vertical-align: middle;
+  line-height: 14px;
 }
 
 .vh-item-check {

@@ -435,6 +435,7 @@ import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
 import { useVersion } from '@/composables/useVersion'
+import { useVersionStore } from '@/stores/version'
 import type { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 import { useGuestStore } from '@/stores/guest'
@@ -455,6 +456,7 @@ const guestStore = useGuestStore()
 const authStore = useAuthStore()
 const onboardingStore = useOnboardingStore()
 const { startPart1Tour, startPart2Tour } = useOnboarding()
+const versionStore = useVersionStore()
 
 const dialog = ref('')
 const currentResumeId = ref<string | null>(null)
@@ -538,6 +540,11 @@ const saveStatus = ref<SaveStatus>('idle')
 const savedContent = ref<string[]>([])
 let savedStatusTimer: ReturnType<typeof setTimeout> | null = null
 
+// ── Sync tracking ─────────────────────────────────────────────
+// Records the editor content at the time of each successful sync,
+// keyed by resumeDetailId. Used to skip syncs when nothing changed.
+const lastSyncedContent = ref<Record<string, string>>({})
+
 const wordCount = computed(() => {
   const text = (editors.value[activeTab.value] || '').replace(/```[\s\S]*?```|`[^`]*`/g, '')
   const words = text.replace(/[#*_[\]()\-+>]/g, ' ').trim()
@@ -590,6 +597,10 @@ const loadResumeDetails = async (resumeId: string) => {
       editors.value = resumeDetails.value.map((detail) => detail.content)
       savedContent.value = resumeDetails.value.map((detail) => detail.content)
       saveStatus.value = 'idle'
+      // Seed lastSyncedContent so an unmodified resume blocks unnecessary syncs
+      resumeDetails.value.forEach((detail) => {
+        if (detail.id) lastSyncedContent.value[detail.id] = detail.content
+      })
     },
     { id: 'load-resume-details', message: commonMessages.loading },
   )
@@ -884,12 +895,37 @@ const syncTab = async () => {
   if (!currentResumeId.value) return
   const activeResumeDetailID = resumeDetails.value[activeTab.value].id
   if (!activeResumeDetailID) return
+
+  // Guard: skip if nothing has changed since the last sync
+  const currentContent = editors.value[activeTab.value] ?? ''
+  if (lastSyncedContent.value[activeResumeDetailID] === currentContent) {
+    toast.info(t('createView.syncNoChanges'))
+    return
+  }
+
+  // Capture IDs of sibling tabs (the ones that will be translated)
+  const siblingIds = resumeDetails.value
+    .filter((_, i) => i !== activeTab.value)
+    .map((d) => d.id)
+    .filter(Boolean)
+
   await withLoading(
     async () => {
       // Save current editor content first so backend reads the latest version
       await onSave(activeTab.value)
       await resumeDetailService.syncTranslations(activeResumeDetailID)
       await loadResumeDetails(currentResumeId.value!)
+      // Snapshot each synced detail with a distinguishable label
+      const syncLabel = t('version.syncLabel')
+      await Promise.all(
+        siblingIds.map((id) => {
+          const detail = resumeDetails.value.find((d) => d.id === id)
+          if (!detail?.content) return
+          return versionStore.saveVersion(id, detail.content, syncLabel)
+        }),
+      )
+      // Record the content that was just synced so we can detect future changes
+      lastSyncedContent.value[activeResumeDetailID] = currentContent
       toast.success('toast.success.resumeSyncSuccess')
     },
     { id: 'sync-translations', message: commonMessages.syncing },

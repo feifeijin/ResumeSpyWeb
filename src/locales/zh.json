@@ -142,6 +142,7 @@
     "exportPdf": "导出 PDF",
     "setDefault": "设为默认",
     "setDefaultSuccess": "已成功设为默认版本。",
+    "syncNoChanges": "自上次同步以来没有更改，无需翻译。",
     "unsavedBeforeAction": "请先保存简历再使用此功能。",
     "unsavedLeaveWarning": "您有未保存的更改，确定要离开吗？",
     "statusBar": {
@@ -386,7 +387,8 @@
     "restoreNewer": "恢复新版本",
     "restoreConfirm": "恢复此版本？当前编辑器内容将被替换。",
     "restoreSuccess": "版本已恢复，请在保存前确认更改。",
-    "deleteSuccess": "版本已删除。"
+    "deleteSuccess": "版本已删除。",
+    "syncLabel": "↻ 已同步"
   },
   "empty": {
     "noResumes": "暂无简历，创建一份开始吧！",
