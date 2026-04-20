@@ -259,7 +259,10 @@ const handleScroll = () => {
   showFab.value = window.scrollY > 200
 }
 
+const originalTitles = ref<Record<string, string>>({})
+
 const startEditing = async (resume: Resume, index: number) => {
+  originalTitles.value[resume.id] = resume.title
   resume.isEditing = true
   await nextTick()
   const inputComponent = titleInputRefs.value[index]
@@ -305,18 +308,33 @@ const createNew = async () => {
 }
 
 const onRename = async (resume: Resume) => {
-  if (resume.id && resume.title !== '') {
-    await withLoading(
-      async () => {
-        await resumeService.updateResumeName(resume.id, resume.title)
-        resume.isEditing = false
-        toast.success('toast.success.resumeRenameSuccess')
-      },
-      { id: 'rename-resume', message: commonMessages.updating },
-    )
-  } else {
+  const original = originalTitles.value[resume.id] ?? ''
+  delete originalTitles.value[resume.id]
+
+  const newTitle = resume.title.trim()
+
+  if (!newTitle) {
+    // Restore original if user cleared the field
+    resume.title = original
     resume.isEditing = false
+    return
   }
+
+  if (newTitle === original) {
+    // Nothing changed — skip the API call
+    resume.isEditing = false
+    return
+  }
+
+  resume.title = newTitle
+  await withLoading(
+    async () => {
+      await resumeService.updateResumeName(resume.id, newTitle)
+      resume.isEditing = false
+      toast.success('toast.success.resumeRenameSuccess')
+    },
+    { id: 'rename-resume', message: commonMessages.updating },
+  )
 }
 
 const onClone = async (resume: Resume) => {
