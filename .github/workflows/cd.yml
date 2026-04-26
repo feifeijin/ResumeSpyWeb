@@ -1,0 +1,37 @@
+name: CD - Deployment Notification
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify:
+    name: Wait for Vercel and notify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wait for Vercel deployment
+        run: sleep 120
+
+      - name: Health check Vercel
+        id: hc
+        run: |
+          if curl -fsS --max-time 15 "${{ vars.VERCEL_PROD_URL }}" > /dev/null 2>&1; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Notify Telegram (success)
+        if: steps.hc.outputs.ok == 'true'
+        run: |
+          curl -fsS -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\":\"${{ secrets.TELEGRAM_CHAT_ID }}\",\"text\":\"✅ Frontend deployed to Vercel\n${{ vars.VERCEL_PROD_URL }}\nCommit: ${{ github.sha }}\nBy: ${{ github.actor }}\"}"
+
+      - name: Notify Telegram (failure)
+        if: steps.hc.outputs.ok == 'false'
+        run: |
+          curl -fsS -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\":\"${{ secrets.TELEGRAM_CHAT_ID }}\",\"text\":\"❌ Frontend Vercel deploy may have failed\nCheck: https://vercel.com/dashboard\nCommit: ${{ github.sha }}\"}"
