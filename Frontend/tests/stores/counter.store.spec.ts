@@ -21,4 +21,13 @@ describe('counter store', () => {
     expect(store.count).toBe(1)
     expect(store.doubleCount).toBe(2)
   })
+
+  it('resets count to zero', () => {
+    const store = useCounterStore()
+    store.increment()
+    store.increment()
+    store.reset()
+    expect(store.count).toBe(0)
+    expect(store.doubleCount).toBe(0)
+  })
 })
