@@ -42,8 +42,8 @@ class ResumeService {
         title: response.data.title,
         resumeDetailCount: response.data.resumeDetailCount,
         resumeImgPath: resolveImgPath(response.data.resumeImgPath),
-        createTime: response.data.createTime,
-        lastModifyTime: response.data.lastModifyTime,
+        createTime: response.data.entryDate ?? response.data.createTime,
+        lastModifyTime: response.data.updateDate ?? response.data.lastModifyTime,
         preview: response.data.preview,
         isEditing: response.data.isEditing,
       }
@@ -70,8 +70,8 @@ class ResumeService {
         title: response.data.title,
         resumeDetailCount: response.data.resumeDetailCount,
         resumeImgPath: resolveImgPath(response.data.resumeImgPath),
-        createTime: response.data.createTime,
-        lastModifyTime: response.data.lastModifyTime,
+        createTime: response.data.entryDate ?? response.data.createTime,
+        lastModifyTime: response.data.updateDate ?? response.data.lastModifyTime,
         preview: response.data.preview,
         isEditing: response.data.isEditing,
       }
@@ -90,8 +90,8 @@ class ResumeService {
         title: response.data.title,
         resumeDetailCount: response.data.resumeDetailCount,
         resumeImgPath: resolveImgPath(response.data.resumeImgPath),
-        createTime: response.data.createTime,
-        lastModifyTime: response.data.lastModifyTime,
+        createTime: response.data.entryDate ?? response.data.createTime,
+        lastModifyTime: response.data.updateDate ?? response.data.lastModifyTime,
         preview: response.data.preview,
         isEditing: response.data.isEditing,
       }
