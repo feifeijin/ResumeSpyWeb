@@ -100,6 +100,23 @@ describe('AppBar', () => {
       },
     })
 
+  const mobileFactory = () =>
+    shallowMount(AppBar, {
+      global: {
+        mocks: {
+          $vuetify: {
+            display: {
+              mdAndUp: false,
+              smAndDown: true,
+            },
+          },
+        },
+        stubs: {
+          ...commonVuetifyStubs,
+        },
+      },
+    })
+
   it('opens GitHub link in new tab when GitHub menu item is clicked', async () => {
     // Purpose: validate external navigation branch inside menu handler.
     const wrapper = factory()
@@ -125,6 +142,19 @@ describe('AppBar', () => {
   it('calls changeLanguage helper when a language option is selected', async () => {
     // Purpose: ensure language selection delegates through i18n helper.
     const wrapper = factory()
+    const languageButton = wrapper
+      .findAll('[role="button"]')
+      .find((btn) => btn.text().includes('中文'))
+
+    expect(languageButton).toBeDefined()
+    await languageButton!.trigger('click')
+
+    expect(setLanguageMock).toHaveBeenCalledWith('zh')
+  })
+
+  it('shows language switcher in mobile drawer and calls changeLanguage on selection', async () => {
+    // Purpose: verify the mobile drawer exposes the same language-switch capability as the desktop bar.
+    const wrapper = mobileFactory()
     const languageButton = wrapper
       .findAll('[role="button"]')
       .find((btn) => btn.text().includes('中文'))
