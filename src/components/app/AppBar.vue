@@ -6,6 +6,27 @@
         {{ item.name }}
       </v-list-item>
       <v-divider class="my-2" />
+      <!-- Language switcher for mobile -->
+      <v-menu offset-y>
+        <template #activator="{ props }">
+          <v-list-item v-bind="props">
+            <template #prepend>
+              <v-icon>mdi-translate</v-icon>
+            </template>
+            {{ currentLanguage }}
+          </v-list-item>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="language in languages"
+            :key="language.code"
+            @click="changeLanguage(language.code)"
+          >
+            {{ language.name }}
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-divider class="my-2" />
       <v-list-item v-if="isAuthenticated" @click="handleLogout">
         <v-icon>mdi-logout</v-icon>
         {{ t('navigation.logout') }}
