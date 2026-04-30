@@ -8,9 +8,11 @@
         <div v-for="(step, i) in steps" :key="i" class="step">
           <div class="step-connector" v-if="i < steps.length - 1" aria-hidden="true" />
 
-          <div class="step-num">{{ step.num }}</div>
-          <div class="step-icon">{{ step.icon }}</div>
-          <h3 class="step-title">{{ $t(step.title) }}</h3>
+          <div class="step-header">
+            <div class="step-num">{{ step.num }}</div>
+            <div class="step-icon">{{ step.icon }}</div>
+            <h3 class="step-title">{{ $t(step.title) }}</h3>
+          </div>
           <p class="step-desc">{{ $t(step.desc) }}</p>
         </div>
       </div>
@@ -115,6 +117,10 @@ const steps: Step[] = [
   display: none;
 }
 
+.step-header {
+  margin-bottom: 0.85rem;
+}
+
 .step-num {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.65rem;
@@ -136,7 +142,21 @@ const steps: Step[] = [
   font-weight: 600;
   color: #121212;
   letter-spacing: 0.03em;
-  margin: 0 0 0.85rem;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .step-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .step-header .step-num,
+  .step-header .step-icon {
+    margin-bottom: 0;
+  }
 }
 
 .step-desc {
