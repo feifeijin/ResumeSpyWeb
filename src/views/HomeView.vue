@@ -142,9 +142,11 @@ const features = [
           class="case-card"
           :style="{ '--tilt': f.tilt }"
         >
-          <span class="card-num">{{ f.num }}</span>
-          <span class="card-icon">{{ f.icon }}</span>
-          <h3 class="card-title">{{ f.title }}</h3>
+          <div class="card-header">
+            <span class="card-num">{{ f.num }}</span>
+            <span class="card-icon">{{ f.icon }}</span>
+            <h3 class="card-title">{{ f.title }}</h3>
+          </div>
           <p class="card-desc">{{ f.desc }}</p>
         </div>
       </div>
@@ -471,6 +473,10 @@ const features = [
   box-shadow: 6px 6px 0 #AAAAAA;
 }
 
+.card-header {
+  display: contents;
+}
+
 .card-num {
   display: block;
   font-family: var(--f-title);
@@ -494,6 +500,24 @@ const features = [
   color: var(--text);
   letter-spacing: 0.12em;
   margin: 0 0 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .card-header .card-num,
+  .card-header .card-icon {
+    margin-bottom: 0;
+  }
+
+  .card-header .card-title {
+    margin: 0;
+  }
 }
 
 .card-desc {
