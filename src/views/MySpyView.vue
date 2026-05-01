@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <!-- Floating Action Button (Noir Style) -->
+    <!-- Floating Action Button (Noir Style) — desktop scroll shortcut -->
     <Transition name="fade">
       <button
         v-if="showFab"
@@ -37,6 +37,48 @@
         <span class="fab-icon">+</span>
       </button>
     </Transition>
+
+    <!-- Speed-dial scrim (mobile only) -->
+    <Transition name="sd-scrim">
+      <div v-if="speedDialOpen" class="sd-scrim" @click="speedDialOpen = false" />
+    </Transition>
+
+    <!-- Mobile FAB Speed Dial -->
+    <div class="mobile-speed-dial">
+      <div class="sd-actions">
+        <!-- Import action -->
+        <Transition name="sd-item">
+          <div v-if="speedDialOpen" class="sd-action-row">
+            <span class="sd-label">{{ $t('mySpyView.importFile') }}</span>
+            <button
+              class="sd-action-btn"
+              :disabled="isImporting"
+              @click="triggerFileInput(); speedDialOpen = false"
+            >
+              <span v-if="isImporting">…</span>
+              <span v-else>↑</span>
+            </button>
+          </div>
+        </Transition>
+        <!-- Create action -->
+        <Transition name="sd-item">
+          <div v-if="speedDialOpen" class="sd-action-row">
+            <span class="sd-label">{{ $t('common.create') }}</span>
+            <button class="sd-action-btn" @click="createNew(); speedDialOpen = false">+</button>
+          </div>
+        </Transition>
+      </div>
+      <!-- Main trigger -->
+      <button
+        class="sd-main-btn"
+        :class="{ 'sd-main--open': speedDialOpen }"
+        @click="speedDialOpen = !speedDialOpen"
+        :aria-label="speedDialOpen ? $t('common.close') : $t('common.create')"
+        :aria-expanded="speedDialOpen"
+      >
+        <span class="sd-main-icon">+</span>
+      </button>
+    </div>
 
     <!-- Empty State / Drop Zone -->
     <div v-if="resumes.length === 0" class="empty-state">
@@ -186,6 +228,7 @@ const resumes = ref<Resume[]>([])
 const menu = ref<boolean[]>([])
 const showFab = ref(false)
 const isImporting = ref(false)
+const speedDialOpen = ref(false)
 const isDragging = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -405,6 +448,7 @@ const onDelete = async (resume: Resume) => {
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
   padding-bottom: 4rem;
+  overflow-x: hidden;
 }
 
 .film-grain {
@@ -464,6 +508,13 @@ const onDelete = async (resume: Resume) => {
   align-items: center;
   gap: 0.75rem;
   flex-shrink: 0;
+}
+
+/* Speed dial takes over on mobile — hide the header buttons */
+@media (max-width: 600px) {
+  .header-actions {
+    display: none;
+  }
 }
 
 .sr-only {
@@ -557,12 +608,168 @@ const onDelete = async (resume: Resume) => {
 }
 
 @media (max-width: 600px) {
+  /* Hide scroll-triggered FAB on mobile — speed dial replaces it */
+  .noir-fab {
+    display: none !important;
+  }
+}
+
+@media (min-width: 601px) {
   .noir-fab {
     bottom: 1.5rem;
     right: 1.5rem;
     width: 48px;
     height: 48px;
   }
+}
+
+/* ── Mobile FAB Speed Dial ───────────────────────────────── */
+.mobile-speed-dial {
+  /* Hidden on desktop — only shown on mobile */
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.65rem;
+}
+
+@media (max-width: 600px) {
+  .mobile-speed-dial {
+    display: flex;
+  }
+}
+
+/* Scrim behind the speed dial when open */
+.sd-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: rgba(0, 0, 0, 0.18);
+  /* Hidden on desktop — speed dial never opens there */
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .sd-scrim {
+    display: block;
+  }
+}
+
+/* Stack of action rows above the main FAB */
+.sd-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+
+.sd-action-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* Pill label (noir style) */
+.sd-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.65rem;
+  box-shadow: 2px 2px 0 #AAAAAA;
+  white-space: nowrap;
+}
+
+/* Mini action button */
+.sd-action-btn {
+  width: 44px;
+  height: 44px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  box-shadow: 3px 3px 0 #AAAAAA;
+  clip-path: polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%);
+  transition: transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.sd-action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 #AAAAAA;
+}
+
+.sd-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Main trigger FAB */
+.sd-main-btn {
+  width: 52px;
+  height: 52px;
+  background: #121212;
+  border: 2px solid #121212;
+  color: #F5F5F5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 0 #AAAAAA;
+  clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.sd-main-btn:hover {
+  background: #2B2B2B;
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 6px 6px 0 #AAAAAA;
+}
+
+.sd-main-icon {
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* Rotate + → × when open */
+.sd-main--open .sd-main-icon {
+  transform: rotate(45deg);
+}
+
+/* ── Speed dial transitions ──────────────────────────────── */
+.sd-scrim-enter-active,
+.sd-scrim-leave-active {
+  transition: opacity 0.2s ease;
+}
+.sd-scrim-enter-from,
+.sd-scrim-leave-to {
+  opacity: 0;
+}
+
+.sd-item-enter-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.sd-item-leave-active {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.sd-item-enter-from,
+.sd-item-leave-to {
+  opacity: 0;
+  transform: translateY(8px) scale(0.92);
 }
 
 /* ── Transitions ────────────────────────────────────────── */
