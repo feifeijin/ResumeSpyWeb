@@ -448,6 +448,7 @@ const onDelete = async (resume: Resume) => {
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
   padding-bottom: 4rem;
+  overflow-x: hidden;
 }
 
 .film-grain {
@@ -483,10 +484,6 @@ const onDelete = async (resume: Resume) => {
   .archives-header {
     padding: 0 1.5rem;
   }
-  /* Hide desktop header actions — speed dial handles them on mobile */
-  .header-actions {
-    display: none;
-  }
 }
 
 .header-overline {
@@ -511,6 +508,13 @@ const onDelete = async (resume: Resume) => {
   align-items: center;
   gap: 0.75rem;
   flex-shrink: 0;
+}
+
+/* Speed dial takes over on mobile — hide the header buttons */
+@media (max-width: 600px) {
+  .header-actions {
+    display: none;
+  }
 }
 
 .sr-only {
