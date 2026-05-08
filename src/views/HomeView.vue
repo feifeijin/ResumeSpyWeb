@@ -54,21 +54,18 @@ onUnmounted(() => {
 
 const features = [
   {
-    num: 'I',
     icon: '◈',
     title: t('home.features.versionControl'),
     desc: t('home.features.versionControlDesc'),
     tilt: '-1.2deg',
   },
   {
-    num: 'II',
     icon: '◆',
     title: t('home.features.aiTailoring'),
     desc: t('home.features.aiTailoringDesc'),
     tilt: '0.9deg',
   },
   {
-    num: 'III',
     icon: '◇',
     title: t('home.features.manyTongues'),
     desc: t('home.features.manyTonguesDesc'),
@@ -143,7 +140,6 @@ const features = [
           :style="{ '--tilt': f.tilt }"
         >
           <div class="card-header">
-            <span class="card-num">{{ f.num }}</span>
             <span class="card-icon">{{ f.icon }}</span>
             <h3 class="card-title">{{ f.title }}</h3>
           </div>
@@ -474,23 +470,17 @@ const features = [
 }
 
 .card-header {
-  display: contents;
-}
-
-.card-num {
-  display: block;
-  font-family: var(--f-title);
-  font-size: 0.65rem;
-  color: var(--gold-dim);
-  letter-spacing: 0.35em;
-  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
 }
 
 .card-icon {
   display: block;
   font-size: 1.4rem;
   color: var(--gold);
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .card-title {
@@ -499,25 +489,7 @@ const features = [
   font-weight: 700;
   color: var(--text);
   letter-spacing: 0.12em;
-  margin: 0 0 0.85rem;
-}
-
-@media (max-width: 600px) {
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.85rem;
-  }
-
-  .card-header .card-num,
-  .card-header .card-icon {
-    margin-bottom: 0;
-  }
-
-  .card-header .card-title {
-    margin: 0;
-  }
+  margin: 0;
 }
 
 .card-desc {
