@@ -54,21 +54,18 @@ onUnmounted(() => {
 
 const features = [
   {
-    num: 'I',
     icon: '◈',
     title: t('home.features.versionControl'),
     desc: t('home.features.versionControlDesc'),
     tilt: '-1.2deg',
   },
   {
-    num: 'II',
     icon: '◆',
     title: t('home.features.aiTailoring'),
     desc: t('home.features.aiTailoringDesc'),
     tilt: '0.9deg',
   },
   {
-    num: 'III',
     icon: '◇',
     title: t('home.features.manyTongues'),
     desc: t('home.features.manyTonguesDesc'),
@@ -143,7 +140,6 @@ const features = [
           :style="{ '--tilt': f.tilt }"
         >
           <div class="card-header">
-            <span class="card-num">{{ f.num }}</span>
             <span class="card-icon">{{ f.icon }}</span>
             <h3 class="card-title">{{ f.title }}</h3>
           </div>
@@ -478,15 +474,6 @@ const features = [
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.85rem;
-}
-
-.card-num {
-  display: block;
-  font-family: var(--f-title);
-  font-size: 0.65rem;
-  color: var(--gold-dim);
-  letter-spacing: 0.35em;
-  margin-bottom: 0;
 }
 
 .card-icon {

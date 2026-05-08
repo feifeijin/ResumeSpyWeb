@@ -9,7 +9,6 @@
           <div class="step-connector" v-if="i < steps.length - 1" aria-hidden="true" />
 
           <div class="step-header">
-            <div class="step-num">{{ step.num }}</div>
             <div class="step-icon">{{ step.icon }}</div>
             <h3 class="step-title">{{ $t(step.title) }}</h3>
           </div>
@@ -30,7 +29,6 @@ import { useI18n } from 'vue-i18n'
 useI18n()
 
 interface Step {
-  num: string
   icon: string
   title: string
   desc: string
@@ -38,19 +36,16 @@ interface Step {
 
 const steps: Step[] = [
   {
-    num: '01',
     icon: '✒',
     title: 'home.process.step1Title',
     desc: 'home.process.step1Desc',
   },
   {
-    num: '02',
     icon: '◆',
     title: 'home.process.step2Title',
     desc: 'home.process.step2Desc',
   },
   {
-    num: '03',
     icon: '◈',
     title: 'home.process.step3Title',
     desc: 'home.process.step3Desc',
@@ -118,22 +113,16 @@ const steps: Step[] = [
 }
 
 .step-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   margin-bottom: 0.85rem;
-}
-
-.step-num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.65rem;
-  color: #888888;
-  letter-spacing: 0.3em;
-  margin-bottom: 1rem;
 }
 
 .step-icon {
   font-size: 1.6rem;
   color: #121212;
-  margin-bottom: 1.25rem;
-  display: block;
 }
 
 .step-title {
@@ -143,20 +132,6 @@ const steps: Step[] = [
   color: #121212;
   letter-spacing: 0.03em;
   margin: 0;
-}
-
-@media (max-width: 600px) {
-  .step-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-
-  .step-header .step-num,
-  .step-header .step-icon {
-    margin-bottom: 0;
-  }
 }
 
 .step-desc {
