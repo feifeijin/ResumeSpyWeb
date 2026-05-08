@@ -597,6 +597,9 @@ const loadResumeDetails = async (resumeId: string) => {
       editors.value = resumeDetails.value.map((detail) => detail.content)
       savedContent.value = resumeDetails.value.map((detail) => detail.content)
       saveStatus.value = 'idle'
+      // Set the active tab to the default resume detail if one exists
+      const defaultIndex = resumeDetails.value.findIndex((detail) => detail.isDefault)
+      activeTab.value = defaultIndex !== -1 ? defaultIndex : 0
       // Seed lastSyncedContent so an unmodified resume blocks unnecessary syncs
       resumeDetails.value.forEach((detail) => {
         if (detail.id) lastSyncedContent.value[detail.id] = detail.content
