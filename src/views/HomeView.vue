@@ -474,7 +474,10 @@ const features = [
 }
 
 .card-header {
-  display: contents;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
 }
 
 .card-num {
@@ -483,14 +486,14 @@ const features = [
   font-size: 0.65rem;
   color: var(--gold-dim);
   letter-spacing: 0.35em;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
 }
 
 .card-icon {
   display: block;
   font-size: 1.4rem;
   color: var(--gold);
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .card-title {
@@ -499,25 +502,7 @@ const features = [
   font-weight: 700;
   color: var(--text);
   letter-spacing: 0.12em;
-  margin: 0 0 0.85rem;
-}
-
-@media (max-width: 600px) {
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.85rem;
-  }
-
-  .card-header .card-num,
-  .card-header .card-icon {
-    margin-bottom: 0;
-  }
-
-  .card-header .card-title {
-    margin: 0;
-  }
+  margin: 0;
 }
 
 .card-desc {
