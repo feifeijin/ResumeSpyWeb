@@ -191,7 +191,7 @@
     "importing": "Analysing…",
     "importError": "Failed to import file. Please try again.",
     "importSuccess": "Resume imported successfully.",
-    "importHint": "PDF, DOCX or TXT · max 10 MB"
+    "importHint": "PDF, DOCX, TXT or MD · max 10 MB"
   },
   "languages": {
     "english": "English",
