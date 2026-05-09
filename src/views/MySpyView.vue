@@ -18,7 +18,7 @@
           <input
             ref="fileInputRef"
             type="file"
-            accept=".pdf,.docx,.doc,.txt"
+            accept=".pdf,.docx,.doc,.txt,.md"
             class="sr-only"
             @change="onFileSelected"
           />
@@ -107,7 +107,7 @@
           </svg>
           <p class="drop-label">↑ {{ $t('mySpyView.empty.dropLabel') }}</p>
           <p class="drop-hint">{{ $t('mySpyView.empty.dropHint') }}</p>
-          <p class="drop-formats">PDF · DOCX · TXT</p>
+          <p class="drop-formats">PDF · DOCX · TXT · MD</p>
         </template>
       </div>
 

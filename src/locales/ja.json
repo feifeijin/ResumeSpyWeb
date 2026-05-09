@@ -191,7 +191,7 @@
     "importing": "解析中…",
     "importError": "ファイルのインポートに失敗しました。もう一度お試しください。",
     "importSuccess": "職務経歴書を正常にインポートしました。",
-    "importHint": "PDF・DOCX・TXT · 最大10MB"
+    "importHint": "PDF・DOCX・TXT・MD · 最大10MB"
   },
   "languages": {
     "english": "英語",

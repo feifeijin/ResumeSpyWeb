@@ -191,7 +191,7 @@
     "importing": "正在解析…",
     "importError": "文件导入失败，请重试。",
     "importSuccess": "简历导入成功。",
-    "importHint": "PDF、DOCX 或 TXT · 最大 10 MB"
+    "importHint": "PDF、DOCX、TXT 或 MD · 最大 10 MB"
   },
   "languages": {
     "english": "英语",
