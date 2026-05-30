@@ -274,7 +274,7 @@
   },
   "legal": {
     "backToHome": "← 返回主页",
-    "lastUpdated": "最后更新：2025年1月",
+    "lastUpdated": "最后更新：2026年1月",
     "overline": "— 法律信息 —",
     "privacy": {
       "title": "隐私政策",
@@ -338,7 +338,7 @@
       "note": "本披露依据日本特定商取引法（特定商取引法）规定提供。",
       "items": {
         "businessName": { "label": "商号", "value": "ResumeSpy" },
-        "operator": { "label": "运营负责人", "value": "金菲菲（Fei-Fei Jin）" },
+        "operator": { "label": "运营负责人", "value": "Fei-Fei Jin" },
         "email": { "label": "联系邮箱", "value": "feifeijinjp{'@'}gmail.com" },
         "address": { "label": "所在地址", "value": "应请求可无延迟地披露。" },
         "service": { "label": "服务内容", "value": "提供简历编辑、版本控制、多语言支持和 AI 优化功能的 AI 驱动简历管理平台。" },

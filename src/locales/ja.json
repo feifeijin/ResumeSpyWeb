@@ -283,7 +283,7 @@
   },
   "legal": {
     "backToHome": "← ホームに戻る",
-    "lastUpdated": "最終更新：2025年1月",
+    "lastUpdated": "最終更新：2026年1月",
     "overline": "— 法的情報 —",
     "privacy": {
       "title": "プライバシーポリシー",
@@ -347,7 +347,7 @@
       "note": "本表記は特定商取引法の規定に基づき掲載しています。",
       "items": {
         "businessName": { "label": "事業者名", "value": "ResumeSpy" },
-        "operator": { "label": "運営責任者", "value": "金 菲菲（Fei-Fei Jin）" },
+        "operator": { "label": "運営責任者", "value": "Fei-Fei Jin" },
         "email": { "label": "お問い合わせ先メールアドレス", "value": "feifeijinjp{'@'}gmail.com" },
         "address": { "label": "所在地", "value": "請求があった場合は遅滞なく開示いたします" },
         "service": { "label": "サービス内容", "value": "職務経歴書の編集・バージョン管理・多言語対応・AI 最適化を提供する AI 活用型職務経歴書管理プラットフォーム" },
