@@ -28,6 +28,13 @@
 
       <span class="footer-right">{{ $t('footer.author') }}</span>
     </div>
+    <div class="footer-legal">
+      <router-link to="/privacy" class="footer-legal-link">{{ $t('footer.privacy') }}</router-link>
+      <span class="footer-legal-sep">·</span>
+      <router-link to="/terms" class="footer-legal-link">{{ $t('footer.terms') }}</router-link>
+      <span class="footer-legal-sep">·</span>
+      <router-link to="/commercial-transactions" class="footer-legal-link">{{ $t('footer.commercial') }}</router-link>
+    </div>
   </footer>
 </template>
 
@@ -83,6 +90,35 @@
 .footer-coffee:hover {
   color: #121212;
   border-color: #888888;
+}
+
+.footer-legal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #E8E8E8;
+  flex-wrap: wrap;
+}
+
+.footer-legal-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: #AAAAAA;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal-link:hover {
+  color: #121212;
+}
+
+.footer-legal-sep {
+  font-size: 0.65rem;
+  color: #CCCCCC;
 }
 
 @media (max-width: 640px) {

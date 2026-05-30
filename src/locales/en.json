@@ -276,7 +276,88 @@
     "copyright": "© {year}",
     "buyMeCoffee": "☕ Buy me a coffee",
     "author": "By Fei-Fei Jin",
-    "resumeSpy": "RESUMESPY"
+    "resumeSpy": "RESUMESPY",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "commercial": "Commercial Transactions"
+  },
+  "legal": {
+    "backToHome": "← Back to Home",
+    "lastUpdated": "Last updated: January 2025",
+    "overline": "— Legal —",
+    "privacy": {
+      "title": "Privacy Policy",
+      "metaDesc": "How ResumeSpy collects, uses, and protects your personal data.",
+      "intro": {
+        "heading": "Introduction",
+        "body": "ResumeSpy respects your privacy. This policy explains what data we collect, why we collect it, and how we protect it. We collect only what is necessary to provide the service."
+      },
+      "collection": {
+        "heading": "Information We Collect",
+        "body": "We collect the email address you use to sign in, the resume content you create and store on the platform, and basic usage data such as page views. Cookies and local storage are used to maintain your session and preferences. Analytics tools may collect anonymised usage patterns to help us improve the service."
+      },
+      "stripe": {
+        "heading": "Payments",
+        "body": "Payment processing is handled by Stripe. We do not store your credit card details. Stripe may collect and process payment information in accordance with their own privacy policy and applicable regulations."
+      },
+      "retention": {
+        "heading": "Data Retention",
+        "body": "Your account data and resume content are retained as long as your account is active. You may request account deletion by contacting us, after which we will erase your personal data within 30 days."
+      },
+      "contact": {
+        "heading": "Contact",
+        "body": "For any privacy-related questions or data deletion requests, please contact us at feifeijinjp@gmail.com."
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "metaDesc": "The terms and conditions governing your use of ResumeSpy.",
+      "service": {
+        "heading": "Service Description",
+        "body": "ResumeSpy provides an AI-powered resume management platform offering resume editing, version control, AI tailoring, and multi-language export. The service is provided as-is and may change or be discontinued at any time."
+      },
+      "responsibilities": {
+        "heading": "User Responsibilities",
+        "body": "You are responsible for the content you create and store. You must not use the service to create, store, or distribute illegal, harmful, or deceptive content. You must not attempt to reverse-engineer, disrupt, or misuse the platform."
+      },
+      "ip": {
+        "heading": "Intellectual Property",
+        "body": "You retain ownership of the resume content you create. By using the service, you grant us a limited licence to process and store your content solely for the purpose of providing the service. Our platform code and design remain our intellectual property."
+      },
+      "disclaimer": {
+        "heading": "Disclaimer",
+        "body": "The service is provided without warranty of any kind. AI-generated content is provided for convenience and should be reviewed carefully before use. We are not responsible for the accuracy of AI-generated suggestions."
+      },
+      "interruption": {
+        "heading": "Service Interruption",
+        "body": "We may suspend or discontinue the service at any time for maintenance, upgrades, or other operational reasons. We will make reasonable efforts to provide advance notice when possible."
+      },
+      "liability": {
+        "heading": "Limitation of Liability",
+        "body": "To the fullest extent permitted by law, our total liability for any claim arising from use of the service shall not exceed the total fees you have paid to us in the twelve months prior to the claim."
+      },
+      "law": {
+        "heading": "Governing Law",
+        "body": "These terms are governed by the laws of Japan. Any disputes shall be subject to the exclusive jurisdiction of the courts of Tokyo, Japan."
+      }
+    },
+    "commercial": {
+      "title": "Specified Commercial Transactions Disclosure",
+      "metaDesc": "Disclosure required under Japan's Specified Commercial Transactions Act.",
+      "note": "This disclosure is provided in compliance with Japan's Act on Specified Commercial Transactions (特定商取引法).",
+      "items": {
+        "businessName": { "label": "Business Name", "value": "ResumeSpy" },
+        "operator": { "label": "Operator", "value": "Fei-Fei Jin" },
+        "email": { "label": "Contact Email", "value": "feifeijinjp@gmail.com" },
+        "address": { "label": "Address", "value": "Available upon request without delay." },
+        "service": { "label": "Service Description", "value": "AI-powered resume management platform providing resume editing, version control, multi-language support, and AI-powered tailoring." },
+        "pricing": { "label": "Pricing", "value": "Currently free of charge. Pricing for any future premium features will be clearly disclosed before purchase." },
+        "payment": { "label": "Payment Method", "value": "Credit card via Stripe (applicable to any future paid features)." },
+        "paymentTiming": { "label": "Payment Timing", "value": "Payment is charged at the time of purchase or subscription renewal." },
+        "delivery": { "label": "Service Delivery Timing", "value": "Service access is provided immediately upon account creation or payment confirmation." },
+        "refund": { "label": "Refund Policy", "value": "Due to the digital nature of the service, refunds are generally not available after service delivery. Please contact us if you have concerns." }
+      }
+    }
   },
   "components": {
     "guestBanner": {
