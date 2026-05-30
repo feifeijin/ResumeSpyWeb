@@ -201,6 +201,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
+import { useSeo } from '@/composables/useSeo'
 import type { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
 import { useGuestStore } from '@/stores/guest'
@@ -210,6 +211,14 @@ import ResumeDetailService from '@/api/resume-detail-api'
 const resumeService = new ResumeService()
 const resumeDetailService = new ResumeDetailService()
 const { t } = useI18n()
+
+useSeo(() => ({
+  title: `${t('mySpyView.title')} — ResumeSpy`,
+  description: t('mySpyView.title'),
+  canonicalPath: '/myspy',
+  robots: 'noindex,nofollow',
+  localized: false,
+}))
 const { withLoading, commonMessages } = useLoading()
 const toast = useToast()
 

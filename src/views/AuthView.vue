@@ -80,12 +80,21 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
+import { useSeo } from '@/composables/useSeo'
 
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 const toast = useToast()
+
+useSeo(() => ({
+  title: `${t('auth.title')} — ResumeSpy`,
+  description: t('auth.subtitle'),
+  canonicalPath: '/auth',
+  robots: 'noindex,nofollow',
+  localized: false,
+}))
 const { isLoading, isAuthenticated } = storeToRefs(authStore)
 
 const magicLinkFormRef = ref()

@@ -3,13 +3,16 @@
  * scripts/generate-sitemap.mjs
  *
  * Generates public/sitemap.xml from:
- *   - Static routes (/, /auth)
+ *   - Static public routes
  *   - Article slugs from src/articles/articles.ts (read as text, not imported)
- *     across all supported locales using hreflang alternates
+ *
+ * Each canonical URL appears once in <loc>. Locale variants are emitted
+ * only as <xhtml:link rel="alternate" hreflang="..."/> on that single entry.
  *
  * Usage:
  *   node scripts/generate-sitemap.mjs
- *   node scripts/generate-sitemap.mjs --base https://resumespy.com
+ *   node scripts/generate-sitemap.mjs --base=https://example.com
+ *   VITE_SITE_URL=https://example.com node scripts/generate-sitemap.mjs
  *
  * Output: public/sitemap.xml
  */
@@ -23,16 +26,25 @@ const ROOT = join(__dirname, '..')
 
 // ── Config ─────────────────────────────────────────────────────────────────
 
-const baseArg = process.argv.find(a => a.startsWith('--base='))
-const BASE_URL = (baseArg ? baseArg.split('=')[1] : process.env.VITE_SITE_URL || 'https://resumespy.com').replace(/\/$/, '')
+const baseArg = process.argv.find((a) => a.startsWith('--base='))
+const BASE_URL = (
+  baseArg
+    ? baseArg.split('=')[1]
+    : process.env.VITE_SITE_URL || 'https://resumespy.feifeijin.com'
+).replace(/\/$/, '')
 
 const LOCALES = ['en', 'zh', 'ja']
 const LOCALE_HREFLANG = { en: 'en', zh: 'zh-Hans', ja: 'ja' }
+const DEFAULT_LOCALE = 'en'
 
-// Static pages with their priorities and change frequency
+// Public, indexable routes
 const STATIC_ROUTES = [
-  { path: '/',     changefreq: 'weekly',  priority: '1.0' },
-  { path: '/auth', changefreq: 'monthly', priority: '0.3' },
+  { path: '/', changefreq: 'weekly', priority: '1.0' },
+  { path: '/articles', changefreq: 'weekly', priority: '0.8' },
+  { path: '/faq', changefreq: 'monthly', priority: '0.7' },
+  { path: '/privacy', changefreq: 'yearly', priority: '0.2' },
+  { path: '/terms', changefreq: 'yearly', priority: '0.2' },
+  { path: '/commercial-transactions', changefreq: 'yearly', priority: '0.2' },
 ]
 
 // ── Extract article slugs from articles.ts source ──────────────────────────
@@ -51,13 +63,13 @@ function extractSlugs() {
 // ── Build locale-aware URL ─────────────────────────────────────────────────
 
 /**
- * For the default locale (en) we use the base path.
- * For other locales we use a query parameter: ?lang=zh
- * (matches how vue-i18n stores the locale in this SPA)
+ * The default locale lives at the bare path; other locales use a `?lang=`
+ * query (matches how vue-i18n stores the locale in this SPA).
  */
 function urlFor(path, locale) {
   const base = `${BASE_URL}${path}`
-  return locale === 'en' ? base : `${base}${path.includes('?') ? '&' : '?'}lang=${locale}`
+  if (locale === DEFAULT_LOCALE) return base
+  return `${base}${path.includes('?') ? '&' : '?'}lang=${locale}`
 }
 
 // ── XML helpers ────────────────────────────────────────────────────────────
@@ -67,9 +79,12 @@ function escape(s) {
 }
 
 function urlEntry({ loc, lastmod, changefreq, priority, alternates = [] }) {
-  const altTags = alternates.map(
-    a => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${escape(a.href)}"/>`
-  ).join('\n')
+  const altTags = alternates
+    .map(
+      (a) =>
+        `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${escape(a.href)}"/>`,
+    )
+    .join('\n')
   return [
     '  <url>',
     `    <loc>${escape(loc)}</loc>`,
@@ -78,7 +93,18 @@ function urlEntry({ loc, lastmod, changefreq, priority, alternates = [] }) {
     `    <priority>${priority}</priority>`,
     altTags,
     '  </url>',
-  ].filter(Boolean).join('\n')
+  ]
+    .filter(Boolean)
+    .join('\n')
+}
+
+function buildAlternates(path) {
+  const alternates = LOCALES.map((locale) => ({
+    hreflang: LOCALE_HREFLANG[locale],
+    href: urlFor(path, locale),
+  }))
+  alternates.push({ hreflang: 'x-default', href: `${BASE_URL}${path}` })
+  return alternates
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────
@@ -88,43 +114,29 @@ const slugs = extractSlugs()
 
 const entries = []
 
-// Static routes (EN only — auth pages aren't locale-specific landing pages)
 for (const route of STATIC_ROUTES) {
-  const alternates = LOCALES.map(locale => ({
-    hreflang: LOCALE_HREFLANG[locale],
-    href: urlFor(route.path, locale),
-  }))
-  alternates.push({ hreflang: 'x-default', href: `${BASE_URL}${route.path}` })
-
-  entries.push(urlEntry({
-    loc: `${BASE_URL}${route.path}`,
-    lastmod: today,
-    changefreq: route.changefreq,
-    priority: route.priority,
-    alternates,
-  }))
+  entries.push(
+    urlEntry({
+      loc: `${BASE_URL}${route.path}`,
+      lastmod: today,
+      changefreq: route.changefreq,
+      priority: route.priority,
+      alternates: buildAlternates(route.path),
+    }),
+  )
 }
 
-// Article pages — one entry per locale per slug
 for (const slug of slugs) {
-  for (const locale of LOCALES) {
-    const path = `/article/${slug}`
-    const loc = urlFor(path, locale)
-
-    const alternates = LOCALES.map(l => ({
-      hreflang: LOCALE_HREFLANG[l],
-      href: urlFor(path, l),
-    }))
-    alternates.push({ hreflang: 'x-default', href: `${BASE_URL}${path}` })
-
-    entries.push(urlEntry({
-      loc,
+  const path = `/article/${slug}`
+  entries.push(
+    urlEntry({
+      loc: `${BASE_URL}${path}`,
       lastmod: today,
       changefreq: 'monthly',
       priority: '0.7',
-      alternates,
-    }))
-  }
+      alternates: buildAlternates(path),
+    }),
+  )
 }
 
 const xml = [
@@ -134,11 +146,13 @@ const xml = [
   '  xmlns:xhtml="http://www.w3.org/1999/xhtml">',
   ...entries,
   '</urlset>',
+  '',
 ].join('\n')
 
 const outPath = join(ROOT, 'public/sitemap.xml')
 writeFileSync(outPath, xml, 'utf8')
-console.log(`✅  Sitemap written to public/sitemap.xml`)
-console.log(`    ${STATIC_ROUTES.length} static routes × ${LOCALES.length} locales`)
-console.log(`    ${slugs.length} articles × ${LOCALES.length} locales`)
-console.log(`    Total URLs: ${entries.length}`)
+console.log(`Sitemap written to public/sitemap.xml`)
+console.log(`  Base URL:   ${BASE_URL}`)
+console.log(`  Static:     ${STATIC_ROUTES.length} routes`)
+console.log(`  Articles:   ${slugs.length} slugs`)
+console.log(`  Total URLs: ${entries.length}`)

@@ -81,10 +81,12 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { computed, watch, onUnmounted } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticleContent } from '@/composables/useArticleContent'
 import { getArticleMetaBySlug } from '@/articles/articles'
+import type { ArticleMeta as ArticleMetaBase } from '@/articles/articles'
+import { useSeo, siteUrl, SITE_URL } from '@/composables/useSeo'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -92,16 +94,7 @@ const slug = computed(() => route.params.slug as string)
 
 const { getArticleBySlug } = useArticleContent()
 
-interface ArticleMeta {
-  slug: string
-  title: string
-  excerpt: string
-  tags: string[]
-  author: string
-  date: string
-  readTime: number
-  metaDescription: string
-}
+type ArticleMeta = ArticleMetaBase
 
 interface ArticleWithContent extends ArticleMeta {
   content: string
@@ -165,59 +158,80 @@ const toc = computed<TocItem[]>(() => {
   return p.toc
 })
 
-// ── SEO: dynamic <title>, <meta description>, Schema.org JSON-LD ──────────
-let injectedMeta: HTMLMetaElement | null = null
-let injectedJsonLd: HTMLScriptElement | null = null
+// ── SEO via centralized composable ────────────────────────────────────────
+const inLanguage = computed(() =>
+  locale.value === 'zh' ? 'zh-Hans' : locale.value === 'ja' ? 'ja' : 'en',
+)
 
-function injectSeo(a: ArticleWithContent) {
-  document.title = `${a.title} — ResumeSpy`
+useSeo(() => {
+  const a = article.value
+  const path = `/article/${slug.value}`
 
-  // meta description
-  injectedMeta?.remove()
-  injectedMeta = document.createElement('meta')
-  injectedMeta.setAttribute('name', 'description')
-  injectedMeta.setAttribute('content', a.metaDescription)
-  document.head.appendChild(injectedMeta)
+  if (!a || (a as ArticleNotFound).notFound) {
+    return {
+      title: `${t('articles.notFoundTitle')} — ResumeSpy`,
+      description: t('articles.notFound'),
+      canonicalPath: path,
+      robots: 'noindex,follow',
+      locale: locale.value,
+    }
+  }
 
-  // Schema.org Article JSON-LD
-  injectedJsonLd?.remove()
-  injectedJsonLd = document.createElement('script')
-  injectedJsonLd.type = 'application/ld+json'
-  injectedJsonLd.textContent = JSON.stringify({
+  const article_ = a as ArticleWithContent
+  const url = siteUrl(path)
+
+  const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: a.title,
-    description: a.metaDescription,
-    author: { '@type': 'Organization', name: a.author },
-    datePublished: a.date,
+    headline: article_.title,
+    description: article_.metaDescription,
+    image: `${SITE_URL}/og-image.svg`,
+    inLanguage: inLanguage.value,
+    keywords: [...(article_.tags ?? []), article_.targetKeyword].filter(Boolean).join(', '),
+    wordCount: processed.value?.wordCount,
+    author: {
+      '@type': 'Organization',
+      name: article_.author,
+      url: SITE_URL,
+    },
+    datePublished: article_.date,
+    dateModified: article_.updatedDate ?? article_.date,
     publisher: {
       '@type': 'Organization',
       name: 'ResumeSpy',
-      logo: { '@type': 'ImageObject', url: `${window.location.origin}/favicon.ico` },
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` },
     },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': window.location.href },
-  })
-  document.head.appendChild(injectedJsonLd)
-}
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  }
 
-function cleanupSeo() {
-  document.title = 'ResumeSpy — Your Dossier. Your Story.'
-  injectedMeta?.remove()
-  injectedJsonLd?.remove()
-  injectedMeta = null
-  injectedJsonLd = null
-}
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t('navigation.home'), item: `${SITE_URL}/` },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t('articles.backToArticles'),
+        item: `${SITE_URL}/articles`,
+      },
+      { '@type': 'ListItem', position: 3, name: article_.title, item: url },
+    ],
+  }
 
-watch(
-  article,
-  (a) => {
-    if (a && !(a as ArticleNotFound).notFound) injectSeo(a as ArticleWithContent)
-    else cleanupSeo()
-  },
-  { immediate: true },
-)
-
-onUnmounted(cleanupSeo)
+  return {
+    title: `${article_.title} — ResumeSpy`,
+    description: article_.metaDescription,
+    canonicalPath: path,
+    ogType: 'article',
+    locale: locale.value,
+    publishedTime: article_.date,
+    modifiedTime: article_.updatedDate ?? article_.date,
+    author: article_.author,
+    tags: article_.tags,
+    jsonLd: [articleSchema, breadcrumbSchema],
+  }
+})
 
 // ── Formatted date ────────────────────────────────────────────────────────
 function formatDate(iso: string) {
