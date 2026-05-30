@@ -297,7 +297,7 @@
       },
       "contact": {
         "heading": "联系方式",
-        "body": "如有任何隐私相关问题或数据删除请求，请发送邮件至 feifeijinjp@gmail.com 联系我们。"
+        "body": "如有任何隐私相关问题或数据删除请求，请发送邮件至 feifeijinjp{'@'}gmail.com 联系我们。"
       }
     },
     "terms": {
@@ -339,7 +339,7 @@
       "items": {
         "businessName": { "label": "商号", "value": "ResumeSpy" },
         "operator": { "label": "运营负责人", "value": "金菲菲（Fei-Fei Jin）" },
-        "email": { "label": "联系邮箱", "value": "feifeijinjp@gmail.com" },
+        "email": { "label": "联系邮箱", "value": "feifeijinjp{'@'}gmail.com" },
         "address": { "label": "所在地址", "value": "应请求可无延迟地披露。" },
         "service": { "label": "服务内容", "value": "提供简历编辑、版本控制、多语言支持和 AI 优化功能的 AI 驱动简历管理平台。" },
         "pricing": { "label": "价格", "value": "目前免费使用。如推出付费功能，将在购买前明确披露价格。" },

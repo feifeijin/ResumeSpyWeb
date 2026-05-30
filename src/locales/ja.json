@@ -306,7 +306,7 @@
       },
       "contact": {
         "heading": "お問い合わせ",
-        "body": "プライバシーに関するご質問やデータ削除のご依頼は、feifeijinjp@gmail.com までご連絡ください。"
+        "body": "プライバシーに関するご質問やデータ削除のご依頼は、feifeijinjp{'@'}gmail.com までご連絡ください。"
       }
     },
     "terms": {
@@ -348,7 +348,7 @@
       "items": {
         "businessName": { "label": "事業者名", "value": "ResumeSpy" },
         "operator": { "label": "運営責任者", "value": "金 菲菲（Fei-Fei Jin）" },
-        "email": { "label": "お問い合わせ先メールアドレス", "value": "feifeijinjp@gmail.com" },
+        "email": { "label": "お問い合わせ先メールアドレス", "value": "feifeijinjp{'@'}gmail.com" },
         "address": { "label": "所在地", "value": "請求があった場合は遅滞なく開示いたします" },
         "service": { "label": "サービス内容", "value": "職務経歴書の編集・バージョン管理・多言語対応・AI 最適化を提供する AI 活用型職務経歴書管理プラットフォーム" },
         "pricing": { "label": "販売価格", "value": "現在は無料でご利用いただけます。有料機能を導入する場合は、購入前に料金を明示いたします。" },

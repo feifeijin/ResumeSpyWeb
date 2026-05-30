@@ -306,7 +306,7 @@
       },
       "contact": {
         "heading": "Contact",
-        "body": "For any privacy-related questions or data deletion requests, please contact us at feifeijinjp@gmail.com."
+        "body": "For any privacy-related questions or data deletion requests, please contact us at feifeijinjp{'@'}gmail.com."
       }
     },
     "terms": {
@@ -348,7 +348,7 @@
       "items": {
         "businessName": { "label": "Business Name", "value": "ResumeSpy" },
         "operator": { "label": "Operator", "value": "Fei-Fei Jin" },
-        "email": { "label": "Contact Email", "value": "feifeijinjp@gmail.com" },
+        "email": { "label": "Contact Email", "value": "feifeijinjp{'@'}gmail.com" },
         "address": { "label": "Address", "value": "Available upon request without delay." },
         "service": { "label": "Service Description", "value": "AI-powered resume management platform providing resume editing, version control, multi-language support, and AI-powered tailoring." },
         "pricing": { "label": "Pricing", "value": "Currently free of charge. Pricing for any future premium features will be clearly disclosed before purchase." },
