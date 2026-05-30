@@ -6,6 +6,9 @@ import AuthView from '../views/AuthView.vue'
 import AuthMagicView from '../views/AuthMagicView.vue'
 import ArticleView from '../views/ArticleView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
+import PrivacyView from '../views/PrivacyView.vue'
+import TermsView from '../views/TermsView.vue'
+import CommercialTransactionsView from '../views/CommercialTransactionsView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -42,6 +45,21 @@ const router = createRouter({
       name: 'auth-magic',
       component: AuthMagicView,
       meta: { requiresGuest: true },
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: PrivacyView,
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: TermsView,
+    },
+    {
+      path: '/commercial-transactions',
+      name: 'commercial-transactions',
+      component: CommercialTransactionsView,
     },
     {
       path: '/:pathMatch(.*)*',

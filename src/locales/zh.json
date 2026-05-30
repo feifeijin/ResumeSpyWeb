@@ -272,11 +272,92 @@
     "continue": "继续",
     "tryAgain": "重试"
   },
+  "legal": {
+    "backToHome": "← 返回主页",
+    "lastUpdated": "最后更新：2025年1月",
+    "overline": "— 法律信息 —",
+    "privacy": {
+      "title": "隐私政策",
+      "metaDesc": "了解 ResumeSpy 如何收集、使用和保护您的个人数据。",
+      "intro": {
+        "heading": "简介",
+        "body": "ResumeSpy 尊重您的隐私。本政策说明我们收集哪些数据、收集原因以及如何保护数据。我们仅收集提供服务所必需的最少信息。"
+      },
+      "collection": {
+        "heading": "我们收集的信息",
+        "body": "我们收集您用于登录的电子邮件地址、您在平台上创建和存储的简历内容，以及页面浏览量等基本使用数据。我们使用 Cookie 和本地存储来维护您的会话和偏好设置。分析工具可能会收集匿名化的使用模式，以帮助我们改进服务。"
+      },
+      "stripe": {
+        "heading": "支付处理",
+        "body": "支付处理由 Stripe 负责。我们不会存储您的信用卡信息。Stripe 可能根据其隐私政策及相关法规收集和处理支付信息。"
+      },
+      "retention": {
+        "heading": "数据保留",
+        "body": "您的账户数据和简历内容将在账户有效期间保留。如需删除账户，请联系我们，我们将在 30 天内删除您的个人数据。"
+      },
+      "contact": {
+        "heading": "联系方式",
+        "body": "如有任何隐私相关问题或数据删除请求，请发送邮件至 feifeijinjp@gmail.com 联系我们。"
+      }
+    },
+    "terms": {
+      "title": "服务条款",
+      "metaDesc": "规范您使用 ResumeSpy 的条款和条件。",
+      "service": {
+        "heading": "服务说明",
+        "body": "ResumeSpy 提供 AI 驱动的简历管理平台，包括简历编辑、版本控制、AI 优化和多语言导出功能。服务按现状提供，可能随时变更或终止。"
+      },
+      "responsibilities": {
+        "heading": "用户责任",
+        "body": "您对所创建和存储的内容负责。禁止使用本服务创建、存储或传播违法、有害或欺骗性内容。禁止尝试对平台进行逆向工程、破坏或滥用。"
+      },
+      "ip": {
+        "heading": "知识产权",
+        "body": "您创建的简历内容的所有权归您所有。使用本服务即表示您授予我们有限许可，仅用于提供服务目的处理和存储您的内容。我们的平台代码和设计是我们的知识产权。"
+      },
+      "disclaimer": {
+        "heading": "免责声明",
+        "body": "服务不提供任何形式的保证。AI 生成的内容仅供参考，使用前请仔细审阅。我们对 AI 建议的准确性不承担责任。"
+      },
+      "interruption": {
+        "heading": "服务中断",
+        "body": "我们可能因维护、升级或其他运营原因随时暂停或终止服务。我们将尽力提前通知。"
+      },
+      "liability": {
+        "heading": "责任限制",
+        "body": "在法律允许的最大范围内，我们因服务使用引起的任何索赔所承担的总责任不超过您在索赔前十二个月内支付给我们的总费用。"
+      },
+      "law": {
+        "heading": "适用法律",
+        "body": "本条款受日本法律管辖。任何争议应提交东京法院专属管辖。"
+      }
+    },
+    "commercial": {
+      "title": "特定商交易法披露",
+      "metaDesc": "根据日本特定商取引法要求的经营者信息披露。",
+      "note": "本披露依据日本特定商取引法（特定商取引法）规定提供。",
+      "items": {
+        "businessName": { "label": "商号", "value": "ResumeSpy" },
+        "operator": { "label": "运营负责人", "value": "金菲菲（Fei-Fei Jin）" },
+        "email": { "label": "联系邮箱", "value": "feifeijinjp@gmail.com" },
+        "address": { "label": "所在地址", "value": "应请求可无延迟地披露。" },
+        "service": { "label": "服务内容", "value": "提供简历编辑、版本控制、多语言支持和 AI 优化功能的 AI 驱动简历管理平台。" },
+        "pricing": { "label": "价格", "value": "目前免费使用。如推出付费功能，将在购买前明确披露价格。" },
+        "payment": { "label": "支付方式", "value": "通过 Stripe 信用卡支付（适用于未来的付费功能）。" },
+        "paymentTiming": { "label": "支付时间", "value": "在购买或订阅续费时收取费用。" },
+        "delivery": { "label": "服务交付时间", "value": "账户创建或支付确认后立即可使用服务。" },
+        "refund": { "label": "退款政策", "value": "由于服务的数字性质，服务交付后通常不提供退款。如有疑问，请联系我们。" }
+      }
+    }
+  },
   "footer": {
     "copyright": "© {year}",
     "buyMeCoffee": "☕ 请我喝杯咖啡",
     "author": "由 Fei-Fei Jin 制作",
-    "resumeSpy": "RESUMESPY"
+    "resumeSpy": "RESUMESPY",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "commercial": "特定商交易披露"
   },
   "components": {
     "guestBanner": {
