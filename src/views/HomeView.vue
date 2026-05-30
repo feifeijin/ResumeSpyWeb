@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { watch, onUnmounted } from 'vue'
+import { watch, onUnmounted, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import ResumeGuide from '@/components/ResumeGuide.vue'
@@ -52,7 +52,7 @@ onUnmounted(() => {
   injectedMeta = null
 })
 
-const features = [
+const features = computed(() => [
   {
     icon: '◈',
     title: t('home.features.versionControl'),
@@ -71,7 +71,7 @@ const features = [
     desc: t('home.features.manyTonguesDesc'),
     tilt: '-0.6deg',
   },
-]
+])
 </script>
 
 <template>
