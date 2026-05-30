@@ -434,6 +434,7 @@ import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import { useToast } from '@/composables/useToast'
+import { useSeo } from '@/composables/useSeo'
 import { useVersion } from '@/composables/useVersion'
 import { useVersionStore } from '@/stores/version'
 import type { ResumeDetail } from '@/models/resume-detail.type'
@@ -448,6 +449,14 @@ import DetectiveChatWidget from '@/components/DetectiveChatWidget.vue'
 const { t } = useI18n()
 const { withLoading, commonMessages, isGlobalLoading } = useLoading()
 const toast = useToast()
+
+useSeo(() => ({
+  title: `${t('createView.newResume')} — ResumeSpy`,
+  description: t('createView.newResume'),
+  canonicalPath: '/create',
+  robots: 'noindex,nofollow',
+  localized: false,
+}))
 
 const resumeDetailService = new ResumeDetailService()
 const route = useRoute()

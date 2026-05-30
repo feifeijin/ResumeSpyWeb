@@ -7,6 +7,10 @@
           {{ $t('footer.resumeSpy') }}&nbsp;<span class="gold">©</span>&nbsp;{{ new Date().getFullYear() }}
         </span>
         <span class="footer-sep">·</span>
+        <router-link to="/articles" class="footer-legal-link">{{ $t('footer.articles') }}</router-link>
+        <span class="footer-sep">·</span>
+        <router-link to="/faq" class="footer-legal-link">{{ $t('footer.faq') }}</router-link>
+        <span class="footer-sep">·</span>
         <router-link to="/privacy" class="footer-legal-link">{{ $t('footer.privacy') }}</router-link>
         <span class="footer-sep">·</span>
         <router-link to="/terms" class="footer-legal-link">{{ $t('footer.terms') }}</router-link>

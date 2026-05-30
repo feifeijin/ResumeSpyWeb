@@ -221,6 +221,74 @@
     "minRead": "min read",
     "contents": "— Contents —"
   },
+  "seo": {
+    "home": {
+      "title": "ResumeSpy — AI Resume Builder with Version Control & Multilingual Support",
+      "description": "ResumeSpy is a free, open-source resume builder with version control, AI tailoring to any job description, and multilingual support (English, 中文, 日本語). Craft, version, and tailor your resume for every opportunity."
+    }
+  },
+  "articlesIndex": {
+    "title": "The Archives",
+    "subtitle": "Every case file we've ever opened on resume craft, career strategy, and the art of the application.",
+    "metaDesc": "Browse every ResumeSpy article on resume writing, ATS optimization, version control, AI tailoring, and multilingual job applications.",
+    "allTag": "All"
+  },
+  "faq": {
+    "overline": "— Frequently Asked —",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you might want to know about ResumeSpy — answered.",
+    "metaDesc": "Frequently asked questions about ResumeSpy: how it works, pricing, AI tailoring, multilingual support, privacy, and version control.",
+    "items": [
+      {
+        "q": "What is ResumeSpy?",
+        "a": "ResumeSpy is a free, open-source resume builder for modern professionals. It combines a Markdown editor, full version history, AI tailoring to any job description, and native multilingual support for English, Chinese (中文), and Japanese (日本語)."
+      },
+      {
+        "q": "Is ResumeSpy free?",
+        "a": "Yes. ResumeSpy is free to use. The project is open source, and we accept voluntary support via Buy Me a Coffee."
+      },
+      {
+        "q": "How does AI resume tailoring work?",
+        "a": "Paste a job description and ResumeSpy rewrites your resume to align with the role — keywords sharpened, achievements re-framed, and tone adjusted — without inventing experience. Every change is reversible because every version is preserved."
+      },
+      {
+        "q": "What is resume version control?",
+        "a": "Every save creates a version. You can browse the full history, compare any two versions, and revert at any time. This means you can experiment freely without losing earlier drafts, and maintain multiple tailored versions for different job applications."
+      },
+      {
+        "q": "Does ResumeSpy support Japanese rirekisho (履歴書) and shokumu-keirekisho (職務経歴書)?",
+        "a": "ResumeSpy supports Japanese-language resume content and can produce Japanese versions of your resume. It is a flexible Markdown-based tool, so you can adapt it to rirekisho or shokumu-keirekisho conventions; it does not yet provide a one-click rirekisho template."
+      },
+      {
+        "q": "Does ResumeSpy support Chinese resumes (中文简历)?",
+        "a": "Yes. ResumeSpy has full Chinese (simplified) interface support, and you can write and export resumes in Chinese."
+      },
+      {
+        "q": "Is my resume data private?",
+        "a": "Your data is yours. We collect the email you sign in with and the resume content you create. We do not sell data, and you can request account deletion at any time. See our Privacy Policy for full details."
+      },
+      {
+        "q": "Can I export my resume as PDF?",
+        "a": "Yes. You can export any version of your resume to PDF directly from the editor."
+      },
+      {
+        "q": "Is ResumeSpy ATS-friendly?",
+        "a": "ResumeSpy resumes are Markdown-based and exported as clean PDFs without complex layouts, tables-in-tables, or images embedded in text — all of which break ATS parsers. This makes ResumeSpy output ATS-compatible by design."
+      },
+      {
+        "q": "Do I need an account to try ResumeSpy?",
+        "a": "No. You can try ResumeSpy as a guest with limited storage. Sign in (free, magic link — no password) to save more resumes and sync across devices."
+      },
+      {
+        "q": "Is ResumeSpy open source?",
+        "a": "Yes. ResumeSpy is open source on GitHub. Issues, pull requests, and stars are very welcome."
+      },
+      {
+        "q": "Who built ResumeSpy?",
+        "a": "ResumeSpy is built and maintained by Fei-Fei Jin as an open-source project."
+      }
+    ]
+  },
   "home": {
     "overline": "— Case File No. 001 —",
     "title": "RESUMESPY",
@@ -277,6 +345,8 @@
     "buyMeCoffee": "☕ Buy me a coffee",
     "author": "By Fei-Fei Jin",
     "resumeSpy": "RESUMESPY",
+    "articles": "Articles",
+    "faq": "FAQ",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "commercial": "Commercial Transactions"

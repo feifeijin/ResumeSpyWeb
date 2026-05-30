@@ -22,9 +22,17 @@
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
+import { useSeo } from '@/composables/useSeo'
 
 const { t } = useI18n()
 const { isAuthenticated } = storeToRefs(useAuthStore())
+
+useSeo(() => ({
+  title: `${t('notFound.title')} — ResumeSpy`,
+  description: t('notFound.description'),
+  robots: 'noindex,follow',
+  localized: false,
+}))
 </script>
 
 <style scoped>

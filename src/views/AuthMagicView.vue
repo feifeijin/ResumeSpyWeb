@@ -47,12 +47,21 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
+import { useSeo } from '@/composables/useSeo'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const { t } = useI18n()
 const toast = useToast()
+
+useSeo(() => ({
+  title: `${t('authMagic.processing')} — ResumeSpy`,
+  description: t('auth.magicProcessing'),
+  canonicalPath: '/auth/magic',
+  robots: 'noindex,nofollow',
+  localized: false,
+}))
 
 const state = ref<'processing' | 'success' | 'error'>('processing')
 const errorMessage = ref('')

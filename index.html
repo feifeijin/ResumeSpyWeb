@@ -1,17 +1,122 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResumeSpy — AI Resume Builder with Version Control & Multilingual Support</title>
+    <meta name="description" content="ResumeSpy is a free, open-source resume builder with version control, AI tailoring to any job description, and multilingual support (English, 中文, 日本語). Craft, version, and tailor your resume for every opportunity.">
+    <meta name="keywords" content="resume builder, AI resume, resume version control, ATS resume, multilingual resume, job application, career, rirekisho, 履歴書, 简历">
+    <meta name="author" content="Fei-Fei Jin">
+    <meta name="theme-color" content="#121212">
+    <meta name="color-scheme" content="light">
+
+    <link rel="canonical" href="https://resumespy.feifeijin.com/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" sizes="any">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ResumeSpy — Your Dossier. Your Story.</title>
+    <link rel="apple-touch-icon" href="/favicon.svg">
+    <link rel="alternate" hreflang="en" href="https://resumespy.feifeijin.com/">
+    <link rel="alternate" hreflang="zh-Hans" href="https://resumespy.feifeijin.com/?lang=zh">
+    <link rel="alternate" hreflang="ja" href="https://resumespy.feifeijin.com/?lang=ja">
+    <link rel="alternate" hreflang="x-default" href="https://resumespy.feifeijin.com/">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ResumeSpy">
+    <meta property="og:title" content="ResumeSpy — AI Resume Builder with Version Control & Multilingual Support">
+    <meta property="og:description" content="Free, open-source resume builder with version control, AI tailoring, and multilingual support (EN / 中文 / 日本語). Craft, version, and tailor your resume for every opportunity.">
+    <meta property="og:url" content="https://resumespy.feifeijin.com/">
+    <meta property="og:image" content="https://resumespy.feifeijin.com/og-image.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="zh_CN">
+    <meta property="og:locale:alternate" content="ja_JP">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ResumeSpy — AI Resume Builder with Version Control">
+    <meta name="twitter:description" content="Free, open-source resume builder with version control, AI tailoring, and multilingual support.">
+    <meta name="twitter:image" content="https://resumespy.feifeijin.com/og-image.svg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Site-wide structured data: Organization + WebSite + SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://resumespy.feifeijin.com/#organization",
+          "name": "ResumeSpy",
+          "url": "https://resumespy.feifeijin.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://resumespy.feifeijin.com/favicon.svg",
+            "width": 512,
+            "height": 512
+          },
+          "description": "ResumeSpy is a free, open-source resume builder with version control, AI tailoring, and multilingual support.",
+          "founder": {
+            "@type": "Person",
+            "name": "Fei-Fei Jin"
+          },
+          "sameAs": [
+            "https://github.com/feifeijin/ResumeSpyWeb",
+            "https://www.buymeacoffee.com/feifeijin"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://resumespy.feifeijin.com/#website",
+          "url": "https://resumespy.feifeijin.com/",
+          "name": "ResumeSpy",
+          "description": "AI resume builder with version control and multilingual support.",
+          "publisher": { "@id": "https://resumespy.feifeijin.com/#organization" },
+          "inLanguage": ["en", "zh-Hans", "ja"]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://resumespy.feifeijin.com/#software",
+          "name": "ResumeSpy",
+          "url": "https://resumespy.feifeijin.com/",
+          "applicationCategory": "BusinessApplication",
+          "applicationSubCategory": "Resume Builder",
+          "operatingSystem": "Web",
+          "description": "Free, open-source resume builder with version control, AI tailoring to any job description, and multilingual support (English, 中文, 日本語).",
+          "featureList": [
+            "Resume version control with full history",
+            "AI tailoring to job descriptions",
+            "Multilingual support (English, Chinese, Japanese)",
+            "Markdown-based editing",
+            "PDF export",
+            "ATS-friendly formatting"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "publisher": { "@id": "https://resumespy.feifeijin.com/#organization" }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="app"></div>
+    <noscript>
+      <div style="max-width:640px;margin:4rem auto;padding:2rem;font-family:Inter,system-ui,sans-serif;text-align:center;color:#121212">
+        <h1>ResumeSpy</h1>
+        <p>ResumeSpy is a free, open-source resume builder with version control, AI tailoring, and multilingual support (English, 中文, 日本語).</p>
+        <p>This application requires JavaScript. Please enable JavaScript in your browser to continue.</p>
+        <p><a href="https://github.com/feifeijin/ResumeSpyWeb">View on GitHub</a></p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

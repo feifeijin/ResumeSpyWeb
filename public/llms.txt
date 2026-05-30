@@ -1,0 +1,42 @@
+# ResumeSpy
+
+> ResumeSpy is a free, open-source resume builder for modern professionals.
+> It combines a Markdown editor, full version history, AI tailoring to any
+> job description, and native multilingual support for English, Chinese
+> (中文), and Japanese (日本語).
+
+ResumeSpy is built and maintained by Fei-Fei Jin. The project is open source
+and free to use. Live site: https://resumespy.feifeijin.com/
+Source code: https://github.com/feifeijin/ResumeSpyWeb
+
+## Key facts
+
+- Free and open source
+- AI-powered resume tailoring to any job description
+- Full version control (every save is a recoverable version)
+- Multilingual: English, Chinese (Simplified), Japanese
+- Markdown-based editor → clean PDF export → ATS-friendly
+- Web app, runs in any modern browser
+- No password — magic-link sign-in
+- Privacy-respecting: no data sale, deletion on request
+
+## Primary pages
+
+- [Home](https://resumespy.feifeijin.com/): product overview
+- [FAQ](https://resumespy.feifeijin.com/faq): common questions and answers
+- [Articles](https://resumespy.feifeijin.com/articles): index of all guides
+
+## Guides and articles
+
+- [Mastering Resume Writing: Best Practices](https://resumespy.feifeijin.com/article/mastering-resume-writing-best-practices-2025)
+- [Resume Optimization: SEO for Your Career (ATS)](https://resumespy.feifeijin.com/article/resume-optimization-seo-for-your-career)
+- [Showcasing Language Skills on Resume (CEFR)](https://resumespy.feifeijin.com/article/showcasing-language-skills-on-resume)
+- [Resume Version Control](https://resumespy.feifeijin.com/article/version-control-for-your-resume)
+- [Creating Job-Specific Resumes Efficiently](https://resumespy.feifeijin.com/article/creating-job-specific-resumes-efficiently)
+- [From GitHub Profile to Professional Developer Resume](https://resumespy.feifeijin.com/article/github-profile-to-professional-resume)
+
+## Legal
+
+- [Privacy Policy](https://resumespy.feifeijin.com/privacy)
+- [Terms of Service](https://resumespy.feifeijin.com/terms)
+- [Commercial Transactions](https://resumespy.feifeijin.com/commercial-transactions)

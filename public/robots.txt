@@ -2,5 +2,35 @@ User-agent: *
 Allow: /
 Disallow: /myspy
 Disallow: /create
+Disallow: /auth
+Disallow: /auth/magic
 
-Sitemap: https://resumespy.com/sitemap.xml
+# AI crawlers — allow with same restrictions as web crawlers
+User-agent: GPTBot
+Allow: /
+Disallow: /myspy
+Disallow: /create
+Disallow: /auth
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /myspy
+Disallow: /create
+Disallow: /auth
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://resumespy.feifeijin.com/sitemap.xml

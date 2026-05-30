@@ -21,28 +21,19 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useSeo } from '@/composables/useSeo'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const sections = ['service', 'responsibilities', 'ip', 'disclaimer', 'interruption', 'liability', 'law'] as const
 
-let metaEl: HTMLMetaElement | null = null
-
-onMounted(() => {
-  document.title = `${t('legal.terms.title')} — ResumeSpy`
-  metaEl = document.createElement('meta')
-  metaEl.setAttribute('name', 'description')
-  metaEl.setAttribute('content', t('legal.terms.metaDesc'))
-  document.head.appendChild(metaEl)
-})
-
-onUnmounted(() => {
-  document.title = 'ResumeSpy — Your Dossier. Your Story.'
-  metaEl?.remove()
-  metaEl = null
-})
+useSeo(() => ({
+  title: `${t('legal.terms.title')} — ResumeSpy`,
+  description: t('legal.terms.metaDesc'),
+  canonicalPath: '/terms',
+  locale: locale.value,
+}))
 </script>
 
 <style scoped>
