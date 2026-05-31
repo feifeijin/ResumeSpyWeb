@@ -94,11 +94,11 @@ When you **merge a PR to `master`**:
 
 2. **Vercel** automatically:
    - Detects the push to `master`
-   - Builds the application using the **Production environment variables configured in the Vercel dashboard** (PROD API, Supabase, etc.)
+   - Builds the application using `.env.production` (PROD API)
    - Deploys to the **production domain** (e.g., `https://resumespy.com` or `https://resumespyweb.vercel.app`)
    - The deployment typically completes in 1-2 minutes
 
-**Production deployments use the PROD API and other values configured in the Vercel project's Production environment.** There is no committed `.env.production` file — see [Environment Configuration Files](#environment-configuration-files) below.
+**Production deployments use the PROD API** configured in `.env.production`.
 
 ### Vercel Setup Instructions
 
@@ -111,16 +111,14 @@ When you **merge a PR to `master`**:
    - Select `feifeijin/ResumeSpyWeb` repository
    - Vercel will auto-detect Vite settings
 
-2. **Configure Environment Variables in Vercel** (required for Production):
+2. **Configure Environment Variables in Vercel** (if needed):
    - Go to Vercel Dashboard → Your Project → Settings → Environment Variables
-   - For **Production** (required — there is no committed `.env.production`):
+   - For **Production**, set:
      - `VITE_API_BASE_URL` = `https://your-actual-prod-api.com/`
-     - `VITE_SUPABASE_URL` = `https://<project>.supabase.co`
-     - `VITE_SUPABASE_ANON_KEY` = `<prod anon key>`
-   - For **Preview** (optional — falls back to `.env.development`):
+   - For **Preview**, set:
      - `VITE_API_BASE_URL` = `https://your-actual-dev-api.com/`
-
-   > **Note**: Production builds rely entirely on Vercel-dashboard env vars. Only the Supabase **anon** key (public-by-design) and other `VITE_*` values intended for the browser belong here — never put service-role keys or secrets in a `VITE_*` variable, as they are baked into the client bundle.
+   
+   > **Note**: Environment variables in Vercel **override** values in `.env.development` and `.env.production` if set. Use Vercel environment variables for sensitive or environment-specific URLs.
 
 3. **Configure Production Domain** (optional):
    - Go to Vercel Dashboard → Your Project → Settings → Domains
@@ -152,11 +150,9 @@ When you **merge a PR to `master`**:
 | File | Purpose | Committed? | Used By |
 |------|---------|-----------|---------|
 | `.env.development` | DEV API configuration | ✅ Yes | PR previews & local dev |
-| `.env.production` | PROD configuration | ❌ No (gitignored) | Not used — prod values come from the Vercel dashboard |
+| `.env.production` | PROD API configuration | ✅ Yes | Production deployments |
 | `.env.local` | Local overrides (optional) | ❌ No (gitignored) | Local development only |
 | `.env.example` | Template for contributors | ✅ Yes | Documentation |
-
-> **Production env policy**: Because this is an open-source repo, real production values (API URL, Supabase URL, Supabase anon key) are **not** committed. They live only in the Vercel project's **Production** environment variables. A missing variable causes the build/runtime to fail loudly, which is preferable to silently shipping a placeholder URL.
 
 ### Rollback Strategy
 
