@@ -5,6 +5,7 @@ import authApi from '@/api/auth-api'
 import type { AuthSession } from '@/models/auth.type'
 import { useGuestStore } from './guest'
 import { clearAnonymousId } from '@/utils/anonymous-id'
+import { identifyUser, resetAnalyticsUser } from '@/lib/analytics'
 import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -20,10 +21,13 @@ export const useAuthStore = defineStore('auth', () => {
 
   const setSession = (accessToken: string, userId: string, email: string, displayName?: string) => {
     session.value = { accessToken, userId, email, displayName }
+    // Tie PostHog's anonymous distinct_id to the Supabase user so funnels stitch across sessions.
+    identifyUser(userId)
   }
 
   const clearSession = () => {
     session.value = null
+    resetAnalyticsUser()
   }
 
   /** Sign in with a third-party OAuth provider (Google, GitHub) */

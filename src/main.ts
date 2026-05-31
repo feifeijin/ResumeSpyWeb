@@ -9,6 +9,7 @@ import i18n from './i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useGuestStore } from '@/stores/guest'
 import { useServiceStatusStore } from '@/stores/serviceStatus'
+import { initAnalytics } from '@/lib/analytics'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -30,6 +31,9 @@ app.config.errorHandler = (err, _instance, info) => {
 }
 
 setupAxiosInterceptors(pinia)
+
+// Analytics: Plausible page views + PostHog product funnel. No-ops without env vars.
+initAnalytics()
 
 // Initialize auth from Supabase session, then set up guest if needed, then mount
 const authStore = useAuthStore(pinia)

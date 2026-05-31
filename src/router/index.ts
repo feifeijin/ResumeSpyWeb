@@ -15,6 +15,7 @@ import MaintenanceView from '../views/MaintenanceView.vue'
 import ServiceUnavailableView from '../views/ServiceUnavailableView.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useServiceStatusStore } from '@/stores/serviceStatus'
+import { trackPageview } from '@/lib/analytics'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -105,6 +106,11 @@ router.onError((err) => {
   } catch {
     // Pinia may not be installed yet during very early errors — fall back to reload.
   }
+})
+
+// SPA pageview tracking — afterEach only fires on successful navigations.
+router.afterEach((to) => {
+  trackPageview(to.fullPath)
 })
 
 router.beforeEach((to, from, next) => {

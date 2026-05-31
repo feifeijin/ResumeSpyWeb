@@ -28,6 +28,7 @@
     "diff": "^8.0.4",
     "driver.js": "^1.4.0",
     "pinia": "^2.3.1",
+    "posthog-js": "^1.376.4",
     "vue": "^3.5.13",
     "vue-country-flag-next": "^2.3.2",
     "vue-i18n": "^9.14.5",
