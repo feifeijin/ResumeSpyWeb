@@ -11,8 +11,11 @@ import NotFoundView from '../views/NotFoundView.vue'
 import PrivacyView from '../views/PrivacyView.vue'
 import TermsView from '../views/TermsView.vue'
 import CommercialTransactionsView from '../views/CommercialTransactionsView.vue'
+import MaintenanceView from '../views/MaintenanceView.vue'
+import ServiceUnavailableView from '../views/ServiceUnavailableView.vue'
 import { useAuthStore } from '@/stores/auth'
 import { getSafeRedirect } from '@/utils/safe-redirect'
+import { useServiceStatusStore } from '@/stores/serviceStatus'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,11 +78,34 @@ const router = createRouter({
       component: CommercialTransactionsView,
     },
     {
+      path: '/maintenance',
+      name: 'maintenance',
+      component: MaintenanceView,
+    },
+    {
+      path: '/service-unavailable',
+      name: 'service-unavailable',
+      component: ServiceUnavailableView,
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: NotFoundView,
     },
   ],
+})
+
+// Surface async navigation failures (e.g. dynamic-import chunk load errors,
+// route component evaluation throws) on the global error view rather than
+// leaving the user staring at a blank route.
+router.onError((err) => {
+  console.error('[router.onError]', err)
+  try {
+    const serviceStatus = useServiceStatusStore()
+    serviceStatus.setAppError(err)
+  } catch {
+    // Pinia may not be installed yet during very early errors — fall back to reload.
+  }
 })
 
 router.beforeEach((to, from, next) => {

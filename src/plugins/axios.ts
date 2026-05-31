@@ -2,10 +2,16 @@ import axios from 'axios'
 import type { Pinia } from 'pinia'
 import { API_BASE_URL } from '@/api/api'
 import { useAuthStore } from '@/stores/auth'
+import { useServiceStatusStore } from '@/stores/serviceStatus'
 import { getAnonymousId, getOrCreateAnonymousId } from '@/utils/anonymous-id'
 import { supabase } from '@/lib/supabase'
 
 let interceptorsRegistered = false
+
+// Statuses that indicate the backend itself is unreachable or in a degraded
+// state where the user should see a friendly "service unavailable" screen,
+// not a generic toast / broken view.
+const DOWN_STATUSES = new Set([502, 503, 504])
 
 export const setupAxiosInterceptors = (pinia: Pinia) => {
   if (interceptorsRegistered) {
@@ -39,10 +45,25 @@ export const setupAxiosInterceptors = (pinia: Pinia) => {
   })
 
   axios.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      // Any successful response means the backend is reachable again.
+      const serviceStatus = useServiceStatusStore(pinia)
+      if (serviceStatus.apiDown) {
+        serviceStatus.markApiUp()
+      }
+      return response
+    },
     async (error) => {
       const status = error.response?.status
       const url = error.config?.url ?? ''
+      const serviceStatus = useServiceStatusStore(pinia)
+
+      // No response at all → network error / backend unreachable.
+      if (!error.response) {
+        serviceStatus.markApiDown()
+      } else if (DOWN_STATUSES.has(status)) {
+        serviceStatus.markApiDown()
+      }
 
       if (status === 401 && !url.includes('/auth/')) {
         const authStore = useAuthStore(pinia)

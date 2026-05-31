@@ -8,6 +8,7 @@ import router from './router'
 import i18n from './i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useGuestStore } from '@/stores/guest'
+import { useServiceStatusStore } from '@/stores/serviceStatus'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -18,6 +19,15 @@ registerPlugins(app)
 app.use(pinia)
 app.use(router)
 app.use(i18n)
+
+// Catch any error that bubbles past component-level `onErrorCaptured`
+// (the ErrorBoundary in App.vue). This is the final safety net before
+// Vue would otherwise log to console and leave the UI in a broken state.
+app.config.errorHandler = (err, _instance, info) => {
+  console.error('[app.config.errorHandler]', info, err)
+  const serviceStatus = useServiceStatusStore(pinia)
+  serviceStatus.setAppError(err)
+}
 
 setupAxiosInterceptors(pinia)
 
