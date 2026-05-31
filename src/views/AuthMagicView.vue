@@ -48,6 +48,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 import { useSeo } from '@/composables/useSeo'
+import { getSafeRedirect } from '@/utils/safe-redirect'
 
 const route = useRoute()
 const router = useRouter()
@@ -67,11 +68,7 @@ const state = ref<'processing' | 'success' | 'error'>('processing')
 const errorMessage = ref('')
 const isRedirecting = ref(false)
 
-const redirectTarget = computed(() =>
-  typeof route.query.redirect === 'string' && route.query.redirect.length > 0
-    ? route.query.redirect
-    : '/',
-)
+const redirectTarget = computed(() => getSafeRedirect(route.query.redirect))
 
 const goToDestination = async () => {
   if (state.value !== 'success') return
