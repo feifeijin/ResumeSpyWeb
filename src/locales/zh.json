@@ -506,6 +506,30 @@
     "goHome": "返回基地",
     "goMyspy": "打开 MySpy"
   },
+  "appError": {
+    "label": "事故报告",
+    "title": "出现意外情况",
+    "subtitle": "未预期的错误",
+    "description": "调查过程中遇到问题，我们的团队已收到通知。请重试，如果问题持续，请返回基地。",
+    "retry": "重试",
+    "goHome": "返回基地",
+    "detailsLabel": "查看详情（仅开发模式）"
+  },
+  "serviceUnavailable": {
+    "label": "503",
+    "title": "线路中断",
+    "subtitle": "服务暂时不可用",
+    "description": "目前无法访问档案。后端可能正在唤醒或暂时离线。请稍候片刻后重试。",
+    "retry": "重新连接",
+    "retrying": "连接中…",
+    "goHome": "返回基地"
+  },
+  "maintenance": {
+    "label": "系统维护",
+    "title": "稍后回来",
+    "subtitle": "正在进行计划维护",
+    "description": "我们正在整理证据室。请几分钟后再来——您的档案安全无虞。"
+  },
   "chat": {
     "triggerLabel": "问侦探",
     "online": "在线",
