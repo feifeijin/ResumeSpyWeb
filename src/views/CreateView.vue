@@ -50,6 +50,7 @@
               <v-text-field
                 v-else
                 v-model="editingTabName"
+                :disabled="isSavingTabName"
                 @blur="saveTabName(index)"
                 @keydown.enter="saveTabName(index)"
                 @keydown.esc="cancelEdit"
@@ -244,10 +245,13 @@
           <p class="dialog-hint">{{ $t('createView.deleteConfirm') }}</p>
         </div>
         <div class="dialog-footer">
-          <button class="stamp" @click="isDeleteDialogActive = false">
+          <button class="stamp" :disabled="isDeletingTab" @click="isDeleteDialogActive = false">
             {{ $t('common.cancel') }}
           </button>
-          <button class="stamp stamp--danger" @click="deleteTab">{{ $t('common.delete') }}</button>
+          <button class="stamp stamp--danger" :disabled="isDeletingTab" @click="deleteTab">
+            <i v-if="isDeletingTab" class="mdi mdi-loading mdi-spin" />
+            <template v-else>{{ $t('common.delete') }}</template>
+          </button>
         </div>
       </div>
     </v-dialog>
@@ -447,7 +451,12 @@ import VersionHistoryPanel from '@/components/version/VersionHistoryPanel.vue'
 import DetectiveChatWidget from '@/components/DetectiveChatWidget.vue'
 
 const { t } = useI18n()
-const { withLoading, commonMessages, isGlobalLoading } = useLoading()
+const { withLoading, withLocalLoading, commonMessages, isGlobalLoading } = useLoading()
+
+// Local busy flags for non-blocking CRUD actions (no global overlay)
+const isDeletingTab = ref(false)
+const isSavingTabName = ref(false)
+const isSettingDefault = ref(false)
 const toast = useToast()
 
 useSeo(() => ({
@@ -597,25 +606,30 @@ const isAddDisabled = computed(() => {
   return false
 })
 
-const loadResumeDetails = async (resumeId: string) => {
+// Pass overlay: false when refreshing after a quick local action (the caller's local
+// busy flag already provides feedback) so the global overlay doesn't flash.
+const loadResumeDetails = async (resumeId: string, { overlay = true }: { overlay?: boolean } = {}) => {
   currentResumeId.value = resumeId
-  await withLoading(
-    async () => {
-      resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
-      tabs.value = resumeDetails.value.map((detail) => detail.name)
-      editors.value = resumeDetails.value.map((detail) => detail.content)
-      savedContent.value = resumeDetails.value.map((detail) => detail.content)
-      saveStatus.value = 'idle'
-      // Set the active tab to the default resume detail if one exists
-      const defaultIndex = resumeDetails.value.findIndex((detail) => detail.isDefault)
-      activeTab.value = defaultIndex !== -1 ? defaultIndex : 0
-      // Seed lastSyncedContent so an unmodified resume blocks unnecessary syncs
-      resumeDetails.value.forEach((detail) => {
-        if (detail.id) lastSyncedContent.value[detail.id] = detail.content
-      })
-    },
-    { id: 'load-resume-details', message: commonMessages.loading },
-  )
+  const fetchDetails = async () => {
+    resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
+    tabs.value = resumeDetails.value.map((detail) => detail.name)
+    editors.value = resumeDetails.value.map((detail) => detail.content)
+    savedContent.value = resumeDetails.value.map((detail) => detail.content)
+    saveStatus.value = 'idle'
+    // Set the active tab to the default resume detail if one exists
+    const defaultIndex = resumeDetails.value.findIndex((detail) => detail.isDefault)
+    activeTab.value = defaultIndex !== -1 ? defaultIndex : 0
+    // Seed lastSyncedContent so an unmodified resume blocks unnecessary syncs
+    resumeDetails.value.forEach((detail) => {
+      if (detail.id) lastSyncedContent.value[detail.id] = detail.content
+    })
+  }
+
+  if (!overlay) {
+    await fetchDetails()
+    return
+  }
+  await withLoading(fetchDetails, { id: 'load-resume-details', message: commonMessages.loading })
 }
 
 onMounted(() => {
@@ -746,53 +760,56 @@ const onAdd = async () => {
 }
 
 const onSave = async (index: number) => {
+  if (saveStatus.value === 'saving') return
   const wasFirstSave = !resumeDetails.value[index]?.id
   saveStatus.value = 'saving'
-  await withLoading(
-    async () => {
-      const content = editors.value[index]
-      const detail = resumeDetails.value[index]
-      if (detail.id) {
-        await resumeDetailService.updateResumeDetailContent(detail.id, content)
-        detail.content = content
-        savedContent.value[index] = content
-        if (detail.resumeId) currentResumeId.value = detail.resumeId
-      } else {
-        if (!authStore.isAuthenticated) {
-          await guestStore.checkResumeQuota()
-          if (guestStore.hasReachedLimit) {
-            toast.error(t('errors.guestLimitReached'))
-            saveStatus.value = 'unsaved'
-            return
-          }
-        }
-        const newDetail = await resumeDetailService.createResumeDetail({
-          ...detail,
-          content,
-          name: tabs.value[index],
-        })
-        resumeDetails.value[index] = newDetail
-        savedContent.value[index] = content
-        if (newDetail.resumeId) {
-          currentResumeId.value = newDetail.resumeId
-          router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
-          if (!authStore.isAuthenticated) {
-            await guestStore.checkResumeQuota()
-            guestStore.notifyQuotaChanged()
-          }
+  // Non-blocking: the saveStatus indicator is the feedback, no global overlay
+  const content = editors.value[index]
+  try {
+    const detail = resumeDetails.value[index]
+    if (detail.id) {
+      await resumeDetailService.updateResumeDetailContent(detail.id, content)
+      detail.content = content
+      savedContent.value[index] = content
+      if (detail.resumeId) currentResumeId.value = detail.resumeId
+    } else {
+      if (!authStore.isAuthenticated) {
+        await guestStore.checkResumeQuota()
+        if (guestStore.hasReachedLimit) {
+          toast.error(t('errors.guestLimitReached'))
+          saveStatus.value = 'unsaved'
+          return
         }
       }
-      saveStatus.value = 'saved'
-      if (savedStatusTimer) clearTimeout(savedStatusTimer)
-      savedStatusTimer = setTimeout(() => {
-        saveStatus.value = 'idle'
-      }, 3000)
-      toast.success('toast.success.resumeSaveSuccess')
-      // Background snapshot — fire-and-forget, no loading overlay
-      snapshot(content)
-    },
-    { id: 'save-resume', message: commonMessages.saving },
-  )
+      const newDetail = await resumeDetailService.createResumeDetail({
+        ...detail,
+        content,
+        name: tabs.value[index],
+      })
+      resumeDetails.value[index] = newDetail
+      savedContent.value[index] = content
+      if (newDetail.resumeId) {
+        currentResumeId.value = newDetail.resumeId
+        router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
+        if (!authStore.isAuthenticated) {
+          await guestStore.checkResumeQuota()
+          guestStore.notifyQuotaChanged()
+        }
+      }
+    }
+    saveStatus.value = 'saved'
+    if (savedStatusTimer) clearTimeout(savedStatusTimer)
+    savedStatusTimer = setTimeout(() => {
+      saveStatus.value = 'idle'
+    }, 3000)
+    toast.success('toast.success.resumeSaveSuccess')
+    // Background snapshot — fire-and-forget, no loading overlay
+    snapshot(content)
+  } catch {
+    saveStatus.value = 'unsaved'
+    toast.error('toast.error.operationFailed')
+    return
+  }
 
   // Part 2: feature tour — trigger once after the very first successful save
   if (wasFirstSave && resumeDetails.value[index]?.id && onboardingStore.shouldShowPart2) {
@@ -881,17 +898,14 @@ const openDeleteDialog = (index: number) => {
 
 const deleteTab = async () => {
   if (tabIndexToDelete.value > -1) {
-    await withLoading(
-      async () => {
-        const detailId = resumeDetails.value[tabIndexToDelete.value].id
-        await resumeDetailService.deleteResumeDetail(detailId)
-        cancelEdit()
-        if (currentResumeId.value) await loadResumeDetails(currentResumeId.value)
-        isDeleteDialogActive.value = false
-        tabIndexToDelete.value = -1
-      },
-      { id: 'delete-tab', message: commonMessages.deleting },
-    )
+    await withLocalLoading(isDeletingTab, async () => {
+      const detailId = resumeDetails.value[tabIndexToDelete.value].id
+      await resumeDetailService.deleteResumeDetail(detailId)
+      cancelEdit()
+      if (currentResumeId.value) await loadResumeDetails(currentResumeId.value, { overlay: false })
+      isDeleteDialogActive.value = false
+      tabIndexToDelete.value = -1
+    })
   }
 }
 
@@ -957,6 +971,7 @@ const cancelEdit = () => {
 }
 
 const saveTabName = async (index: number) => {
+  if (isSavingTabName.value) return
   const newName = editingTabName.value.trim()
   if (!newName) {
     cancelEdit()
@@ -965,17 +980,14 @@ const saveTabName = async (index: number) => {
 
   const detail = resumeDetails.value[index]
   if (detail.id && newName !== detail.name) {
-    await withLoading(
-      async () => {
-        await resumeDetailService.updateResumeDetailName(detail.id, newName)
-        detail.name = newName
-        tabs.value[index] = newName
-        toast.success('toast.success.tabRenameSuccess')
-        editingTabIndex.value = null
-        editingTabName.value = ''
-      },
-      { id: 'update-tab-name', message: commonMessages.updating },
-    )
+    await withLocalLoading(isSavingTabName, async () => {
+      await resumeDetailService.updateResumeDetailName(detail.id, newName)
+      detail.name = newName
+      tabs.value[index] = newName
+      toast.success('toast.success.tabRenameSuccess')
+      editingTabIndex.value = null
+      editingTabName.value = ''
+    })
   } else if (!detail.id) {
     tabs.value[index] = newName
     detail.name = newName
@@ -1059,18 +1071,16 @@ const starToolbar = {
 }
 
 const setCurrentTabAsDefault = async () => {
+  if (isSettingDefault.value) return
   if (!currentDetailId.value) {
     toast.warning(t('createView.unsavedBeforeAction'))
     return
   }
-  await withLoading(
-    async () => {
-      await resumeDetailService.setDefault(currentDetailId.value)
-      if (currentResumeId.value) await loadResumeDetails(currentResumeId.value)
-      toast.success(t('createView.setDefaultSuccess'))
-    },
-    { id: 'set-default', message: commonMessages.updating },
-  )
+  await withLocalLoading(isSettingDefault, async () => {
+    await resumeDetailService.setDefault(currentDetailId.value)
+    if (currentResumeId.value) await loadResumeDetails(currentResumeId.value, { overlay: false })
+    toast.success(t('createView.setDefaultSuccess'))
+  })
 }
 
 const openHistoryPanel = () => {

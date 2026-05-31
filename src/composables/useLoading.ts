@@ -1,3 +1,4 @@
+import type { Ref } from 'vue'
 import { useLoadingStore } from '@/stores/loading'
 import { useI18n } from 'vue-i18n'
 import { useToast } from '@/composables/useToast'
@@ -49,6 +50,28 @@ export const useLoading = () => {
     }
   }
 
+  // Like withLoading, but toggles a local busy flag instead of the global overlay.
+  // Use for quick CRUD actions that should give inline feedback without blocking the app.
+  const withLocalLoading = async <T>(
+    busy: Ref<boolean> | ((v: boolean) => void),
+    operation: () => Promise<T>,
+    options: { showErrorToast?: boolean; errorMessage?: string } = {},
+  ): Promise<T> => {
+    const set = typeof busy === 'function' ? busy : (v: boolean) => (busy.value = v)
+
+    try {
+      set(true)
+      return await operation()
+    } catch (error) {
+      if (options.showErrorToast !== false) {
+        toast.error(options.errorMessage || 'toast.error.operationFailed')
+      }
+      throw error
+    } finally {
+      set(false)
+    }
+  }
+
   // Helper functions for common loading messages
   const withLoadingMessage = (key: string, params?: Record<string, unknown>) => {
     return params ? t(key, params) : t(key)
@@ -74,6 +97,7 @@ export const useLoading = () => {
 
     // Helper functions
     withLoading,
+    withLocalLoading,
     withLoadingMessage,
     generateLoadingId,
     commonMessages,

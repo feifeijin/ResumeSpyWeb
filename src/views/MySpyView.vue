@@ -155,16 +155,27 @@
             offset-y
           >
             <template v-slot:activator="{ props }">
-              <button class="dossier-menu-btn" v-bind="props">⋮</button>
+              <button class="dossier-menu-btn" v-bind="props" :disabled="rowBusyId === resume.id">
+                <i v-if="rowBusyId === resume.id" class="mdi mdi-loading mdi-spin" />
+                <template v-else>⋮</template>
+              </button>
             </template>
             <div class="noir-menu">
-              <button class="noir-menu-item" @click="startEditing(resume, index); menu[index] = false">
+              <button
+                class="noir-menu-item"
+                :disabled="rowBusyId === resume.id"
+                @click="startEditing(resume, index); menu[index] = false"
+              >
                 {{ $t('mySpyView.rename') }}
               </button>
-              <button class="noir-menu-item" @click="onClone(resume)">
+              <button class="noir-menu-item" :disabled="rowBusyId === resume.id" @click="onClone(resume)">
                 {{ $t('mySpyView.clone') }}
               </button>
-              <button class="noir-menu-item noir-menu-item--danger" @click="onDelete(resume)">
+              <button
+                class="noir-menu-item noir-menu-item--danger"
+                :disabled="rowBusyId === resume.id"
+                @click="onDelete(resume)"
+              >
                 {{ $t('mySpyView.delete') }}
               </button>
             </div>
@@ -219,8 +230,11 @@ useSeo(() => ({
   robots: 'noindex,nofollow',
   localized: false,
 }))
-const { withLoading, commonMessages } = useLoading()
+const { withLoading, withLocalLoading, commonMessages } = useLoading()
 const toast = useToast()
+
+// Per-row busy flag for non-blocking CRUD actions (rename / clone / delete)
+const rowBusyId = ref<string | null>(null)
 
 const formatDate = (dateStr: string): string => {
   if (!dateStr) return '—'
@@ -379,13 +393,13 @@ const onRename = async (resume: Resume) => {
   }
 
   resume.title = newTitle
-  await withLoading(
+  await withLocalLoading(
+    (v: boolean) => (rowBusyId.value = v ? resume.id : null),
     async () => {
       await resumeService.updateResumeName(resume.id, newTitle)
       resume.isEditing = false
       toast.success('toast.success.resumeRenameSuccess')
     },
-    { id: 'rename-resume', message: commonMessages.updating },
   )
 }
 
@@ -401,7 +415,8 @@ const onClone = async (resume: Resume) => {
     }
   }
 
-  await withLoading(
+  await withLocalLoading(
+    (v: boolean) => (rowBusyId.value = v ? resume.id : null),
     async () => {
       const newResume = await resumeService.cloneResume(resume.id)
       resumes.value.unshift(newResume)
@@ -412,13 +427,13 @@ const onClone = async (resume: Resume) => {
       }
       toast.success('toast.success.resumeCloneSuccess')
     },
-    { id: 'clone-resume', message: commonMessages.cloning },
   )
 }
 
 const onDelete = async (resume: Resume) => {
   if (resume.id) {
-    await withLoading(
+    await withLocalLoading(
+      (v: boolean) => (rowBusyId.value = v ? resume.id : null),
       async () => {
         await resumeService.deleteResume(resume.id)
         const index = resumes.value.indexOf(resume)
@@ -433,7 +448,6 @@ const onDelete = async (resume: Resume) => {
         }
         toast.success('toast.success.resumeDeleteSuccess')
       },
-      { id: 'delete-resume', message: commonMessages.deleting },
     )
   }
 }
