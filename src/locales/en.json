@@ -506,6 +506,30 @@
     "goHome": "Return to Base",
     "goMyspy": "Open MySpy"
   },
+  "appError": {
+    "label": "INCIDENT REPORT",
+    "title": "Something went sideways",
+    "subtitle": "Unexpected Error",
+    "description": "The investigation hit a snag. Our team has been notified. Try again — and if it keeps happening, head back to base.",
+    "retry": "Try Again",
+    "goHome": "Return to Base",
+    "detailsLabel": "Show details (dev only)"
+  },
+  "serviceUnavailable": {
+    "label": "503",
+    "title": "Lines down",
+    "subtitle": "Service Temporarily Unavailable",
+    "description": "We can't reach the case files right now. The backend may be waking up or briefly offline. Give it a moment and try again.",
+    "retry": "Retry Connection",
+    "retrying": "Reconnecting…",
+    "goHome": "Return to Base"
+  },
+  "maintenance": {
+    "label": "MAINTENANCE",
+    "title": "Back shortly",
+    "subtitle": "Scheduled Maintenance",
+    "description": "We're tidying up the evidence room. Check back in a few minutes — your dossiers are safe."
+  },
   "chat": {
     "triggerLabel": "Ask Detective",
     "online": "On duty",
