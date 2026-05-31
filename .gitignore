@@ -14,6 +14,10 @@ dist-ssr
 coverage
 *.local
 
+# Production env values are managed in the Vercel dashboard, never committed
+.env.production
+.env.production.local
+
 /cypress/videos/
 /cypress/screenshots/
 
