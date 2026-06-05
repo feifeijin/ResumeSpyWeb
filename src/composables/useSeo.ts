@@ -122,7 +122,7 @@ export function useSeo(getOptions: () => SeoOptions) {
     setMeta(scopeId, 'property', 'og:title', opts.title)
     setMeta(scopeId, 'property', 'og:description', opts.description)
     setMeta(scopeId, 'property', 'og:url', canonical)
-    setMeta(scopeId, 'property', 'og:image', opts.ogImage ?? `${SITE_URL}/og-image.svg`)
+    setMeta(scopeId, 'property', 'og:image', opts.ogImage ?? `${SITE_URL}/og-image.png`)
     if (opts.locale) setMeta(scopeId, 'property', 'og:locale', OG_LOCALE[opts.locale] ?? 'en_US')
     if (opts.publishedTime)
       setMeta(scopeId, 'property', 'article:published_time', opts.publishedTime)
@@ -136,7 +136,7 @@ export function useSeo(getOptions: () => SeoOptions) {
     setMeta(scopeId, 'name', 'twitter:card', 'summary_large_image')
     setMeta(scopeId, 'name', 'twitter:title', opts.title)
     setMeta(scopeId, 'name', 'twitter:description', opts.description)
-    setMeta(scopeId, 'name', 'twitter:image', opts.ogImage ?? `${SITE_URL}/og-image.svg`)
+    setMeta(scopeId, 'name', 'twitter:image', opts.ogImage ?? `${SITE_URL}/og-image.png`)
 
     for (const block of opts.jsonLd ?? []) setJsonLd(scopeId, block)
   })

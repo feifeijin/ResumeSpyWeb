@@ -185,7 +185,7 @@ useSeo(() => {
     '@type': 'Article',
     headline: article_.title,
     description: article_.metaDescription,
-    image: `${SITE_URL}/og-image.svg`,
+    image: `${SITE_URL}/og-image.png`,
     inLanguage: inLanguage.value,
     keywords: [...(article_.tags ?? []), article_.targetKeyword].filter(Boolean).join(', '),
     wordCount: processed.value?.wordCount,
