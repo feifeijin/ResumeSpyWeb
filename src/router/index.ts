@@ -14,6 +14,7 @@ import CommercialTransactionsView from '../views/CommercialTransactionsView.vue'
 import MaintenanceView from '../views/MaintenanceView.vue'
 import ServiceUnavailableView from '../views/ServiceUnavailableView.vue'
 import { useAuthStore } from '@/stores/auth'
+import { getSafeRedirect } from '@/utils/safe-redirect'
 import { useServiceStatusStore } from '@/stores/serviceStatus'
 
 const router = createRouter({
@@ -116,8 +117,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    const target = typeof to.query.redirect === 'string' ? to.query.redirect : '/'
-    next(target)
+    next(getSafeRedirect(to.query.redirect))
     return
   }
 

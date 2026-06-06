@@ -243,6 +243,7 @@ import { ref, computed, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import ResumeChatService, { type ChatMessage, type OptionSet } from '@/api/resume-chat-api'
+import DOMPurify from 'dompurify'
 
 interface ChatEntry {
   role: 'user' | 'assistant'
@@ -591,7 +592,7 @@ async function quickReply(item: string, msgIdx: number) {
 
 function renderMarkdown(text: string): string {
   // Minimal inline markdown: bold, italic, code
-  return text
+  const html = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -599,6 +600,7 @@ function renderMarkdown(text: string): string {
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/`(.+?)`/g, '<code>$1</code>')
     .replace(/\n/g, '<br/>')
+  return DOMPurify.sanitize(html)
 }
 
 function truncateProposal(content: string): string {

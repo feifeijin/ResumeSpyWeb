@@ -81,6 +81,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 import { useSeo } from '@/composables/useSeo'
+import { getSafeRedirect } from '@/utils/safe-redirect'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -127,10 +128,7 @@ const rules = {
   email: (value: string) => /.+@.+\..+/.test(value) || t('auth.validation.invalidEmail'),
 }
 
-const redirectTarget = computed(() => {
-  const redirect = route.query.redirect
-  return typeof redirect === 'string' && redirect.length > 0 ? redirect : '/'
-})
+const redirectTarget = computed(() => getSafeRedirect(route.query.redirect))
 
 const isProcessing = computed(() => isLoading.value)
 

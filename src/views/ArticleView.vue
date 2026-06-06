@@ -87,6 +87,7 @@ import { useArticleContent } from '@/composables/useArticleContent'
 import { getArticleMetaBySlug } from '@/articles/articles'
 import type { ArticleMeta as ArticleMetaBase } from '@/articles/articles'
 import { useSeo, siteUrl, SITE_URL } from '@/composables/useSeo'
+import DOMPurify from 'dompurify'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -135,7 +136,7 @@ function processContent(raw: string): ProcessedContent {
   })
 
   const wordCount = doc.body.textContent?.trim().split(/\s+/).length ?? 0
-  return { html: doc.body.innerHTML, toc, wordCount }
+  return { html: DOMPurify.sanitize(doc.body.innerHTML), toc, wordCount }
 }
 
 const processed = computed<ProcessedContent | null>(() => {
