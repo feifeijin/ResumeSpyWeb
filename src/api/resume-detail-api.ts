@@ -6,7 +6,14 @@ class ResumeDetailService {
   // Fetch resume details by resume ID
   async fetchResumeDetailsByResumeId(resumeId: string): Promise<ResumeDetail[]> {
     try {
-      const response = await axios.get(`${API_BASE_URL}/resumeDetail?resumeId=${resumeId}`)
+      const response = await axios.get(`${API_BASE_URL}/resumeDetail`, {
+        params: { resumeId },
+      })
+      // Defend against unexpected shapes (null, error envelopes, etc.) so a
+      // bad response doesn't throw a TypeError downstream.
+      if (!Array.isArray(response.data)) {
+        return []
+      }
       return response.data.map((item: ResumeDetail) => ({
         id: item.id,
         resumeId: item.resumeId,

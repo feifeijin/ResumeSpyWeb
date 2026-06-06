@@ -608,7 +608,10 @@ const isAddDisabled = computed(() => {
 
 // Pass overlay: false when refreshing after a quick local action (the caller's local
 // busy flag already provides feedback) so the global overlay doesn't flash.
-const loadResumeDetails = async (resumeId: string, { overlay = true }: { overlay?: boolean } = {}) => {
+const loadResumeDetails = async (
+  resumeId: string,
+  { overlay = true }: { overlay?: boolean } = {},
+) => {
   currentResumeId.value = resumeId
   const fetchDetails = async () => {
     resumeDetails.value = await resumeDetailService.fetchResumeDetailsByResumeId(resumeId)
@@ -632,27 +635,40 @@ const loadResumeDetails = async (resumeId: string, { overlay = true }: { overlay
   await withLoading(fetchDetails, { id: 'load-resume-details', message: commonMessages.loading })
 }
 
+const initBlankResume = () => {
+  const newResumeTitle = t('createView.newResume')
+  tabs.value = [newResumeTitle]
+  editors.value = ['']
+  savedContent.value = ['']
+  resumeDetails.value = [
+    {
+      id: '',
+      resumeId: '',
+      name: newResumeTitle,
+      language: '',
+      content: '',
+      isDefault: true,
+      createTime: '',
+      lastModifyTime: '',
+    },
+  ]
+  activeTab.value = 0
+  currentResumeId.value = null
+}
+
 onMounted(() => {
   const resumeId = route.query.resumeId
   if (typeof resumeId === 'string' && resumeId) {
-    loadResumeDetails(resumeId)
+    // withLoading already toasts on failure; swallow the rejection here so it
+    // doesn't bubble to the global error boundary and replace the page with
+    // the "Something went sideways" view. Fall back to a blank editor so the
+    // user can still work.
+    loadResumeDetails(resumeId).catch((err) => {
+      console.error('[CreateView] Failed to load resume details', err)
+      initBlankResume()
+    })
   } else {
-    const newResumeTitle = t('createView.newResume')
-    tabs.value = [newResumeTitle]
-    editors.value = ['']
-    savedContent.value = ['']
-    resumeDetails.value = [
-      {
-        id: '',
-        resumeId: '',
-        name: newResumeTitle,
-        language: '',
-        content: '',
-        isDefault: true,
-        createTime: '',
-        lastModifyTime: '',
-      },
-    ]
+    initBlankResume()
   }
 
   nextTick(() => {
