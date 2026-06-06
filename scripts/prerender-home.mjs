@@ -174,8 +174,8 @@ const original = readFileSync(DIST_INDEX, 'utf8')
 const prerendered = buildPrerenderedHTML()
 
 // Replace the empty SPA mount point with the static snapshot.
-// Vite outputs `<div id="app"></div>` on its own line; handle optional whitespace.
-const updated = original.replace(/<div id="app"><\/div>/, `<div id="app">${prerendered}</div>`)
+// Capture any attributes on #app (e.g. v-cloak) so they are preserved in output.
+const updated = original.replace(/<div id="app"([^>]*)><\/div>/, `<div id="app"$1>${prerendered}</div>`)
 
 if (updated === original) {
   console.warn('prerender-home: <div id="app"></div> not found in dist/index.html — skipping injection')
