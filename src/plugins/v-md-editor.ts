@@ -5,6 +5,13 @@ import githubTheme from '@kangc/v-md-editor/lib/theme/github.js'
 import '@kangc/v-md-editor/lib/theme/style/github.css'
 import enUS from '@kangc/v-md-editor/lib/lang/en-US'
 
+// Syntax highlighting for fenced code blocks. The github theme calls
+// Hljs.getLanguage() / Hljs.highlight() at render time; without an Hljs
+// instance, any fenced code block with a language identifier crashes the
+// preview with "can't access property 'getLanguage', Hljs is undefined".
+import hljs from 'highlight.js/lib/common'
+import 'highlight.js/styles/github.css'
+
 // Resources for the codemirror editor
 import Codemirror from 'codemirror'
 // mode
@@ -29,9 +36,8 @@ import 'codemirror/lib/codemirror.css'
 
 VMdEditor.lang.use('en-US', enUS)
 VMdEditor.Codemirror = Codemirror
-VMdEditor.use(githubTheme)
-VMdEditor.Codemirror = Codemirror
-VMdEditor.use(githubTheme)
+VMdEditor.use(githubTheme, { Hljs: hljs })
+
 export function registerMarkdownEditor(app: App) {
   app.use(VMdEditor)
 }

@@ -28,6 +28,7 @@
     "diff": "^8.0.4",
     "dompurify": "^3.4.7",
     "driver.js": "^1.4.0",
+    "highlight.js": "^11.11.1",
     "pinia": "^2.3.1",
     "vue": "^3.5.13",
     "vue-country-flag-next": "^2.3.2",
