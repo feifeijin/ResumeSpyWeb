@@ -449,6 +449,7 @@ import { useOnboardingStore } from '@/stores/onboarding'
 import { useOnboarding } from '@/composables/useOnboarding'
 import VersionHistoryPanel from '@/components/version/VersionHistoryPanel.vue'
 import DetectiveChatWidget from '@/components/DetectiveChatWidget.vue'
+import { trackEvent } from '@/lib/analytics'
 
 const { t } = useI18n()
 const { withLoading, withLocalLoading, commonMessages, isGlobalLoading } = useLoading()
@@ -802,6 +803,12 @@ const onSave = async (index: number) => {
     savedStatusTimer = setTimeout(() => {
       saveStatus.value = 'idle'
     }, 3000)
+    if (wasFirstSave && resumeDetails.value[index]?.id) {
+      trackEvent('resume_created', {
+        is_guest: !authStore.isAuthenticated,
+        language: resumeDetails.value[index]?.language || 'unspecified',
+      })
+    }
     toast.success('toast.success.resumeSaveSuccess')
     // Background snapshot — fire-and-forget, no loading overlay
     snapshot(content)
@@ -952,6 +959,10 @@ const syncTab = async () => {
       )
       // Record the content that was just synced so we can detect future changes
       lastSyncedContent.value[activeResumeDetailID] = currentContent
+      trackEvent('resume_translated', {
+        target_language_count: siblingIds.length,
+        source_language: resumeDetails.value[activeTab.value]?.language || 'unspecified',
+      })
       toast.success('toast.success.resumeSyncSuccess')
     },
     { id: 'sync-translations', message: commonMessages.syncing },
@@ -1021,6 +1032,10 @@ const runTailor = async () => {
         jobDescription.value,
       )
       editors.value[activeTab.value] = tailoredContent
+      trackEvent('resume_tailored', {
+        jd_length: jobDescription.value.length,
+        language: resumeDetails.value[activeTab.value]?.language || 'unspecified',
+      })
       toast.success(t('createView.tailorSuccess'))
     },
     { id: 'tailor-resume', message: commonMessages.processing },
@@ -1041,6 +1056,10 @@ const exportCurrentTabAsPdf = async () => {
       a.download = `${tabs.value[activeTab.value]}_${new Date().toISOString().slice(0, 10)}.pdf`
       a.click()
       URL.revokeObjectURL(url)
+      trackEvent('resume_exported', {
+        format: 'pdf',
+        language: resumeDetails.value[activeTab.value]?.language || 'unspecified',
+      })
     },
     { id: 'export-pdf', message: commonMessages.downloading },
   )

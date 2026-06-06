@@ -218,6 +218,7 @@ import ResumeService from '@/api/resume-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
 import ResumeDetailService from '@/api/resume-detail-api'
+import { trackEvent } from '@/lib/analytics'
 
 const resumeService = new ResumeService()
 const resumeDetailService = new ResumeDetailService()
@@ -312,6 +313,10 @@ const processImport = async (file: File) => {
       },
       { id: 'import-file', message: t('mySpyView.importing'), showErrorToast: false },
     )
+    trackEvent('resume_imported', {
+      file_type: file.name.split('.').pop()?.toLowerCase() ?? 'unknown',
+      is_guest: !authStore.isAuthenticated,
+    })
     toast.success(t('mySpyView.importSuccess'))
     router.push({ name: 'create', query: { resumeId } })
   } catch {
