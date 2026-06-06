@@ -44,34 +44,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <!--
-      Plausible analytics — privacy-friendly, cookieless page-view tracking.
-      VITE_PLAUSIBLE_DOMAIN is the tracked site (e.g. resumespy.feifeijin.com); when unset
-      (local dev, tests) the loader skips and no network request is made. We use the
-      "manual" variant so router.afterEach can emit pageviews for SPA navigation, and the
-      "tagged-events" variant to allow funnel events to ride the same script.
-    -->
-    <script>
-      (function () {
-        var domain = "%VITE_PLAUSIBLE_DOMAIN%";
-        if (!domain || domain.indexOf("VITE_PLAUSIBLE_DOMAIN") !== -1) return;
-        var apiHost = "%VITE_PLAUSIBLE_API_HOST%";
-        if (!apiHost || apiHost.indexOf("VITE_PLAUSIBLE_API_HOST") !== -1) {
-          apiHost = "https://plausible.io";
-        }
-        var s = document.createElement("script");
-        s.defer = true;
-        s.setAttribute("data-domain", domain);
-        s.src = apiHost.replace(/\/$/, "") + "/js/script.manual.tagged-events.js";
-        document.head.appendChild(s);
-        window.plausible =
-          window.plausible ||
-          function () {
-            (window.plausible.q = window.plausible.q || []).push(arguments);
-          };
-      })();
-    </script>
-
     <!-- Site-wide structured data: Organization + WebSite + SoftwareApplication -->
     <script type="application/ld+json">
     {

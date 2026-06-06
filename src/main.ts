@@ -32,7 +32,7 @@ app.config.errorHandler = (err, _instance, info) => {
 
 setupAxiosInterceptors(pinia)
 
-// Analytics: Plausible page views + PostHog product funnel. No-ops without env vars.
+// Analytics: PostHog page views + product funnel. No-ops without env vars.
 initAnalytics()
 
 // Initialize auth from Supabase session, then set up guest if needed, then mount
