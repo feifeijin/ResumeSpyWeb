@@ -6,7 +6,6 @@
       <p class="overline">— {{ t('notFound.label') }} —</p>
       <h1 class="title">{{ t('notFound.title') }}</h1>
       <p class="subtitle">{{ t('notFound.subtitle') }}</p>
-      <p class="desc">{{ t('notFound.description') }}</p>
 
       <div class="flipbook" aria-hidden="true">
         <img :src="frame0" class="frame f0" alt="" />
@@ -54,7 +53,9 @@ useSeo(() => ({
   --ink:      #FFFFFF;
 
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   display: flex;
@@ -77,7 +78,7 @@ useSeo(() => ({
   position: relative;
   z-index: 10;
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 1.5rem 2rem;
   max-width: 540px;
 }
 
@@ -86,17 +87,17 @@ useSeo(() => ({
   font-size: 0.75rem;
   letter-spacing: 0.35em;
   color: var(--gold-dim);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .title {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: clamp(4rem, 15vw, 8rem);
+  font-size: clamp(3.5rem, 12vw, 7rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text);
   line-height: 1;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .subtitle {
@@ -105,25 +106,15 @@ useSeo(() => ({
   letter-spacing: 0.2em;
   color: var(--muted);
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
-}
-
-.desc {
-  font-style: italic;
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.7;
-  border-left: 2px solid var(--border);
-  padding-left: 1rem;
-  margin-bottom: 2.5rem;
-  text-align: left;
+  margin-bottom: 1.25rem;
 }
 
 .flipbook {
   position: relative;
-  width: 192px;
-  height: 256px;
-  margin: 0 auto 2.5rem;
+  /* Keep the 3:4 frame ratio while shrinking on short viewports. */
+  height: min(256px, 32vh);
+  aspect-ratio: 3 / 4;
+  margin: 0 auto 1.5rem;
 }
 
 .frame {
