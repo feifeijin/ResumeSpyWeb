@@ -53,14 +53,7 @@
         <!-- Header -->
         <div class="dc-panel-header">
           <div class="dc-panel-identity">
-            <svg viewBox="0 0 32 32" class="dc-panel-avatar" aria-hidden="true">
-              <rect x="8"  y="3"  width="16" height="10" rx="2" fill="#2a2a2a"/>
-              <rect x="5"  y="11" width="22" height="3"  rx="1.5" fill="#333"/>
-              <ellipse cx="16" cy="20" rx="8" ry="8" fill="#444"/>
-              <ellipse cx="13" cy="19" rx="2" ry="1.5" fill="#1a1a1a" class="dc-blink"/>
-              <ellipse cx="19" cy="19" rx="2" ry="1.5" fill="#1a1a1a" class="dc-blink"/>
-              <path d="M13 23 Q16 25.5 19 23" stroke="#222" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            </svg>
+            <img :src="melissaAvatar" class="dc-panel-avatar" alt="" aria-hidden="true" />
             <div>
               <div class="dc-panel-name">Detective Assistant</div>
               <div class="dc-panel-status">
@@ -244,6 +237,7 @@ import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
 import ResumeChatService, { type ChatMessage, type OptionSet } from '@/api/resume-chat-api'
 import DOMPurify from 'dompurify'
+import melissaAvatar from '@/assets/Melissa Woodward.png'
 
 interface ChatEntry {
   role: 'user' | 'assistant'
@@ -857,8 +851,9 @@ watch(() => props.currentContent, () => {
   height: 36px;
   border-radius: 50%;
   background: #f0f0f0;
-  padding: 2px;
   border: 1px solid #e0e0e0;
+  object-fit: cover;
+  object-position: top center;
 }
 
 .dc-panel-name {
