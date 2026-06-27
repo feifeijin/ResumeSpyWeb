@@ -11,30 +11,9 @@
     :aria-expanded="isOpen"
     aria-haspopup="dialog"
   >
-    <!-- Animated detective SVG (replace src with your GIF once chosen) -->
     <span class="dc-trigger-avatar" aria-hidden="true">
-      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" class="dc-avatar-svg">
-        <!-- Hat -->
-        <rect x="13" y="5" width="22" height="13" rx="3" fill="#2a2a2a" class="dc-hat"/>
-        <rect x="9"  y="16" width="30" height="4"  rx="2" fill="#333"/>
-        <!-- Head -->
-        <ellipse cx="24" cy="27" rx="11" ry="11" fill="#444" class="dc-head"/>
-        <!-- Eyes (blinking) -->
-        <ellipse cx="20" cy="25" rx="2.5" ry="2" fill="#1a1a1a" class="dc-eye dc-eye-l"/>
-        <ellipse cx="28" cy="25" rx="2.5" ry="2" fill="#1a1a1a" class="dc-eye dc-eye-r"/>
-        <circle  cx="20.8" cy="24.4" r="0.9" fill="#fff" opacity="0.7"/>
-        <circle  cx="28.8" cy="24.4" r="0.9" fill="#fff" opacity="0.7"/>
-        <!-- Mouth -->
-        <path d="M20 31 Q24 34 28 31" stroke="#222" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Magnifying glass (bobbing) -->
-        <circle cx="37" cy="36" r="5"   stroke="#c8a951" stroke-width="1.8" fill="none" class="dc-glass"/>
-        <line   x1="33"  y1="40"  x2="30" y2="43" stroke="#c8a951" stroke-width="2"   stroke-linecap="round" class="dc-glass"/>
-        <!-- Notification dot -->
-        <circle v-if="hasUnread" cx="40" cy="8" r="5" fill="#e05555"/>
-        <text   v-if="hasUnread && unreadCount < 10" x="40" y="12" text-anchor="middle" font-size="6" fill="#fff" font-family="monospace">
-          {{ unreadCount }}
-        </text>
-      </svg>
+      <img :src="melissaAvatar" class="dc-avatar-img" alt="" />
+      <span v-if="hasUnread" class="dc-avatar-badge">{{ unreadCount < 10 ? unreadCount : '9+' }}</span>
     </span>
     <span class="dc-trigger-label">{{ isOpen ? '✕' : t('chat.triggerLabel') }}</span>
   </button>
@@ -747,51 +726,30 @@ watch(() => props.currentContent, () => {
   flex-shrink: 0;
 }
 
-.dc-avatar-svg {
+.dc-avatar-img {
   width: 32px;
   height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top center;
 }
 
-/* Hat bob */
-.dc-hat {
-  animation: hat-bob 3s ease-in-out infinite;
-  transform-origin: 24px 12px;
-}
-@keyframes hat-bob {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-1.5px); }
-}
-
-/* Head sway */
-.dc-head {
-  animation: head-sway 3s ease-in-out infinite;
-  transform-origin: 24px 27px;
-}
-@keyframes head-sway {
-  0%, 100% { transform: rotate(0deg); }
-  25%       { transform: rotate(-2deg); }
-  75%       { transform: rotate(2deg); }
-}
-
-/* Magnifying glass orbit */
-.dc-glass {
-  animation: glass-orbit 2.5s ease-in-out infinite;
-  transform-origin: 28px 32px;
-}
-@keyframes glass-orbit {
-  0%, 100% { transform: rotate(0deg) translate(0, 0); }
-  50%       { transform: rotate(-12deg) translate(-1px, 1px); }
-}
-
-/* Eye blink */
-.dc-eye-l, .dc-eye-r, .dc-blink {
-  animation: blink 4s step-end infinite;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-@keyframes blink {
-  0%, 96%, 100% { transform: scaleY(1); }
-  97%, 99%      { transform: scaleY(0.1); }
+.dc-avatar-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  background: #e05555;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 9px;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
 }
 
 /* ── Panel ────────────────────────────────────────────────── */
