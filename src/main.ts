@@ -43,4 +43,6 @@ authStore.initialize().then(() => {
     guestStore.initializeGuestSession()
   }
   app.mount('#app')
+  // Remove display:none (set in index.html) that hides prerendered content until Vue takes over.
+  document.getElementById('app')!.style.removeProperty('display')
 })

@@ -7,6 +7,7 @@
     "dev": "vite",
     "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "run-p type-check \"build-only {@}\" --",
+    "postbuild": "node scripts/prerender-home.mjs",
     "preview": "vite preview",
     "test:unit": "vitest",
     "prepare": "cypress install",
