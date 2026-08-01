@@ -141,6 +141,7 @@ const menu = computed(() => {
   void locale.value
   return [
     { name: t('navigation.create'), link: '/create', icon: 'mdi-note-plus' },
+    { name: t('navigation.tools'), link: '/tools', icon: 'mdi-toolbox-outline' },
     {
       name: 'GitHub',
       link: 'https://github.com/feifeijin/ResumeSpyWeb',

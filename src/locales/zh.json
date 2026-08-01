@@ -77,6 +77,7 @@
     "home": "首页",
     "create": "创建",
     "mySpy": "MySpy",
+    "tools": "工具",
     "login": "登录",
     "logout": "退出登录"
   },
@@ -288,6 +289,25 @@
         "a": "ResumeSpy 由 Fei-Fei Jin 独立开发并作为开源项目持续维护。"
       }
     ]
+  },
+  "tools": {
+    "overline": "— 工作室 —",
+    "title": "ResumeSpy 工具箱",
+    "subtitle": "为职场人打造的工具集，仍在暗房中冲洗，敬请期待。",
+    "metaDesc": "了解 ResumeSpy 工具箱：职业世界、简历转换与日式简历生成器。",
+    "comingSoon": "即将推出",
+    "careerWorld": {
+      "name": "职业世界",
+      "desc": "在下一步行动之前，先看清行业中的岗位、技能与薪资版图。"
+    },
+    "resumeConvert": {
+      "name": "简历转换",
+      "desc": "将任意简历转换为 PDF、Markdown 或纯文本，排版不走样。"
+    },
+    "japaneseResume": {
+      "name": "日式简历生成器",
+      "desc": "基于现有档案，一键生成符合规范的履历书与职务经历书。"
+    }
   },
   "home": {
     "overline": "— 案件档案 No. 001 —",

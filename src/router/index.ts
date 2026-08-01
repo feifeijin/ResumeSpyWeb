@@ -7,6 +7,7 @@ import AuthMagicView from '../views/AuthMagicView.vue'
 import ArticleView from '../views/ArticleView.vue'
 import ArticlesIndexView from '../views/ArticlesIndexView.vue'
 import FaqView from '../views/FaqView.vue'
+import ToolsView from '../views/ToolsView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 import PrivacyView from '../views/PrivacyView.vue'
 import TermsView from '../views/TermsView.vue'
@@ -40,6 +41,11 @@ const router = createRouter({
       path: '/faq',
       name: 'faq',
       component: FaqView,
+    },
+    {
+      path: '/tools',
+      name: 'tools',
+      component: ToolsView,
     },
     {
       path: '/myspy',

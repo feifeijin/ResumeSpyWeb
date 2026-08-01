@@ -77,6 +77,7 @@
     "home": "Home",
     "create": "Create",
     "mySpy": "MySpy",
+    "tools": "Tools",
     "login": "Sign In",
     "logout": "Sign Out"
   },
@@ -288,6 +289,25 @@
         "a": "ResumeSpy is built and maintained by Fei-Fei Jin as an open-source project."
       }
     ]
+  },
+  "tools": {
+    "overline": "— The Workshop —",
+    "title": "ResumeSpy Tools",
+    "subtitle": "A growing kit of instruments for the working professional. Each one is in the darkroom right now.",
+    "metaDesc": "Explore the ResumeSpy toolkit: Career World, Resume Convert, and the Japanese Resume Generator.",
+    "comingSoon": "Coming soon",
+    "careerWorld": {
+      "name": "Career World",
+      "desc": "Map roles, skills, and salaries across the industry before you make your next move."
+    },
+    "resumeConvert": {
+      "name": "Resume Convert",
+      "desc": "Turn any resume into PDF, Markdown, or plain text without losing the formatting."
+    },
+    "japaneseResume": {
+      "name": "Japanese Resume Generator",
+      "desc": "Generate a compliant Japanese rirekisho and shokumu keirekisho from your existing dossier."
+    }
   },
   "home": {
     "overline": "— Case File No. 001 —",

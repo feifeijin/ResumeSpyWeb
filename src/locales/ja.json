@@ -77,6 +77,7 @@
     "home": "ホーム",
     "create": "作成",
     "mySpy": "MySpy",
+    "tools": "ツール",
     "login": "サインイン",
     "logout": "サインアウト"
   },
@@ -288,6 +289,25 @@
         "a": "ResumeSpy は Fei-Fei Jin がオープンソースプロジェクトとして開発・運営しています。"
       }
     ]
+  },
+  "tools": {
+    "overline": "— ワークショップ —",
+    "title": "ResumeSpy ツール",
+    "subtitle": "働く人のための道具箱。ただいま暗室で現像中です。",
+    "metaDesc": "ResumeSpy のツール群：キャリアワールド、レジュメ変換、日本語履歴書ジェネレーター。",
+    "comingSoon": "近日公開",
+    "careerWorld": {
+      "name": "キャリアワールド",
+      "desc": "次の一手を決める前に、業界の職種・スキル・年収を俯瞰できます。"
+    },
+    "resumeConvert": {
+      "name": "レジュメ変換",
+      "desc": "どんな履歴書も、レイアウトを崩さずに PDF・Markdown・テキストへ変換します。"
+    },
+    "japaneseResume": {
+      "name": "日本語履歴書ジェネレーター",
+      "desc": "既存のドシエから、日本の書式に沿った履歴書と職務経歴書を自動生成します。"
+    }
   },
   "home": {
     "overline": "— 案件ファイル No. 001 —",
