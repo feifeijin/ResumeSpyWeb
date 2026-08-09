@@ -445,6 +445,7 @@ import type { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
+import { useResumesStore } from '@/stores/resumes'
 import { useOnboardingStore } from '@/stores/onboarding'
 import { useOnboarding } from '@/composables/useOnboarding'
 import VersionHistoryPanel from '@/components/version/VersionHistoryPanel.vue'
@@ -473,6 +474,7 @@ const route = useRoute()
 const router = useRouter()
 const guestStore = useGuestStore()
 const authStore = useAuthStore()
+const resumesStore = useResumesStore()
 const onboardingStore = useOnboardingStore()
 const { startPart1Tour, startPart2Tour } = useOnboarding()
 const versionStore = useVersionStore()
@@ -792,6 +794,18 @@ const onSave = async (index: number) => {
       if (newDetail.resumeId) {
         currentResumeId.value = newDetail.resumeId
         router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
+        // Saving here is what creates the resume itself. Tell the list about it
+        // so MySpy shows it on the way back instead of waiting for a fetch that
+        // may not include it yet.
+        resumesStore.noteCreated({
+          id: newDetail.resumeId,
+          title: tabs.value[index],
+          resumeDetailCount: 1,
+          resumeImgPath: '',
+          createTime: newDetail.createTime,
+          lastModifyTime: newDetail.lastModifyTime,
+          preview: false,
+        })
         if (!authStore.isAuthenticated) {
           await guestStore.checkResumeQuota()
           guestStore.notifyQuotaChanged()
