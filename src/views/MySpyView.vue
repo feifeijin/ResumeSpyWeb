@@ -164,7 +164,7 @@
               <button
                 class="noir-menu-item"
                 :disabled="rowBusyId === resume.id"
-                @click="startEditing(resume, index); menu[index] = false"
+                @click="startEditing(resume, index); menu[resume.id] = false"
               >
                 {{ $t('mySpyView.rename') }}
               </button>
@@ -254,7 +254,9 @@ const resumesStore = useResumesStore()
 // The list lives in the store so the create screen can report new resumes to it
 // (see src/stores/resumes.ts) — MySpy is no longer the only thing that knows.
 const { resumes } = storeToRefs(resumesStore)
-const menu = ref<boolean[]>([])
+// Keyed by resume id, not list position: the list can now grow from elsewhere
+// (an imported or newly created resume), which would shift a positional array.
+const menu = ref<Record<string, boolean>>({})
 const showFab = ref(false)
 const isImporting = ref(false)
 const speedDialOpen = ref(false)
@@ -361,7 +363,7 @@ const loadResumes = async () => {
   await withLoading(
     async () => {
       await resumesStore.loadResumes()
-      menu.value = resumes.value.map(() => false)
+      menu.value = {}
     },
     { id: 'load-resumes', message: commonMessages.loading },
   )
@@ -423,8 +425,7 @@ const onRename = async (resume: Resume) => {
 }
 
 const onClone = async (resume: Resume) => {
-  const index = resumes.value.indexOf(resume)
-  menu.value[index] = false
+  menu.value[resume.id] = false
 
   if (!authStore.isAuthenticated) {
     const quota = await guestStore.checkResumeQuota()
@@ -439,7 +440,6 @@ const onClone = async (resume: Resume) => {
     async () => {
       const newResume = await resumeService.cloneResume(resume.id)
       resumesStore.addResume(newResume)
-      menu.value.unshift(false)
       if (!authStore.isAuthenticated) {
         await guestStore.checkResumeQuota()
         guestStore.notifyQuotaChanged()
@@ -455,11 +455,8 @@ const onDelete = async (resume: Resume) => {
       (v: boolean) => (rowBusyId.value = v ? resume.id : null),
       async () => {
         await resumeService.deleteResume(resume.id)
-        const index = resumes.value.indexOf(resume)
         resumesStore.removeResume(resume.id)
-        if (index > -1) {
-          menu.value.splice(index, 1)
-        }
+        delete menu.value[resume.id]
         if (!authStore.isAuthenticated) {
           const quota = await guestStore.checkResumeQuota()
           if (!quota) guestStore.decrementResumeCount()
