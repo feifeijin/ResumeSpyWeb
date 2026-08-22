@@ -445,6 +445,7 @@ import type { ResumeDetail } from '@/models/resume-detail.type'
 import ResumeDetailService from '@/api/resume-detail-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
+import { useResumesStore } from '@/stores/resumes'
 import { useOnboardingStore } from '@/stores/onboarding'
 import { useOnboarding } from '@/composables/useOnboarding'
 import VersionHistoryPanel from '@/components/version/VersionHistoryPanel.vue'
@@ -473,6 +474,7 @@ const route = useRoute()
 const router = useRouter()
 const guestStore = useGuestStore()
 const authStore = useAuthStore()
+const resumesStore = useResumesStore()
 const onboardingStore = useOnboardingStore()
 const { startPart1Tour, startPart2Tour } = useOnboarding()
 const versionStore = useVersionStore()
@@ -791,6 +793,19 @@ const onSave = async (index: number) => {
       savedContent.value[index] = content
       if (newDetail.resumeId) {
         currentResumeId.value = newDetail.resumeId
+        // Publish the brand-new resume to the shared list so MySpy shows it as
+        // soon as the user goes back, without waiting for a page reload. The
+        // server's own title/thumbnail replace this the first time a list
+        // response returns the resume.
+        resumesStore.addCreated({
+          id: newDetail.resumeId,
+          title: tabs.value[index],
+          resumeDetailCount: 1,
+          resumeImgPath: '',
+          createTime: newDetail.createTime,
+          lastModifyTime: newDetail.lastModifyTime,
+          preview: false,
+        })
         router.replace({ query: { ...route.query, resumeId: newDetail.resumeId } })
         if (!authStore.isAuthenticated) {
           await guestStore.checkResumeQuota()

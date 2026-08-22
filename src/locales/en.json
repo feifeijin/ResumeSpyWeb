@@ -294,19 +294,106 @@
     "overline": "— The Workshop —",
     "title": "ResumeSpy Tools",
     "subtitle": "A growing kit of instruments for the working professional. Each one is in the darkroom right now.",
-    "metaDesc": "Explore the ResumeSpy toolkit: Career World, Resume Convert, and the Japanese Resume Generator.",
+    "metaDesc": "The ResumeSpy toolkit for resume writing, job applications and career research: Career World, Resume Convert and the Japanese Resume Generator — what each tool does, who it is for, and what you can use today.",
     "comingSoon": "Coming soon",
+    "audienceLabel": "Who it's for",
+    "intro": {
+      "heading": "What this toolkit is for",
+      "p1": "The heart of ResumeSpy is a version-controlled resume editor: you write in Markdown, every save is kept as a version you can return to, and you can tailor a draft to a specific job description without losing the original. The toolkit on this page covers the work that happens around that editor — researching a role before you apply for it, moving a resume between the formats different employers insist on, and meeting the document conventions of a particular country.",
+      "p2": "Everything listed below is still in development. We publish the plan here rather than after the fact, so you can see where ResumeSpy is heading and tell us which piece you need first. Nothing on this page is a link to a working tool yet; the resume editor, version history, AI tailoring and PDF export are live and free to use today."
+    },
+    "toolsSection": {
+      "heading": "What we're building",
+      "lede": "Three tools, each aimed at a different part of a job search. The cards below are informational — they describe the plan, not a product you can open."
+    },
     "careerWorld": {
       "name": "Career World",
-      "desc": "Map roles, skills, and salaries across the industry before you make your next move."
+      "desc": "Map roles, skills, and salaries across the industry before you make your next move.",
+      "body": "Career World is a research surface for the question that comes before the resume: what should I be aiming at? It gathers job titles, the skills that keep reappearing in their descriptions, and the way those roles connect — which positions people tend to move into from a backend engineering role, what a step into engineering management actually asks for, which skills carry across industries and which do not. The intent is to let you compare two directions side by side instead of inferring a whole career path from a handful of job ads.",
+      "audience": "Anyone deciding what to apply for — career changers, engineers weighing a specialist track against a management one, and people returning to work after a break.",
+      "meanwhile": "Until it ships, our writing on career moves and hiring covers much of the same ground.",
+      "linkLabel": "Read the articles"
     },
     "resumeConvert": {
       "name": "Resume Convert",
-      "desc": "Turn any resume into PDF, Markdown, or plain text without losing the formatting."
+      "desc": "Turn any resume into PDF, Markdown, or plain text without losing the formatting.",
+      "body": "Resume Convert is a format translator for the documents you already have. Applications rarely agree on what they want: one portal insists on PDF, another parses plain text, a recruiter asks for something they can edit, and your own working copy is Markdown. Converting by hand tends to break headings, bullet levels and spacing — which is precisely the structure an applicant tracking system reads to work out where your experience begins. The tool is being built to move a resume between formats while keeping that structure intact, so one source document can be sent anywhere.",
+      "audience": "People applying through several portals at once, and anyone bringing an existing resume into ResumeSpy from a file they wrote somewhere else.",
+      "meanwhile": "The editor can already export any saved version of your resume as a PDF.",
+      "linkLabel": "Open the resume editor"
     },
     "japaneseResume": {
       "name": "Japanese Resume Generator",
-      "desc": "Generate a compliant Japanese rirekisho and shokumu keirekisho from your existing dossier."
+      "desc": "Generate a compliant Japanese rirekisho and shokumu keirekisho from your existing dossier.",
+      "body": "Hiring in Japan asks for two documents that have no direct western equivalent: the 履歴書 (rirekisho), a standardised personal-history form, and the 職務経歴書 (shokumu keirekisho), a longer account of what you actually did in each role. Both carry expectations about layout, date format and phrasing that are difficult to satisfy by editing a generic template, and getting them wrong is noticed. This tool will take the experience already stored in your ResumeSpy dossier and lay it out in both formats, so applying to a Japanese employer does not mean rewriting your history from scratch.",
+      "audience": "Candidates applying to companies in Japan — engineers relocating, and bilingual professionals who need a Japanese pair alongside their English resume.",
+      "meanwhile": "ResumeSpy already supports writing and exporting resumes in Japanese; the FAQ explains what is possible today.",
+      "linkLabel": "Read the FAQ"
+    },
+    "workflow": {
+      "heading": "How the toolkit fits a job search",
+      "lede": "Resume creation, resume analysis, applications and the career thinking behind them are one continuous piece of work. Here is where each part sits.",
+      "write": {
+        "heading": "Writing and versioning a resume",
+        "body": "A resume is rarely one document — it is a family of drafts that drift apart as you send them out. Every save in ResumeSpy creates a version you can compare against any other and revert to, so rewriting a section for a particular employer never costs you the wording you liked last month. Start from a blank document or paste in the resume you already have."
+      },
+      "analyse": {
+        "heading": "Tailoring and reviewing before you apply",
+        "body": "Paste a job description and ResumeSpy reshapes your draft toward that role: keywords sharpened, achievements re-framed, emphasis reordered, without inventing experience you do not have. Reading the result next to the previous version is a form of analysis in itself — it shows which parts of your background the role actually calls for, and which ones it quietly leaves out."
+      },
+      "apply": {
+        "heading": "Applying, and the career decisions around it",
+        "body": "Applications go out in formats you do not control, to countries with their own document conventions, for roles you may only half understand from the advert. Those three problems are what Resume Convert, the Japanese Resume Generator and Career World are being built to answer. Longer-form guidance on the same questions is published in our articles."
+      }
+    },
+    "faq": {
+      "heading": "Questions about the toolkit",
+      "items": [
+        {
+          "q": "Can I use these tools today?",
+          "a": "Not yet. All three tools on this page are in development and none of them has a page to open — that is why the cards here are informational rather than links. What is live and free right now is the rest of ResumeSpy: the Markdown resume editor, full version history, AI tailoring against a job description, and PDF export."
+        },
+        {
+          "q": "Do I need an account?",
+          "a": "You can read this page and browse the site without one. Saving a resume and keeping its version history does require signing in, because your drafts are stored against your account and available from any device you sign in from."
+        },
+        {
+          "q": "Which languages does ResumeSpy support?",
+          "a": "The interface and your resume content both work in English, Chinese (中文) and Japanese (日本語). That is also why a dedicated Japanese resume tool is on the roadmap: supporting a language is one thing, matching a country's document conventions is another."
+        },
+        {
+          "q": "Will the tools cost anything?",
+          "a": "ResumeSpy is free to use today and the project is open source. We have not announced pricing for anything on this page; when a tool ships, whatever it costs will be stated on its own page rather than buried in a roadmap."
+        },
+        {
+          "q": "How will I know when a tool is ready?",
+          "a": "This page is the roadmap — a card's status changes when its tool ships, and it becomes a link at the same time. New capabilities are also written up in our articles as they arrive."
+        }
+      ]
+    },
+    "explore": {
+      "heading": "Start with what's live today",
+      "lede": "The tools above are still being built. These parts of ResumeSpy are working now.",
+      "create": {
+        "label": "Create a resume",
+        "desc": "Open the Markdown editor, start a new resume or paste in a draft you already have, and let AI tailoring reshape it for a specific role."
+      },
+      "myspy": {
+        "label": "Your workspace",
+        "desc": "Every resume you have saved, with its full version history — compare two drafts or revert to an earlier one."
+      },
+      "articles": {
+        "label": "Articles",
+        "desc": "Writing on resumes, job applications, interviews and career moves, in all three supported languages."
+      },
+      "faq": {
+        "label": "Frequently asked questions",
+        "desc": "How ResumeSpy handles AI tailoring, version control, privacy, exports and multilingual resumes."
+      },
+      "home": {
+        "label": "About ResumeSpy",
+        "desc": "What the project is and how the version-controlled resume workflow fits together, on one page."
+      }
     }
   },
   "home": {
