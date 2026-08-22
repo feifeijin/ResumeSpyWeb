@@ -29,3 +29,5 @@ coverage
 *.code-workspace
 
 *.tsbuildinfo
+.shellmate/LEDGER.md
+.shellmate/base_sha

@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import authApi from '@/api/auth-api'
 import type { AuthSession } from '@/models/auth.type'
 import { useGuestStore } from './guest'
+import { useResumesStore } from './resumes'
 import { clearAnonymousId } from '@/utils/anonymous-id'
 import { identifyUser, resetAnalyticsUser } from '@/lib/analytics'
 import router from '@/router'
@@ -28,6 +29,8 @@ export const useAuthStore = defineStore('auth', () => {
   const clearSession = () => {
     session.value = null
     resetAnalyticsUser()
+    // Drop the cached resume list so it can never be shown to the next account.
+    useResumesStore().reset()
   }
 
   /** Sign in with a third-party OAuth provider (Google, GitHub) */

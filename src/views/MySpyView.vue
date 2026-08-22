@@ -208,6 +208,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useLoading } from '@/composables/useLoading'
@@ -217,6 +218,7 @@ import type { Resume } from '@/models/resume.type'
 import ResumeService from '@/api/resume-api'
 import { useGuestStore } from '@/stores/guest'
 import { useAuthStore } from '@/stores/auth'
+import { useResumesStore } from '@/stores/resumes'
 import ResumeDetailService from '@/api/resume-detail-api'
 import { trackEvent } from '@/lib/analytics'
 
@@ -247,8 +249,11 @@ const formatDate = (dateStr: string): string => {
 const router = useRouter()
 const guestStore = useGuestStore()
 const authStore = useAuthStore()
+const resumesStore = useResumesStore()
 
-const resumes = ref<Resume[]>([])
+// Shared list: resumes created on the create screen are published here too, so
+// coming back from a creation always shows them.
+const { resumes } = storeToRefs(resumesStore)
 const menu = ref<boolean[]>([])
 const showFab = ref(false)
 const isImporting = ref(false)
@@ -303,7 +308,8 @@ const processImport = async (file: File) => {
           lastModifyTime: '',
         })
         if (detail.resumeId) {
-          await resumeService.updateResumeName(detail.resumeId, suggestedTitle)
+          const created = await resumeService.updateResumeName(detail.resumeId, suggestedTitle)
+          resumesStore.addCreated(created)
         }
         if (!authStore.isAuthenticated) {
           await guestStore.checkResumeQuota()
@@ -346,7 +352,7 @@ const startEditing = async (resume: Resume, index: number) => {
 const loadResumes = async () => {
   await withLoading(
     async () => {
-      resumes.value = await resumeService.fetchResumes()
+      await resumesStore.load()
       menu.value = resumes.value.map(() => false)
     },
     { id: 'load-resumes', message: commonMessages.loading },
@@ -424,7 +430,7 @@ const onClone = async (resume: Resume) => {
     (v: boolean) => (rowBusyId.value = v ? resume.id : null),
     async () => {
       const newResume = await resumeService.cloneResume(resume.id)
-      resumes.value.unshift(newResume)
+      resumesStore.addCreated(newResume)
       menu.value.unshift(false)
       if (!authStore.isAuthenticated) {
         await guestStore.checkResumeQuota()
@@ -441,9 +447,8 @@ const onDelete = async (resume: Resume) => {
       (v: boolean) => (rowBusyId.value = v ? resume.id : null),
       async () => {
         await resumeService.deleteResume(resume.id)
-        const index = resumes.value.indexOf(resume)
+        const index = resumesStore.remove(resume.id)
         if (index > -1) {
-          resumes.value.splice(index, 1)
           menu.value.splice(index, 1)
         }
         if (!authStore.isAuthenticated) {
