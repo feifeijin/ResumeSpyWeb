@@ -1,0 +1,140 @@
+# ShellMate sprint definition — read by FileScrumProvider, never written by it.
+#
+# Schema (src/shellmate/adapters/scrum/file.py):
+#   sprint: id, name, goal, state[future|active|closed], starts_at, ends_at, url
+#   tasks[]: id, title, description, acceptance_criteria, priority, state, assignee,
+#            url, subtasks[]
+#   subtasks[]: id, order, title, description, state, url
+#
+# Notes on what actually reaches the agent (services/roles.py):
+#   - `description` and `acceptance_criteria` go into the DEVELOPER prompt.
+#   - `acceptance_criteria` also goes into the REVIEWER prompt, and is what the
+#     review is judged against — so it holds checkable statements, not process.
+#   - `sprint.goal` does NOT reach either prompt. It appears only in the demo brief.
+#     Anything the agent must know has to live in a task.
+#   - Lower `priority` dispatches first.
+#   - Neither task declares subtasks: each subtask is a separate agent session with
+#     fresh context, and both of these are single coherent units (ADR-0008 runs a
+#     subtask-less task as one implicit unit).
+
+sprint:
+  id: '2026-w32'
+  name: 'Sprint 32'
+  goal: 'Fix the MySpy refresh bug and turn the Tools page into real SEO content'
+  state: active
+
+tasks:
+  - id: 'RS-1'
+    title: 'Fix latest resume not appearing in MySpy after creation'
+    priority: 10
+    state: done
+    description: |
+      A newly created resume does not appear on the MySpy page until the browser is
+      manually refreshed.
+
+      Steps to reproduce
+      1. Log in and go to MySpy.
+      2. Click Add to open the resume creation screen.
+      3. Create a new resume and save it.
+      4. Return to MySpy.
+      5. The new resume is not listed.
+      6. Reload the page manually and it appears.
+
+      Expected behaviour
+      Returning to MySpy after creating a resume shows the new resume immediately,
+      with no manual page refresh.
+
+      How to approach it
+      Start by reading the existing data flow rather than reaching for a fix. The
+      entry points are `src/views/MySpyView.vue` and the creation route `/create`
+      (`src/router/index.ts`). Follow how the resume list is fetched and where that
+      result is held — component state, a Pinia store in `src/stores/`, or an API
+      module in `src/api/` — and find out *why* the stale list survives the
+      navigation. The cause is more likely a cached list that is never invalidated,
+      or a fetch that only runs on first mount, than a missing refresh call.
+
+      Do not "solve" this by forcing a full page reload, disabling caching globally,
+      or refetching on every navigation regardless of need. Those hide the bug and
+      cost every other MySpy visit.
+
+      This is an established Vue 3 codebase: Vuetify, Pinia, vue-router, vue-i18n,
+      Vitest. Work inside those conventions. Do not add a state-management library,
+      a data-fetching library, or a new framework.
+
+      There are existing unit tests in `Frontend/tests/` (Vitest + @vue/test-utils,
+      jsdom, `shallowMount`, Vuetify stubs in `Frontend/tests/helpers/`). Follow
+      those patterns if you add coverage.
+    acceptance_criteria: |
+      - A resume created via the creation screen is visible on MySpy immediately on
+        returning there, without a manual browser refresh.
+      - The fix addresses the underlying state or fetching behaviour. It is not a
+        forced `window.location.reload()`, a router key hack, or a blanket
+        cache-disable.
+      - Existing MySpy behaviour is unchanged: the list still loads on a cold visit,
+        and editing or deleting a resume behaves as before.
+      - No new state-management or data-fetching dependency is introduced, and
+        `package.json` dependencies are unchanged unless clearly justified in the
+        ledger.
+      - Any test added follows the existing `Frontend/tests/` patterns and passes.
+      - Only files related to this bug are modified.
+
+  - id: 'RS-2'
+    title: 'Replace the Tools page placeholder content with real SEO/AEO content'
+    priority: 20
+    state: done
+    description: |
+      `/tools` already exists — `src/views/ToolsView.vue`, wired into the router and
+      the app bar, with a breadcrumb, `useSeo` metadata, and three cards
+      (Career World, Resume Convert, Japanese Resume Generator) each marked
+      "Coming soon". It is not an empty page, but the content is thin: a name and
+      one sentence per tool, which gives a search engine or an AI answer engine
+      almost nothing to work with.
+
+      Deepen that page into a genuinely useful static landing page.
+
+      What to add
+      - Real, substantive copy for each tool: what it does, who it is for, when you
+        would reach for it, what you get out of it. Believable and specific — no
+        lorem ipsum, no invented statistics, no fake testimonials.
+      - More sections than the three cards: an introduction that explains what the
+        toolkit is for, and supporting content using natural language around resume
+        creation, resume analysis, job applications and career development. A short
+        FAQ-style section is good for answer engines if it fits the page's design.
+      - Clear heading structure (one `h1`, meaningful `h2`/`h3`) and descriptive
+        internal links to pages that actually exist — `/`, `/articles`, `/faq`,
+        `/create`, `/myspy` are all real routes in `src/router/index.ts`.
+
+      What not to do
+      - The individual tool routes do **not** exist yet. Do not link cards to routes
+        that would 404 and do not imply a tool is usable when it is not — keep those
+        items informational, as the current "Coming soon" treatment already does.
+      - No backend. This is a frontend-only, static-content change.
+      - Do not touch any other page.
+
+      Conventions that matter here
+      - All user-visible text goes through vue-i18n, not hard-coded strings. The
+        `tools.*` keys live in `src/locales/en.json`, `ja.json` and `zh.json`, and
+        `npm run check:locales` enforces that the three files stay in step — so
+        every new key needs all three locales. Write real Japanese and Chinese, not
+        English placeholders.
+      - Page metadata already goes through the `useSeo` composable in
+        `src/composables/useSeo.ts`; extend the existing call rather than injecting
+        tags by hand.
+      - Keep the existing visual language of the page (the "noir" styling, scoped
+        CSS, the card layout) so it stays consistent with the rest of the site.
+    acceptance_criteria: |
+      - `/tools` renders an introduction, the tool sections, and at least one
+        additional content section beyond the cards.
+      - Every tool entry has a title, a substantive description of several sentences,
+        and a clear call to action or an explicit informational status.
+      - Content is real and specific. No lorem ipsum, no placeholder text, no
+        invented numbers or quotes.
+      - Headings are structured: exactly one `h1`, with `h2`/`h3` beneath it.
+      - Internal links point only to routes that exist in `src/router/index.ts`.
+        Nothing links to a tool route that would 404.
+      - All new user-visible strings are vue-i18n keys present in all three of
+        `en.json`, `ja.json` and `zh.json`, with genuine translations.
+        `npm run check:locales` passes.
+      - Page title and meta description are set through the existing `useSeo` call.
+      - The page remains visually consistent with the existing design.
+      - No backend call, no new dependency, and no other page is modified.
