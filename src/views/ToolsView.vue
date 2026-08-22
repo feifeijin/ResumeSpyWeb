@@ -31,12 +31,7 @@
                non-interactive rather than linking to routes that do not exist.
                The only links inside a card point at pages that are live. -->
           <div class="tool-grid">
-            <article
-              v-for="tool in tools"
-              :key="tool.key"
-              class="tool-card"
-              aria-disabled="true"
-            >
+            <article v-for="tool in tools" :key="tool.key" class="tool-card">
               <div class="tool-plate" aria-hidden="true">
                 <span class="plate-glyph">{{ tool.glyph }}</span>
               </div>
